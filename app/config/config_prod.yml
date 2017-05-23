@@ -1,0 +1,79 @@
+---
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+#
+# import resources
+#
+
+imports:
+    - { resource: parameters.yml }
+    - { resource: platform.php }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    - { resource: bundles_prod.yml }
+
+#
+# parameter definitions
+#
+
+parameters:
+    locale: en
+    rf_app.domain_name: "src.run"
+    rf_app.assets_path: "/bundles/app/"
+
+#
+# framework configuration
+#
+
+framework:
+    secret:               "%secret%"
+    form:                 ~
+    csrf_protection:      ~
+    default_locale:       "%locale%"
+    trusted_hosts:        ~
+    fragments:            ~
+    http_method_override: true
+    assets:               ~
+
+    templating:
+        engines: [ 'twig' ]
+
+    validation:
+      enable_annotations: true
+
+    php_errors:
+        log: true
+
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+
+    session:
+        handler_id: session.handler.native_file
+        save_path:  "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+
+    assets:
+        enabled:        true
+        version:        1.0.0
+        version_format: "%%s?v=%%s"
+        packages:
+
+            images:
+                base_urls:
+                    - "//%rf_app.domain_name%%rf_app.assets_path%images/"
+
+            stylesheets:
+                base_path: "%rf_app.assets_path%stylesheet/"
+
+            javascripts:
+                base_path: "%rf_app.assets_path%javascript/"
+
+...

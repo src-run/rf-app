@@ -1,0 +1,12 @@
+{% extends '@AppBundle/article/base.html.twig' %}
+
+{% block title %}{{ parent() }}: {{ article.getTitle() }}{% endblock %}
+
+{% block body %}
+    <h1>{{ article.getTitle() }}</h1>
+    <h2><time>{{ article.getUpdatedOn().format('r') }}</time></h2>
+    <hr />
+    <div>
+        {{ markdown(article.getContent()) }}
+    </div>
+{% endblock %}

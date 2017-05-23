@@ -1,0 +1,63 @@
+---
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+#
+# import resources
+#
+
+imports:
+    - { resource: bundles_prod.yml }
+
+#
+# web profiler configuration
+#
+web_profiler:
+    toolbar:             true
+    intercept_redirects: false
+
+#
+# monolog configuration
+#
+monolog:
+    handlers:
+        main:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+
+            channels:
+              - "!event"
+
+        console:
+            type:   console
+
+            channels:
+              - "!event"
+              - "!doctrine"
+
+#
+# mailer configuration
+#
+swiftmailer:
+    delivery_addresses:
+        - "rf-web-app-dev@robfrawley.com"
+
+#
+# doctrine configuration
+#
+
+doctrine:
+    orm:
+        metadata_cache_driver: array
+        result_cache_driver:   array
+        query_cache_driver:    array
+
+...

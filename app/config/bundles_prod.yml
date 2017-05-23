@@ -1,0 +1,112 @@
+---
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+#
+# monolog configuration
+#
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+
+        nested:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+
+        console:
+            type:  console
+
+#
+# doctrine configuration
+#
+
+doctrine:
+    dbal:
+        driver:         "%database_driver%"
+        server_version: "%database_version%"
+        host:           "%database_host%"
+        port:           "%database_port%"
+        dbname:         "%database_name%"
+        user:           "%database_user%"
+        password:       "%database_password%"
+        charset:        "%database_charset%"
+
+    orm:
+        metadata_cache_driver:       apc
+        result_cache_driver:         apc
+        query_cache_driver:          apc
+        auto_generate_proxy_classes: "%kernel.debug%"
+        naming_strategy:             doctrine.orm.naming_strategy.underscore
+
+        dql:
+            string_functions:
+                date_format: Rf\AppBundle\Doctrine\Query\Functions\DateFormatFunction
+                unix_time: Rf\AppBundle\Doctrine\Query\Functions\UnitTimeFunction
+
+        mappings:
+          AppBundle:
+            type: xml
+            prefix: Rf\AppBundle\Doctrine\Entity
+
+#
+# mail configuration
+#
+
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    port:      "%mailer_port%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:
+        type: "%mailer_spool%"
+
+#
+# twig configuration
+#
+
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    paths:
+        '%kernel.root_dir%/../src/AppBundle/Resources/views/': AppBundle
+
+#
+# white_october_swift_mailer_db configuration
+#
+
+white_october_swift_mailer_db :
+    entity_class: "\\Rf\\AppBundle\\Doctrine\\Entity\\Email"
+    keep_sent_messages: true
+
+#
+# pagination configuration
+#
+
+knp_paginator :
+    default_options:
+        page_name: page
+    template:
+        pagination: "paginator/paginator.html.twig"
+
+#
+# easy admin bundle
+#
+
+easy_admin:
+    entities:
+        - Rf\AppBundle\Doctrine\Entity\Article
+        - Rf\AppBundle\Doctrine\Entity\Email
+
+...

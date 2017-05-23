@@ -1,0 +1,10 @@
+
+app.article_show:
+    path: /article/{year}/{month}/{day}/{slug}
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\ArticleShowController'
+
+app.article_list:
+    path: /article/list
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\ArticleListController'

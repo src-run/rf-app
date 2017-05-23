@@ -1,0 +1,60 @@
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+#
+# parameter configuration
+#
+
+parameters:
+
+#
+# service configuration
+#
+services:
+
+    _defaults:
+        autowire: true
+        public: false
+
+    _instanceof:
+        Twig_Extension:
+            tags: [ 'twig.extension' ]
+
+        Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface:
+            tags: [ { name: request.param_converter }]
+
+    Knp\Component\Pager\Paginator:
+        alias: knp_paginator
+
+    ParsedownExtra:
+        class: ParsedownExtra
+
+    Rf\AppBundle\:
+        resource: '../../*'
+        exclude: '../../{Doctrine}'
+
+    Rf\AppBundle\Controller\:
+        resource: '../../Controller/*'
+        public: true
+        tags: ['controller.service_arguments']
+
+    Rf\AppBundle\Component\Environment\SymfonyEnvironment:
+        arguments:
+            $environment: "%kernel.environment%"
+            $debug: "%kernel.debug%"
+
+    Rf\AppBundle\Doctrine\Repository\ArticleRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory:
+            - '@doctrine.orm.default_entity_manager'
+            - getRepository
+        arguments:
+            - Rf\AppBundle\Doctrine\Entity\Article
+
+    SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer:

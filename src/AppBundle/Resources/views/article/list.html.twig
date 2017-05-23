@@ -1,0 +1,18 @@
+{% extends '@AppBundle/article/base.html.twig' %}
+
+{% block body %}
+    <ul>
+        {% for a in articles %}
+            <li><a href="{{ path('app.article_show', {
+                slug: a.getSlug(),
+                day: a.getCreatedOn().format('d'),
+                month: a.getCreatedOn().format('m'),
+                year: a.getCreatedOn().format('Y'),
+            }) }}">{{ a.getTitle() }}</a> <time>{{ a.getUpdatedOn().format('r') }}</time></li>
+        {% endfor %}
+    </ul>
+
+    <div class="page-navigation">
+        {{ knp_pagination_render(articles) }}
+    </div>
+{% endblock %}

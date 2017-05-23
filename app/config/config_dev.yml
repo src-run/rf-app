@@ -1,0 +1,30 @@
+---
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+#
+# import resources
+#
+imports:
+    - { resource: config_prod.yml }
+    - { resource: bundles_dev.yml }
+
+#
+# framework configuration
+#
+framework:
+    router:
+        resource:            "%kernel.root_dir%/config/routing_dev.yml"
+        strict_requirements: true
+
+    profiler:
+        only_exceptions: false
+
+...

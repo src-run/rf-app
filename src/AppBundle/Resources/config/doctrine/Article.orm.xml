@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity repository-class="Rf\AppBundle\Doctrine\Repository\ArticleRepository" name="Rf\AppBundle\Doctrine\Entity\Article">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="createdOn" type="datetime" column="created_on" />
+        <field name="updatedOn" type="datetime" column="updated_on" />
+        <field name="slug" type="string" column="slug" length="255" unique="true" />
+        <field name="title" type="string" column="title" length="255" />
+        <field name="content" type="text" column="content" />
+
+    </entity>
+
+</doctrine-mapping>
