@@ -39,7 +39,7 @@ class ArticleListController extends AbstractController
     public function __invoke(Request $request)
     {
         return $this->renderResponse('@AppBundle/article/list.html.twig', [
-            'articles' => $this->repository->findPaginated($this->paginator, $request->query->getInt('page', 1), 10)
+            'articles' => $this->repository->findPaginated($this->paginator, $request->query->getInt('page', 1), 10),
         ]);
     }
 }

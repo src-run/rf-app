@@ -72,6 +72,7 @@ abstract class AbstractRepository extends EntityRepository
      * @param int|null    $limit
      * @param int|null    $offset
      * @param string|null $indexBy
+     *
      * @return array
      */
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null, $indexBy = null): array

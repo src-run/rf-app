@@ -11,8 +11,6 @@
 
 namespace Rf\AppBundle\Component\Environment;
 
-use Symfony\Component\VarDumper\VarDumper;
-
 class SymfonyEnvironment implements EnvironmentInterface
 {
     /**

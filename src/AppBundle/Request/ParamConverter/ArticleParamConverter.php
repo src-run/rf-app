@@ -28,7 +28,7 @@ class ArticleParamConverter implements ParamConverterInterface
         'slug',
         'year',
         'month',
-        'day'
+        'day',
     ];
 
     /**
@@ -75,7 +75,7 @@ class ArticleParamConverter implements ParamConverterInterface
     }
 
     /**
-     * @param Request        $request
+     * @param Request $request
      *
      * @return Article
      */

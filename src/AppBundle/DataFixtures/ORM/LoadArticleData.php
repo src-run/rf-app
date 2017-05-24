@@ -106,7 +106,7 @@ class LoadArticleData implements FixtureInterface
         $generator = Factory::create();
 
         foreach (range(0, $count) as $i) {
-            $lines[] = $generator->sentence(mt_rand(20*$multiplier, 100*$multiplier));
+            $lines[] = $generator->sentence(mt_rand(20 * $multiplier, 100 * $multiplier));
             $lines[] = '';
         }
     }
@@ -121,7 +121,7 @@ class LoadArticleData implements FixtureInterface
         $generator = Factory::create();
 
         foreach (range(1, $count) as $i) {
-            $lines[] = sprintf('- %s', $generator->sentence(5*$multiplier, 15*$multiplier));
+            $lines[] = sprintf('- %s', $generator->sentence(5 * $multiplier, 15 * $multiplier));
         }
 
         $lines[] = '';
@@ -137,7 +137,7 @@ class LoadArticleData implements FixtureInterface
         $generator = Factory::create();
 
         foreach (range(1, $count) as $i) {
-            $lines[] = sprintf('%d. %s', $count, $generator->sentence(8*$multiplier, 24*$multiplier));
+            $lines[] = sprintf('%d. %s', $count, $generator->sentence(8 * $multiplier, 24 * $multiplier));
         }
 
         $lines[] = '';
@@ -154,7 +154,7 @@ class LoadArticleData implements FixtureInterface
         $lines[] = '';
         $lines[] = vsprintf('%s %s', [
             str_repeat('#', $level),
-            ucwords(trim($generator->sentence(mt_rand(4, 20)), '.'))
+            ucwords(trim($generator->sentence(mt_rand(4, 20)), '.')),
         ]);
         $lines[] = '';
     }

@@ -18,3 +18,5 @@
 !/bin/console
 /.idea/
 /.web-server-pid
+/cs_fixer*
+/composer

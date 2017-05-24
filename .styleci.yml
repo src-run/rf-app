@@ -9,7 +9,7 @@ enabled:
   - phpdoc_order
   - php_unit_construct
   - php_unit_dedicate_assert
-  - long_array_syntax
+  - short_array_syntax
 
 finder :
   name:
