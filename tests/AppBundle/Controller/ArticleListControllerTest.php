@@ -37,6 +37,6 @@ class ArticleListControllerTest extends WebTestCase
         $crawler = $client->request('GET', $uri);
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $this->assertCount( 10, $crawler->filter('ul.article-list li'));
+        $this->assertCount(10, $crawler->filter('ul.article-list li'));
     }
 }

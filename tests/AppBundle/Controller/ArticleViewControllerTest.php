@@ -16,7 +16,6 @@ use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class ArticleViewControllerTest extends WebTestCase
 {

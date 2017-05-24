@@ -29,7 +29,7 @@ install :
   - bash .bldr/bldr -b up-app
 
 script :
-  - bin/simple-phpunit || bin/phpunit -vvv
+  - bin/phpunit -vvv
 
 after_script :
   - bash .bldr/bldr -b down-app
