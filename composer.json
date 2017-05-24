@@ -72,7 +72,7 @@
             "Rf\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "bin-dir": "bin",

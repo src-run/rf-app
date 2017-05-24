@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "61f50b55c7527f3e98c2293ea0d8134f",
+    "content-hash": "ceed2063036d232e9bc56e7dc603101e",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1634,7 +1634,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -1693,7 +1693,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2974,7 +2974,7 @@
                 "rmf",
                 "src-run"
             ],
-            "time": "2017-05-18 22:07:48"
+            "time": "2017-05-18T22:07:48+00:00"
         },
         {
             "name": "src-run/cocoa-transformer-library",
@@ -5829,7 +5829,7 @@
             "package": "src-run/cocoa-markdown-library"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "src-run/cocoa-markdown-library": 20,
         "symfony/web-server-bundle": 10

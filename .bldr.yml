@@ -9,7 +9,7 @@ env_post: ci-coveralls,ci-codacy
 php_conf: timezone
 php_exts: ~
 app_prep: dep-composer,db-create,db-load
-app_post: ~
+app_post: db-unload
 app_path: bin/console
 pkg_name: rf-app
 pkg_desc: "The core Symfony-based web application powering the robfrawley.com domain."
