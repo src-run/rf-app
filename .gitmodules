@@ -1,3 +1,0 @@
-[submodule ".bldr"]
-	path = .bldr
-	url = git@github.com:src-run/usr-src-builder.git
