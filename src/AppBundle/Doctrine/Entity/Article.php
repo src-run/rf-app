@@ -76,7 +76,7 @@ class Article
      *
      * @return self
      */
-    public function setUpdatedOn(\DateTime $updatedOn = null) : self
+    public function setUpdatedOn(\DateTime $updatedOn = null): self
     {
         $this->updatedOn = $updatedOn;
 
@@ -96,7 +96,7 @@ class Article
      *
      * @return self
      */
-    public function setSlug(string $slug) : self
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 
@@ -116,7 +116,7 @@ class Article
      *
      * @return self
      */
-    public function setTitle(string $title) : self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -136,7 +136,7 @@ class Article
      *
      * @return self
      */
-    public function setContent(string $content) : self
+    public function setContent(string $content): self
     {
         $this->content = $content;
 
@@ -156,7 +156,7 @@ class Article
      *
      * @return string
      */
-    public function getContentLead(int $words = 100) : string
+    public function getContentLead(int $words = 100): string
     {
         preg_match(sprintf('/(?:\w+(?:\W+|$)){0,%n}/', $words), $this->getContent(), $matches);
 
