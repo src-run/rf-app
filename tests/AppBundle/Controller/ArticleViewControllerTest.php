@@ -12,14 +12,12 @@
 namespace Rf\AppBundle\Tests\Controller;
 
 use Rf\AppBundle\Doctrine\Entity\Article;
-use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Rf\AppBundle\Tests\AutoSetupTestTrait;
 use Rf\AppBundle\Tests\ClientTestTrait;
 use Rf\AppBundle\Tests\KernelTestTrait;
 use Rf\AppBundle\Tests\RepositoryTestTrait;
 use Rf\AppBundle\Tests\RouterTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
 class ArticleViewControllerTest extends WebTestCase

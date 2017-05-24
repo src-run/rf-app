@@ -15,7 +15,9 @@ trait KernelTestTrait
 {
     private function autoSetUp001Kernel()
     {
-        /** @var Kernel $kernel */
-        static::bootKernel();
+        static::bootKernel([
+            'environment' => 'test',
+            'debug' => false,
+        ]);
     }
 }
