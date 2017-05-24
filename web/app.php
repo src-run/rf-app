@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-app` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *

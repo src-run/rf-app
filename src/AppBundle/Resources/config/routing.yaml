@@ -1,8 +1,8 @@
 
-app.article_show:
+app.article_view:
     path: /article/{year}/{month}/{day}/{slug}
     defaults:
-        _controller: 'Rf\AppBundle\Controller\ArticleShowController'
+        _controller: 'Rf\AppBundle\Controller\ArticleViewController'
 
 app.article_list:
     path: /article/list

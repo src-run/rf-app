@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-app` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -16,8 +16,6 @@ use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use SR\Exception\Logic\LogicException;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -84,7 +82,7 @@ class ArticleParamConverter implements ParamConverterInterface
     private function find(Request $request): Article
     {
         try {
-            return $this->repository->findByDateAndSlug(...$this->resolveSearchArray($request));
+            return $this->repository->findByDateAndSlug(...$this->resolveSearchFields($request));
         } catch (\Exception $exception) {
             throw new NotFoundHttpException('Could not locate the request article.', $exception);
         }
@@ -95,25 +93,10 @@ class ArticleParamConverter implements ParamConverterInterface
      *
      * @return array
      */
-    private function resolveSearchArray(Request $request): array
+    private function resolveSearchFields(Request $request): array
     {
         return array_map(function (string $field) use ($request) {
-            return $this->resolveSearchField($request->attributes, $field);
+            return $request->attributes->has($field) ? $request->attributes->get($field) : null;
         }, static::$searchFields);
-    }
-
-    /**
-     * @param ParameterBag $attributes
-     * @param string       $field
-     *
-     * @return string
-     */
-    private function resolveSearchField(ParameterBag $attributes, string $field): string
-    {
-        if (!$attributes->has($field)) {
-            throw new LogicException('Required path attribute "%s" does not exist.', $field);
-        }
-
-        return $attributes->get($field);
     }
 }

@@ -59,6 +59,12 @@ doctrine:
             type: xml
             prefix: Rf\AppBundle\Doctrine\Entity
 
+doctrine_migrations:
+    dir_name:   "%kernel.root_dir%/../src/AppBundle/Doctrine/Migrations"
+    namespace:  Rf\AppBundle\Migrations
+    table_name: migration_versions
+    name:       Rob Frawley Application Migrations
+
 #
 # mail configuration
 #

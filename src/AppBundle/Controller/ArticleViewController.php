@@ -4,7 +4,7 @@ namespace Rf\AppBundle\Controller;
 
 use Rf\AppBundle\Doctrine\Entity\Article;
 
-class ArticleShowController extends AbstractController
+class ArticleViewController extends AbstractController
 {
     /**
      * @param Article $article

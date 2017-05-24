@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-app` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -14,17 +14,9 @@ namespace Rf\AppBundle\Templating;
 use Rf\AppBundle\Component\Environment\EnvironmentInterface;
 use SR\Cocoa\Transformer\CacheableTransformerInterface;
 use SR\Cocoa\Transformer\TransformerInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class MarkdownExtension extends \Twig_Extension
 {
-    /**
-     * @var array
-     */
-    static private $environmentOptions = [
-        'is_safe' => ['html'],
-    ];
-
     /**
      * @var CacheableTransformerInterface
      */
@@ -49,11 +41,24 @@ class MarkdownExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_Function('markdown', function (string $string, string $type = 'markdown') {
-                VarDumper::dump($type);
-                VarDumper::dump($this->transformer->supports($type));
-                return $this->transformer->transform($string);
-            }, static::$environmentOptions),
+            new \Twig_Function('markdown', function (array $strings = []) {
+                return $this->getTransformations(...$strings);
+            }, [
+                'is_safe' => ['html'],
+                'is_variadic' => true,
+            ]),
         ];
+    }
+
+    /**
+     * @param array ...$strings
+     *
+     * @return string
+     */
+    private function getTransformations(...$strings)
+    {
+        return implode(PHP_EOL, array_map(function (string $string) {
+            return $this->transformer->transform($string);
+        }, $strings));
     }
 }

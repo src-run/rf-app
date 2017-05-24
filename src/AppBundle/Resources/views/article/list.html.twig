@@ -1,9 +1,9 @@
 {% extends '@AppBundle/article/base.html.twig' %}
 
 {% block body %}
-    <ul>
+    <ul class="article-list">
         {% for a in articles %}
-            <li><a href="{{ path('app.article_show', {
+            <li><a href="{{ path('app.article_view', {
                 slug: a.getSlug(),
                 day: a.getCreatedOn().format('d'),
                 month: a.getCreatedOn().format('m'),
