@@ -8,7 +8,7 @@ env_prep: get-composer
 env_post: ci-coveralls,ci-codacy
 php_conf: timezone
 php_exts: ~
-app_prep: dep-composer,db-create,db-load
+app_prep: test-parameters,dep-composer,db-create,db-load
 app_post: db-unload
 app_path: bin/console
 pkg_name: rf-app
