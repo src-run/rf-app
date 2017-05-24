@@ -9,6 +9,13 @@
  * file that was distributed with this source code.
  */
 
-putenv('APP_ENVIRONMENT_PROD=0');
+namespace Rf\AppBundle\Tests;
 
-require_once __DIR__.DIRECTORY_SEPARATOR.'app.php';
+trait KernelTestTrait
+{
+    private function autoSetUp001Kernel()
+    {
+        /** @var Kernel $kernel */
+        static::bootKernel();
+    }
+}

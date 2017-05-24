@@ -69,7 +69,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rf\\Tests\\": "tests/"
+            "Rf\\AppBundle\\Tests\\": "tests/AppBundle/"
         }
     },
     "minimum-stability": "dev",

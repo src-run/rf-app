@@ -13,34 +13,22 @@ namespace Rf\AppBundle\Tests\Controller;
 
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
+use Rf\AppBundle\Tests\AutoSetupTestTrait;
+use Rf\AppBundle\Tests\ClientTestTrait;
+use Rf\AppBundle\Tests\KernelTestTrait;
+use Rf\AppBundle\Tests\RepositoryTestTrait;
+use Rf\AppBundle\Tests\RouterTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
 class ArticleViewControllerTest extends WebTestCase
 {
-    /**
-     * @var ArticleRepository
-     */
-    private $repository;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    protected function setUp()
-    {
-        self::bootKernel();
-
-        $this->repository = static::$kernel->getContainer()
-            ->get('doctrine')
-            ->getManager()
-            ->getRepository(Article::class);
-
-        $this->router = static::$kernel->getContainer()
-            ->get('router');
-    }
+    use AutoSetupTestTrait;
+    use ClientTestTrait;
+    use KernelTestTrait;
+    use RepositoryTestTrait;
+    use RouterTestTrait;
 
     public function testActionNotFound()
     {
@@ -51,7 +39,7 @@ class ArticleViewControllerTest extends WebTestCase
             'slug' => 'does-not-exist',
         ], RouterInterface::RELATIVE_PATH);
 
-        $client = static::createClient();
+        $client = static::createTestClient();
         $client->request('GET', $uri);
 
         $this->assertSame(404, $client->getResponse()->getStatusCode());
@@ -64,7 +52,7 @@ class ArticleViewControllerTest extends WebTestCase
     {
         $uri = $this->router->getGenerator()->generate('app.article_view', [], RouterInterface::RELATIVE_PATH);
 
-        $client = static::createClient();
+        $client = static::createTestClient();
         $client->request('GET', $uri);
         $client->getResponse();
     }
@@ -96,7 +84,7 @@ class ArticleViewControllerTest extends WebTestCase
      */
     private function assertPageIsValid(string $uri)
     {
-        $client = static::createClient();
+        $client = static::createTestClient();
 
         $crawler = $client->request('GET', $uri);
 

@@ -29,4 +29,14 @@ web_profiler:
 swiftmailer:
     disable_delivery: true
 
+#
+# doctrine configuration
+#
+
+doctrine:
+    orm:
+        metadata_cache_driver: array
+        result_cache_driver:   array
+        query_cache_driver:    array
+
 ...

@@ -11,10 +11,17 @@
 
 namespace Rf\AppBundle\Tests\Controller;
 
+use Rf\AppBundle\Tests\AutoSetupTestTrait;
+use Rf\AppBundle\Tests\ClientTestTrait;
+use Rf\AppBundle\Tests\KernelTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ArticleListControllerTest extends WebTestCase
 {
+    use AutoSetupTestTrait;
+    use ClientTestTrait;
+    use KernelTestTrait;
+
     public function testAction()
     {
         $this->assertPageIsValid('/article/list');
@@ -32,7 +39,7 @@ class ArticleListControllerTest extends WebTestCase
      */
     private function assertPageIsValid(string $uri)
     {
-        $client = static::createClient();
+        $client = static::createTestClient();
 
         $crawler = $client->request('GET', $uri);
 

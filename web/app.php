@@ -16,9 +16,12 @@ use Symfony\Component\Debug\Debug;
 /** @var ClassLoader $loader */
 $loader = require __DIR__.'/../app/autoload.php';
 
-if (false === $production = (bool) getenv('APP_ENVIRONMENT_PROD')) {
+if (false === $production = (require __DIR__.'/app_env.php')) {
+    die('FUCK');
     Debug::enable();
 }
+
+file_put_contents(__DIR__.'/server.log', json_encode($_SERVER));
 
 /** @var AppKernel $kernel */
 $kernel = new AppKernel($production ? 'prod' : 'dev', !$production);
