@@ -11,8 +11,6 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
-use Doctrine\Common\Cache\ApcuCache;
-use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Parameter;
@@ -20,6 +18,8 @@ use SR\Exception\Exception;
 use SR\Exception\ExceptionInterface;
 use SR\Util\Info\ClassInfo;
 use SR\Util\Transform\StringTransform;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AbstractRepository extends EntityRepository
@@ -209,27 +209,16 @@ abstract class AbstractRepository extends EntityRepository
     protected function getResult(callable $build = null, $single = false, $ttl = null)
     {
         $query = $this->getQuery($build);
+        $cache = $this->getCacheAdapter();
 
-        if (self::CACHE_ENABLED) {
-            $index = $this->getCacheKey($query);
-            $cache = $this->getCacheDriver();
+        $item = $cache->getItem($this->getCacheKey($query));
 
-            if ($cache->contains($index)) {
-                return $cache->fetch($index);
-            }
+        if (!$item->isHit()) {
+            $item->set($single ? $query->getSingleResult() : $query->getResult());
+            $item->expiresAfter(new \DateInterval(sprintf('PT%dS', self::DEFAULT_TTL)));
         }
 
-        if ($single === true) {
-            $result = $query->getSingleResult();
-        } else {
-            $result = $query->getResult();
-        }
-
-        if (isset($cache) && isset($index)) {
-            $cache->save($index, $result, $ttl ?: self::DEFAULT_TTL);
-        }
-
-        return $result;
+        return $item->get();
     }
 
     /**
@@ -270,17 +259,17 @@ abstract class AbstractRepository extends EntityRepository
     }
 
     /**
-     * @return CacheProvider
+     * @return AdapterInterface
      */
-    private function getCacheDriver()
+    private function getCacheAdapter()
     {
-        static $cacheDriver;
+        static $adapter;
 
-        if ($cacheDriver === null) {
-            $cacheDriver = new ApcuCache();
+        if ($adapter === null) {
+            $adapter = new ArrayAdapter();
         }
 
-        return $cacheDriver;
+        return $adapter;
     }
 
     /**
