@@ -27,7 +27,9 @@ imports:
 parameters:
     locale: en
     rf_app.domain_name: "src.run"
-    rf_app.assets_path: "/bundles/app/"
+    rf_app.assets_components_path: "/components/"
+    rf_app.assets_bundles_path: "/bundles/app/"
+    rf_app.assets_webpack_path: "/assets/"
 
 #
 # framework configuration
@@ -68,12 +70,12 @@ framework:
 
             images:
                 base_urls:
-                    - "//%rf_app.domain_name%%rf_app.assets_path%images/"
+                    - "//%rf_app.domain_name%%rf_app.assets_bundles_path%images/"
 
             stylesheets:
-                base_path: "%rf_app.assets_path%stylesheet/"
+                base_path: "%rf_app.assets_webpack_path%"
 
             javascripts:
-                base_path: "%rf_app.assets_path%javascript/"
+                base_path: "%rf_app.assets_webpack_path%"
 
 ...

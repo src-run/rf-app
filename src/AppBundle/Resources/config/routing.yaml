@@ -1,10 +1,15 @@
 
+app.default_view:
+    path: /
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Index\ViewController'
+
 app.article_view:
     path: /article/{year}/{month}/{day}/{slug}
     defaults:
-        _controller: 'Rf\AppBundle\Controller\ArticleViewController'
+        _controller: 'Rf\AppBundle\Controller\Article\ViewController'
 
 app.article_list:
     path: /article/list
     defaults:
-        _controller: 'Rf\AppBundle\Controller\ArticleListController'
+        _controller: 'Rf\AppBundle\Controller\Article\ListController'

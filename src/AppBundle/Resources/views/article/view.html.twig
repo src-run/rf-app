@@ -1,6 +1,6 @@
-{% extends '@AppBundle/article/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }}: {{ article.getTitle() }}{% endblock %}
+{% block title %}Articles: {{ article.getTitle() }}{% endblock %}
 
 {% block body %}
     <h1>{{ article.getTitle() }}</h1>

@@ -1,13 +1,14 @@
 <?php
 
-namespace Rf\AppBundle\Controller;
+namespace Rf\AppBundle\Controller\Article;
 
 use Knp\Component\Pager\Paginator;
+use Rf\AppBundle\Controller\AbstractController;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 
-class ArticleListController extends AbstractController
+class ListController extends AbstractController
 {
     /**
      * @var ArticleRepository

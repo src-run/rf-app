@@ -1,10 +1,11 @@
 <?php
 
-namespace Rf\AppBundle\Controller;
+namespace Rf\AppBundle\Controller\Article;
 
+use Rf\AppBundle\Controller\AbstractController;
 use Rf\AppBundle\Doctrine\Entity\Article;
 
-class ArticleViewController extends AbstractController
+class ViewController extends AbstractController
 {
     /**
      * @param Article $article
@@ -13,7 +14,7 @@ class ArticleViewController extends AbstractController
      */
     public function __invoke(Article $article)
     {
-        return $this->renderResponse('@AppBundle/article/show.html.twig', [
+        return $this->renderResponse('@AppBundle/article/view.html.twig', [
             'article' => $article,
         ]);
     }

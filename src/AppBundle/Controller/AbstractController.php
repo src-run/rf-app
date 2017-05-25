@@ -26,7 +26,7 @@ abstract class AbstractController
      *
      * @return string
      */
-    protected function renderView(string $route, array $parameters)
+    protected function renderView(string $route, array $parameters = [])
     {
         return $this->twigEngine->render($route, $parameters);
     }
@@ -38,7 +38,7 @@ abstract class AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function renderResponse(string $route, array $parameters, Response $response = null)
+    protected function renderResponse(string $route, array $parameters = [], Response $response = null)
     {
         return $this->twigEngine->renderResponse($route, $parameters, $response);
     }

@@ -17,7 +17,6 @@ use Symfony\Component\Debug\Debug;
 $loader = require __DIR__.'/../app/autoload.php';
 
 if (false === $production = (require __DIR__.'/app_env.php')) {
-    die('FUCK');
     Debug::enable();
 }
 

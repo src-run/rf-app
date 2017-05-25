@@ -8,6 +8,10 @@
     </head>
     <body>
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('manifest.js', 'javascripts') }}"></script>
+            <script type="text/javascript" src="{{ asset('vendor.js', 'javascripts') }}"></script>
+            <script type="text/javascript" src="{{ asset('app.js', 'javascripts') }}"></script>
+        {% endblock %}
     </body>
 </html>
