@@ -27,7 +27,10 @@ services:
             tags: [ 'twig.extension' ]
 
         Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface:
-            tags: [ { name: request.param_converter }]
+            tags: [ 'request.param_converter' ]
+
+        Symfony\Component\Console\Command\Command:
+            tags: [ 'console.command' ]
 
     Knp\Component\Pager\Paginator:
         alias: knp_paginator
@@ -58,3 +61,5 @@ services:
             - Rf\AppBundle\Doctrine\Entity\Article
 
     SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer:
+
+    Rf\AppBundle\Command\EnvironmentFileInstallerCommand:

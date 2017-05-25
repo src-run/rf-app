@@ -1,0 +1,43 @@
+---
+
+#
+# This file is part of the `src-run/rf-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this source code.
+#
+
+sudo     : false
+language : php
+php      : [ 7.1, nightly ]
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+git:
+  depth : 3
+
+addons:
+  mariadb: '10.1'
+
+env:
+  global:
+    - SYMFONY_DEPRECATIONS_HELPER=weak
+    - secure: "KcRwdN+/W0tCMKzOMFKU4WDE3UVZRL2O8zbYO/Re3L/da1hmqSCYiZpimJoEZB3Nc+GQSLlfGg7E+ZgG0stPNjiymAOYPgndnsfI+8MZnP5XX0nXWqcrIvCocgE/YFLswMLoiVmFmdODuoc3vH/fYQwwVIu+WqiIBd6+tXSYTG8ZDQh1FO4B/13OhWyGjKggQTAtcOswVMRIeP4c7kJvrqpzQFHNy7j6vZSXS9U4eXsSfK8Wfw3+4Cwfa4B/YyhygD/JgW0GnToT90wCa4D24HuPpzDtXjImmCLSClOgPVu6GL6QPEfw05mfpfurfUOM4TrSdn0QikDsyaGr09V6oMk8qSKgEgvgMQaF9Y0SG6tZ+NnSh2RPZZMF+45rx1OMdYiUPqRA6ZRnxoE1T0mdl6A+5MVIooerlGLGnp2OJwGUL5lW/B7yIKlMMCb9SxqipzkFzMorvZtpjXzTAF/ZPd5Rsq9VvfIzCBAz0MOg/2m46uV/YDwjIS0yORZMGDDagOLWbVX+3Tc169FoUDYITfGaLiyollSb3xwxHhh1lGM4JAb4GXYIxDLRvUUyM9yxS30sCykejW21YuCs/LyICWE6T7+BDYzyV6wr9g1Hip+hSimbd7NLRhY5Cebhf1qkGJn/sUA1cNNeue+dpdauqrg+pmTFJSJGaowG2y3zWRk="
+
+install :
+  - bash .bldr/bldr -b up-env
+  - bash .bldr/bldr -b up-app
+
+script :
+  - bin/phpunit -vvv
+
+after_script :
+  - bash .bldr/bldr -b down-app
+  - bash .bldr/bldr -b down-env
+
+...

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "370327cac8e01b1150d15fb87ea5d168",
+    "content-hash": "d27215ac4327151ed7db1a457cbb1cb4",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -323,12 +323,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/common.git",
-                "reference": "54d5eb679f0d8372b8675c51244ddf2296391667"
+                "reference": "7181fafc832e90e866000b7cbe86aa0939cf2de0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/common/zipball/54d5eb679f0d8372b8675c51244ddf2296391667",
-                "reference": "54d5eb679f0d8372b8675c51244ddf2296391667",
+                "url": "https://api.github.com/repos/doctrine/common/zipball/7181fafc832e90e866000b7cbe86aa0939cf2de0",
+                "reference": "7181fafc832e90e866000b7cbe86aa0939cf2de0",
                 "shasum": ""
             },
             "require": {
@@ -388,7 +388,7 @@
                 "persistence",
                 "spl"
             ],
-            "time": "2017-05-23T21:33:56+00:00"
+            "time": "2017-05-24T21:38:59+00:00"
         },
         {
             "name": "doctrine/dbal",
@@ -2934,7 +2934,7 @@
         },
         {
             "name": "src-run/cocoa-markdown-library",
-            "version": "dev-master",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/src-run/cocoa-markdown-library.git",
@@ -3064,6 +3064,70 @@
                 "transformer"
             ],
             "time": "2017-05-23T17:24:57+00:00"
+        },
+        {
+            "name": "src-run/vermicious-console-io-library",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/src-run/vermicious-console-io-library.git",
+                "reference": "46780c3ba71a9edd0d2dd061b4c45accf960f8dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/src-run/vermicious-console-io-library/zipball/46780c3ba71a9edd0d2dd061b4c45accf960f8dd",
+                "reference": "46780c3ba71a9edd0d2dd061b4c45accf960f8dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1",
+                "src-run/augustus-exception-library": "~0.7",
+                "symfony/console": "~3.0"
+            },
+            "require-dev": {
+                "codacy/coverage": "~1.0",
+                "friendsofphp/php-cs-fixer": "~2.0",
+                "phpunit/phpunit": "~5.4",
+                "satooshi/php-coveralls": "~1.0",
+                "sllh/php-cs-fixer-styleci-bridge": "~2.1",
+                "symfony/yaml": "~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SR\\Console\\Input\\": "lib/Input/",
+                    "SR\\Console\\Output\\": "lib/Output/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Frawley 2nd",
+                    "email": "rmf@src.run",
+                    "homepage": "https://src.run/rmf",
+                    "role": "Project Lead"
+                }
+            ],
+            "description": "basic set of Symfony console Input/Output/Style implementations",
+            "homepage": "https://src.run/vermicious-console-io-library",
+            "keywords": [
+                "console",
+                "io",
+                "library",
+                "rmf",
+                "src-run",
+                "vermicious",
+                "vermicious-console-io-library"
+            ],
+            "time": "2017-04-26T17:02:28+00:00"
         },
         {
             "name": "stof/doctrine-extensions-bundle",
@@ -3464,12 +3528,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "aef39bcee5c19bb9aa20e542716a1e63c3a9b015"
+                "reference": "c9da3d92333eed2f55c6e2678fcd5214ad0c1ac1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/aef39bcee5c19bb9aa20e542716a1e63c3a9b015",
-                "reference": "aef39bcee5c19bb9aa20e542716a1e63c3a9b015",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/c9da3d92333eed2f55c6e2678fcd5214ad0c1ac1",
+                "reference": "c9da3d92333eed2f55c6e2678fcd5214ad0c1ac1",
                 "shasum": ""
             },
             "require": {
@@ -3609,7 +3673,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-05-23T12:42:40+00:00"
+            "time": "2017-05-24T16:53:35+00:00"
         },
         {
             "name": "twig/extensions",
@@ -3617,19 +3681,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig-extensions.git",
-                "reference": "3ef41d387260367a0fffc2c52d9f84516bc424af"
+                "reference": "d6d74d6f3213a9574c460c4390c25a1a67c17cc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/3ef41d387260367a0fffc2c52d9f84516bc424af",
-                "reference": "3ef41d387260367a0fffc2c52d9f84516bc424af",
+                "url": "https://api.github.com/repos/twigphp/Twig-extensions/zipball/d6d74d6f3213a9574c460c4390c25a1a67c17cc3",
+                "reference": "d6d74d6f3213a9574c460c4390c25a1a67c17cc3",
                 "shasum": ""
             },
             "require": {
                 "twig/twig": "~1.27|~2.0"
             },
             "require-dev": {
-                "symfony/translation": "~2.3"
+                "symfony/phpunit-bridge": "~3.3@dev",
+                "symfony/translation": "~2.3|~3.0"
             },
             "suggest": {
                 "symfony/translation": "Allow the time_diff output to be translated"
@@ -3643,6 +3708,9 @@
             "autoload": {
                 "psr-0": {
                     "Twig_Extensions_": "lib/"
+                },
+                "psr-4": {
+                    "Twig\\Extensions\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3661,7 +3729,7 @@
                 "i18n",
                 "text"
             ],
-            "time": "2017-05-23T10:55:43+00:00"
+            "time": "2017-05-24T06:24:07+00:00"
         },
         {
             "name": "twig/twig",
@@ -3669,12 +3737,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "fa1a84ec0b20895fe4fa15f5d0d62547bd7a86c3"
+                "reference": "11eac8ae2c88bccdb5b97ef3beaf4233587d4c32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/fa1a84ec0b20895fe4fa15f5d0d62547bd7a86c3",
-                "reference": "fa1a84ec0b20895fe4fa15f5d0d62547bd7a86c3",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/11eac8ae2c88bccdb5b97ef3beaf4233587d4c32",
+                "reference": "11eac8ae2c88bccdb5b97ef3beaf4233587d4c32",
                 "shasum": ""
             },
             "require": {
@@ -3689,7 +3757,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -3724,7 +3792,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-05-22T06:17:55+00:00"
+            "time": "2017-05-24T14:23:32+00:00"
         },
         {
             "name": "whiteoctober/swiftmailerdbbundle",
@@ -4165,12 +4233,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "a013415201d4f6b41cef7cf629b7ae91c8df2c32"
+                "reference": "f420a5e0cd5b0cc34720540f43405a9694692a95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/a013415201d4f6b41cef7cf629b7ae91c8df2c32",
-                "reference": "a013415201d4f6b41cef7cf629b7ae91c8df2c32",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/f420a5e0cd5b0cc34720540f43405a9694692a95",
+                "reference": "f420a5e0cd5b0cc34720540f43405a9694692a95",
                 "shasum": ""
             },
             "require": {
@@ -4207,7 +4275,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2017-05-15T16:09:28+00:00"
+            "time": "2017-05-24T08:02:00+00:00"
         },
         {
             "name": "gitonomy/gitlib",
@@ -5738,12 +5806,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "4e72078918fc091e90070ed1f4efe05d2a41fe38"
+                "reference": "7920cb651dc039baf47c6da3e202be1d9f8b06b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/4e72078918fc091e90070ed1f4efe05d2a41fe38",
-                "reference": "4e72078918fc091e90070ed1f4efe05d2a41fe38",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/7920cb651dc039baf47c6da3e202be1d9f8b06b9",
+                "reference": "7920cb651dc039baf47c6da3e202be1d9f8b06b9",
                 "shasum": ""
             },
             "require": {
@@ -5792,7 +5860,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2017-05-22T09:56:34+00:00"
+            "time": "2017-05-24T11:37:21+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5845,17 +5913,9 @@
             "time": "2016-11-23T20:04:41+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "1.0",
-            "alias_normalized": "1.0.0.0",
-            "version": "9999999-dev",
-            "package": "src-run/cocoa-markdown-library"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "src-run/cocoa-markdown-library": 20,
         "symfony/web-server-bundle": 10
     },
     "prefer-stable": false,
