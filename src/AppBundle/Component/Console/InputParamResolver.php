@@ -15,7 +15,6 @@ use Rf\AppBundle\Component\DependencyInjection\ParameterResolver;
 use SR\Console\Output\Style\StyleAwareTrait;
 use SR\Console\Output\Style\StyleInterface;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\VarDumper\VarDumper;
 
 class InputParamResolver
 {
@@ -117,7 +116,7 @@ class InputParamResolver
      */
     private function thrownInternalMessage($type, $name)
     {
-        return [ sprintf('Missing required %s "%s"', $type, $name) ];
+        return [sprintf('Missing required %s "%s"', $type, $name)];
     }
 
     /**
@@ -129,7 +128,7 @@ class InputParamResolver
      */
     private function thrownExternalMessage($type, $name, \Exception $exception)
     {
-        return [ sprintf('%s (Invalid value for %s "%s")', $exception->getMessage(), $type, $name) ];
+        return [sprintf('%s (Invalid value for %s "%s")', $exception->getMessage(), $type, $name)];
     }
 
     /**

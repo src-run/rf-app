@@ -77,7 +77,7 @@ class OutputErrorHandler
     }
 
     /**
-     * @param string $message
+     * @param string  $message
      * @param mixed[] ...$replacements
      *
      * @return string

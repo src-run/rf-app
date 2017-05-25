@@ -59,7 +59,7 @@ class EnvironmentFileInstallerCommand extends Command
         $this->setName('sr:environment:file-installer');
         $this->setDescription('Installs a collection of files (such as "dot files") into the repository root depending on environment.');
         $this->setAliases([
-            'env:file-installer'
+            'env:file-installer',
         ]);
 
         $this->addArgument(
@@ -95,10 +95,8 @@ class EnvironmentFileInstallerCommand extends Command
     }
 
     /**
-     * Execute command.
-     *
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
      * @return int
      */
@@ -134,7 +132,7 @@ class EnvironmentFileInstallerCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     private function initializeProperties(InputInterface $input, OutputInterface $output): void
