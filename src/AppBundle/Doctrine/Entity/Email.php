@@ -73,7 +73,7 @@ class Email implements EmailInterface
      *
      * @return self
      */
-    public function setStatus(string $status): self
+    public function setStatus($status): self
     {
         $this->status = $status;
 
@@ -93,7 +93,7 @@ class Email implements EmailInterface
      *
      * @return self
      */
-    public function setEnvironment(string $environment): self
+    public function setEnvironment($environment): self
     {
         $this->environment = $environment;
 
@@ -113,7 +113,7 @@ class Email implements EmailInterface
      *
      * @return self
      */
-    public function setMessage(string $message): self
+    public function setMessage($message): self
     {
         $this->message = $message;
 

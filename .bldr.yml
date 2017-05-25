@@ -4,12 +4,12 @@ api_cfgmod: clone
 api_runner: ~
 api_paths: src
 env_make: ~
-env_prep: get-composer
-env_post: ci-coveralls,ci-codacy
+env_prep: composer-get
 php_conf: timezone
 php_exts: ~
-app_prep: test-parameters,dep-composer,db-create,db-load
-app_post: db-unload
+app_prep: symfony-cp-params,composer-req,symfony-db-make,symfony-db-load,symfony-assets-install,yarn-install,yarn-run-build
+app_post: symfony-db-down
+env_post: composer-del,ci-coveralls,ci-codacy
 app_path: bin/console
 pkg_name: rf-app
 pkg_desc: "The core Symfony-based web application powering the robfrawley.com domain."
