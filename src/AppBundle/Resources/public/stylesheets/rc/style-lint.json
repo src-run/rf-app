@@ -1,0 +1,36 @@
+{
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "rules": {
+    "color-hex-case": "lower",
+    "color-hex-length": "long",
+    "color-named": "never",
+    "color-no-invalid-hex": true,
+    "font-family-name-quotes": "always-where-recommended",
+    "font-weight-notation": "named-where-possible",
+    "indentation": 2,
+    "length-zero-no-unit": true,
+    "max-empty-lines": 1,
+    "max-line-length": 120,
+    "max-nesting-depth": 12,
+    "no-extra-semicolons": true,
+    "no-missing-end-of-source-newline": true,
+    "number-leading-zero": "always",
+    "number-max-precision": 20,
+    "number-no-trailing-zeros": true,
+    "property-case": "lower",
+    "property-no-vendor-prefix": true,
+    "scss/at-import-no-partial-leading-underscore": true,
+    "scss/at-mixin-argumentless-call-parentheses": "always",
+    "scss/dollar-variable-colon-newline-after": "always-multi-line",
+    "scss/dollar-variable-colon-space-after": "always",
+    "scss/dollar-variable-colon-space-before": "never",
+    "scss/double-slash-comment-empty-line-before": "always",
+    "scss/double-slash-comment-inline": "never",
+    "scss/double-slash-comment-whitespace-inside": "always",
+    "string-no-newline": true,
+    "string-quotes": "single",
+    "time-min-milliseconds": 100
+  }
+}

@@ -1,7 +1,7 @@
 {
   "paths": {
     "components": "web/components/",
-    "app": "web/bundles/frontend/",
+    "app": "web/bundles/app/",
     "public": {
       "root": "web/assets/",
       "scripts": "${paths.public.root}javascripts/",

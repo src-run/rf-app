@@ -1,0 +1,17 @@
+{
+  "asi": false,
+  "browser": true,
+  "devel": true,
+  "eqeqeq": true,
+  "eqnull": true,
+  "expr": true,
+  "jquery": true,
+  "node": true,
+  "latedef": true,
+  "laxbreak": true,
+  "nonbsp": true,
+  "strict": true,
+  "undef": true,
+  "unused": true,
+  "esversion": 6
+}

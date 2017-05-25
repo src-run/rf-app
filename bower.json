@@ -1,0 +1,13 @@
+{
+  "name": "srw-app",
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "~2.2",
+    "twbs/bootstrap": "~4.0",
+    "jquery-smooth-scroll": "~1.7",
+    "font-awesome": "~4.6",
+    "ionicons": "~2.0",
+    "featherlight": "~1.5"
+  }
+}
