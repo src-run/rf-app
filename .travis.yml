@@ -45,6 +45,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
   - . $HOME/.nvm/nvm.sh
+  - nvm ls
+  - nvm install 6
   - nvm use 6
   - yarn --version
   - node --version
