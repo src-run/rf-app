@@ -4,10 +4,10 @@ api_cfgmod: clone
 api_runner: ~
 api_paths: src
 env_make: ~
-env_prep: composer-get
+env_prep: composer-get,npm-req-npm@v4,npm-req-yarn
 php_conf: timezone
 php_exts: ~
-app_prep: symfony-cp-params,composer-req,symfony-db-make,symfony-db-load,symfony-assets-install,npm-req-yarn,yarn-req,yarn-run-build
+app_prep: symfony-cp-params,composer-req,symfony-db-make,symfony-db-load,symfony-assets-install,yarn-req,yarn-run-build
 app_post: symfony-db-down
 env_post: composer-del,ci-coveralls,ci-codacy
 app_path: bin/console
