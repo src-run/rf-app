@@ -42,11 +42,7 @@ env:
 before_install:
   - bash .travis/build-setup-node.bash
   - bash .travis/build-setup-yarn.bash
-  - node --version
-  - npm --version
   - . $HOME/.nvm/nvm.sh && nvm use 6
-  - node --version
-  - npm --version
 
 install:
   - bash .bldr/bldr -V -b up

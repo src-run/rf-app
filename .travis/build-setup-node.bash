@@ -15,9 +15,6 @@
 # install node version 6
 nvm install 6
 
-# use node version 6
-nvm use 6
-
 # display the active version of node and npm
 nvm --version
 node --version
