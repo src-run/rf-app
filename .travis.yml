@@ -45,12 +45,12 @@ before_install:
   - . $HOME/.nvm/nvm.sh && nvm use 6
 
 install:
-  - bash .bldr/bldr -V -b up
+  - bash .bldr/bldr -b up
 
 script:
   - bin/phpunit -vvv
 
 after_script:
-  - bash .bldr/bldr -V -b down
+  - bash .bldr/bldr -b down
 
 ...
