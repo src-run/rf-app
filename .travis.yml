@@ -39,12 +39,12 @@ env:
     - secure: "KcRwdN+/W0tCMKzOMFKU4WDE3UVZRL2O8zbYO/Re3L/da1hmqSCYiZpimJoEZB3Nc+GQSLlfGg7E+ZgG0stPNjiymAOYPgndnsfI+8MZnP5XX0nXWqcrIvCocgE/YFLswMLoiVmFmdODuoc3vH/fYQwwVIu+WqiIBd6+tXSYTG8ZDQh1FO4B/13OhWyGjKggQTAtcOswVMRIeP4c7kJvrqpzQFHNy7j6vZSXS9U4eXsSfK8Wfw3+4Cwfa4B/YyhygD/JgW0GnToT90wCa4D24HuPpzDtXjImmCLSClOgPVu6GL6QPEfw05mfpfurfUOM4TrSdn0QikDsyaGr09V6oMk8qSKgEgvgMQaF9Y0SG6tZ+NnSh2RPZZMF+45rx1OMdYiUPqRA6ZRnxoE1T0mdl6A+5MVIooerlGLGnp2OJwGUL5lW/B7yIKlMMCb9SxqipzkFzMorvZtpjXzTAF/ZPd5Rsq9VvfIzCBAz0MOg/2m46uV/YDwjIS0yORZMGDDagOLWbVX+3Tc169FoUDYITfGaLiyollSb3xwxHhh1lGM4JAb4GXYIxDLRvUUyM9yxS30sCykejW21YuCs/LyICWE6T7+BDYzyV6wr9g1Hip+hSimbd7NLRhY5Cebhf1qkGJn/sUA1cNNeue+dpdauqrg+pmTFJSJGaowG2y3zWRk="
 
 install:
-  - bash .bldr/bldr -q -b up
+  - bash .bldr/bldr -V -b up
 
 script:
   - bin/phpunit -vvv
 
 after_script:
-  - bash .bldr/bldr -q -b down
+  - bash .bldr/bldr -V -b down
 
 ...
