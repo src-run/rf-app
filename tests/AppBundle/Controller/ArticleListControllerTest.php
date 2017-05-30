@@ -29,7 +29,7 @@ class ArticleListControllerTest extends WebTestCase
 
     public function testActionPaginated()
     {
-        foreach (range(0, 10) as $page) {
+        foreach (range(0, 4) as $page) {
             $this->assertPageIsValid(sprintf('/article/list?page=%d', $page));
         }
     }
