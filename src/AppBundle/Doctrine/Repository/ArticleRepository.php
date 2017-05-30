@@ -49,7 +49,7 @@ class ArticleRepository extends AbstractRepository
      */
     public function findPaginated(Paginator $pager, int $page, int $limit = 10): PaginationInterface
     {
-        return $pager->paginate($this->createQueryBuilder('p')->orderBy('p.createdOn', 'DESC'), $page, $limit);
+        return $pager->paginate($this->createQueryBuilder('p')->orderBy('p.created', 'DESC'), $page, $limit);
     }
 
     /**
@@ -65,9 +65,9 @@ class ArticleRepository extends AbstractRepository
         return $this
             ->createQueryBuilder('p')
             ->where('p.slug = :slug')
-            ->andWhere("DATE_FORMAT(p.createdOn, '%Y') = :year")
-            ->andWhere("DATE_FORMAT(p.createdOn, '%m') = :month")
-            ->andWhere("DATE_FORMAT(p.createdOn, '%d') = :day")
+            ->andWhere("DATE_FORMAT(p.created, '%Y') = :year")
+            ->andWhere("DATE_FORMAT(p.created, '%m') = :month")
+            ->andWhere("DATE_FORMAT(p.created, '%d') = :day")
             ->setParameters([
                 'slug' => $slug,
                 'year' => $year,

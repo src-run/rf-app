@@ -7,10 +7,10 @@
         {% for a in articles %}
             <li><a href="{{ path('app.article_view', {
                 slug: a.getSlug(),
-                day: a.getCreatedOn().format('d'),
-                month: a.getCreatedOn().format('m'),
-                year: a.getCreatedOn().format('Y'),
-            }) }}">{{ a.getTitle() }}</a> <time>{{ a.getUpdatedOn().format('r') }}</time></li>
+                day: a.getCreated().format('d'),
+                month: a.getCreated().format('m'),
+                year: a.getCreated().format('Y'),
+            }) }}">{{ a.getTitle() }}</a> <time>{{ a.getCreated().format('r') }}</time></li>
         {% endfor %}
     </ul>
 

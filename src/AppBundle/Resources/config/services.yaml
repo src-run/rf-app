@@ -47,6 +47,9 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    Rf\AppBundle\Component\Environment\EnvironmentInterface:
+        alias: Rf\AppBundle\Component\Environment\SymfonyEnvironment
+
     Rf\AppBundle\Component\Environment\SymfonyEnvironment:
         arguments:
             $environment: "%kernel.environment%"
@@ -62,4 +65,13 @@ services:
 
     SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer:
 
+    SR\Cocoa\Transformer\TransformerInterface:
+        alias: SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer
+
     Rf\AppBundle\Command\EnvironmentFileInstallerCommand:
+
+    Symfony\Bundle\TwigBundle\TwigEngine:
+        alias: templating.engine.twig
+
+    Doctrine\ORM\EntityManager:
+        alias: doctrine.orm.default_entity_manager

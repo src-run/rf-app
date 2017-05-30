@@ -1,0 +1,34 @@
+Rf\AppBundle\Doctrine\Entity\Email:
+    type: entity
+    table: null
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\EmailRepository
+    fields:
+
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+
+        created:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+
+        updated:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+
+        status:
+            type: string
+            length: 2
+
+        environment:
+            type: string
+            length: 8
+
+        message:
+            type: text

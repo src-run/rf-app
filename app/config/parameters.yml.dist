@@ -4,22 +4,23 @@ parameters:
 
     locale: en_US
 
-    database_driver:   mysqli
-    database_version:  5.6
-    database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     rf
-    database_user:     root
-    database_password: ~
-    database_charset:  utf8mb4
+    database_driver:  mysqli
+    database_version: 5.6
+    database_charset: utf8mb4
+    env(DB_HOST):     127.0.0.1
+    env(DB_PORT):     null
+    env(DB_NAME):     symfony
+    env(DB_USER):     root
+    env(DB_PASS):     null
 
-    mailer_transport:  smtp
-    mailer_host:       127.0.0.1
-    mailer_port:       2525
-    mailer_user:       ~
-    mailer_password:   ~
-    mailer_spool:      db
+    mail_transport: smtp
+    mail_spool:     file
+    env(MAIL_HOST): 127.0.0.1
+    env(MAIL_PORT): 2525
+    env(MAIL_USER): null
+    env(MAIL_PASS): null
 
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    env(APP_SECRET): ThisTokenIsNotSoSecretChangeIt
+    env(APP_ENV):    default
 
 ...

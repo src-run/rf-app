@@ -68,9 +68,9 @@ class ArticleViewControllerTest extends WebTestCase
     private function assertEntityRouteExists(Article $article)
     {
         $uri = $this->router->getGenerator()->generate('app.article_view', [
-            'year' => $article->getCreatedOn()->format('Y'),
-            'month' => $article->getCreatedOn()->format('m'),
-            'day' => $article->getCreatedOn()->format('d'),
+            'year' => $article->getCreated()->format('Y'),
+            'month' => $article->getCreated()->format('m'),
+            'day' => $article->getCreated()->format('d'),
             'slug' => $article->getSlug(),
         ], RouterInterface::RELATIVE_PATH);
 
@@ -87,8 +87,12 @@ class ArticleViewControllerTest extends WebTestCase
         $crawler = $client->request('GET', $uri);
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $this->assertCount(2, $crawler->filter('h1'));
-        $this->assertCount(5, $crawler->filter('h2'));
-        $this->assertCount(1, $crawler->filter('h3'));
+        $this->assertTrue($crawler->filter('h1')->count() > 0);
+        $this->assertTrue($crawler->filter('h2')->count() > 0);
+        $this->assertTrue($crawler->filter('h3')->count() > 0);
+        $this->assertTrue($crawler->filter('ul')->count() > 0);
+        $this->assertTrue($crawler->filter('ol')->count() > 0);
+        $this->assertTrue($crawler->filter('li')->count() > 0);
+        $this->assertTrue($crawler->filter('p')->count() > 0);
     }
 }

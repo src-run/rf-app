@@ -26,3 +26,4 @@
 !/composer.json
 /.idea/
 /.web-server-pid
+/web/server.log

@@ -11,19 +11,14 @@
 
 namespace Rf\AppBundle\Doctrine\Entity;
 
+use Rf\AppBundle\Doctrine\Entity\Traits\IdentityIdTrait;
+use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableTrait;
 use WhiteOctober\SwiftMailerDBBundle\EmailInterface;
 
 class Email implements EmailInterface
 {
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var \DateTime
-     */
-    private $createdOn;
+    use IdentityIdTrait;
+    use TimestampableTrait;
 
     /**
      * @var string
@@ -39,34 +34,6 @@ class Email implements EmailInterface
      * @var string
      */
     private $message;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param \DateTime|null $createdOn
-     *
-     * @return self
-     */
-    public function setCreatedOn(\DateTime $createdOn = null): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedOn(): \DateTime
-    {
-        return $this->createdOn;
-    }
 
     /**
      * @param $status string

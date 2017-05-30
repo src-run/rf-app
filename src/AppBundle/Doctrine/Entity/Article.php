@@ -11,22 +11,13 @@
 
 namespace Rf\AppBundle\Doctrine\Entity;
 
+use Rf\AppBundle\Doctrine\Entity\Traits\IdentityIdTrait;
+use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableTrait;
+
 class Article
 {
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var \DateTime
-     */
-    private $createdOn;
-
-    /**
-     * @var \DateTime
-     */
-    private $updatedOn;
+    use IdentityIdTrait;
+    use TimestampableTrait;
 
     /**
      * @var string
@@ -42,54 +33,6 @@ class Article
      * @var string
      */
     private $content;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param \DateTime $createdOn
-     *
-     * @return self
-     */
-    public function setCreatedOn(\DateTime $createdOn = null): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedOn(): ? \DateTime
-    {
-        return $this->createdOn;
-    }
-
-    /**
-     * @param \DateTime $updatedOn
-     *
-     * @return self
-     */
-    public function setUpdatedOn(\DateTime $updatedOn = null): self
-    {
-        $this->updatedOn = $updatedOn;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedOn(): ? \DateTime
-    {
-        return $this->updatedOn;
-    }
 
     /**
      * @param string $slug

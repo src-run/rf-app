@@ -27,4 +27,6 @@ framework:
     profiler:
         only_exceptions: false
 
+    ide: phpstorm
+
 ...

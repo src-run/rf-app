@@ -10,6 +10,27 @@
 #
 
 #
+# app configuration
+#
+app:
+    metadata:
+        title: Rob Frawley 2nd
+        description: The thoughts and projects of Rob Frawley 2nd
+        keywords:
+            - Rob Frawley 2nd
+            - robfrawley
+            - rmf
+            - articles
+            - php
+            - symfony
+            - code
+
+    entities:
+        article: ~
+        article_comment: ~
+
+
+#
 # monolog configuration
 #
 monolog:
@@ -35,12 +56,12 @@ doctrine:
     dbal:
         driver:         "%database_driver%"
         server_version: "%database_version%"
-        host:           "%database_host%"
-        port:           "%database_port%"
-        dbname:         "%database_name%"
-        user:           "%database_user%"
-        password:       "%database_password%"
         charset:        "%database_charset%"
+        host:           "%env(DB_HOST)%"
+        port:           "%env(DB_PORT)%"
+        dbname:         "%env(DB_NAME)%"
+        user:           "%env(DB_USER)%"
+        password:       "%env(DB_PASS)%"
 
     orm:
         metadata_cache_driver:       apc
@@ -55,9 +76,21 @@ doctrine:
                 unix_time: Rf\AppBundle\Doctrine\Query\Functions\UnitTimeFunction
 
         mappings:
-          AppBundle:
-            type: xml
-            prefix: Rf\AppBundle\Doctrine\Entity
+            AppBundle:
+                type: yml
+                prefix: Rf\AppBundle\Doctrine\Entity
+
+
+#
+# doctrine extensions
+#
+
+stof_doctrine_extensions:
+    default_locale: "%locale%"
+    orm:
+        default:
+            timestampable: true
+            sluggable: true
 
 
 #
@@ -75,13 +108,13 @@ doctrine_migrations:
 #
 
 swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    port:      "%mailer_port%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
+    transport: "%mail_transport%"
+    host:      "%env(MAIL_HOST)%"
+    port:      "%env(MAIL_PORT)%"
+    username:  "%env(MAIL_USER)%"
+    password:  "%env(MAIL_PASS)%"
     spool:
-        type: "%mailer_spool%"
+        type: "%mail_spool%"
 
 #
 # twig configuration
@@ -115,9 +148,6 @@ knp_paginator :
 # easy admin bundle
 #
 
-easy_admin:
-    entities:
-        - Rf\AppBundle\Doctrine\Entity\Article
-        - Rf\AppBundle\Doctrine\Entity\Email
+easy_admin: ~
 
 ...

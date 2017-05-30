@@ -22,7 +22,7 @@ class LoadArticleData implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        foreach (range(0, mt_rand(100, 200)) as $i) {
+        foreach (range(0, 50) as $i) {
             $article = $this->createArticle();
             $manager->persist($article);
         }
@@ -40,8 +40,8 @@ class LoadArticleData implements FixtureInterface
         $article = new Article();
         $article->setTitle(ucwords(trim($generator->sentence(8), '.')));
         $article->setSlug($this->createArticleSlug($article));
-        $article->setCreatedOn($date = $generator->dateTimeBetween('-1 year', 'now'));
-        $article->setUpdatedOn($date);
+        $article->setCreated($date = $generator->dateTimeBetween('-1 year', 'now'));
+        $article->setUpdated($date);
         $article->setContent($this->createArticleContent($generator));
 
         return $article;

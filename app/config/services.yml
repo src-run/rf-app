@@ -8,13 +8,6 @@
 #
 
 #
-# import resources
-#
-
-imports:
-    - { resource: ../../src/AppBundle/Resources/config/services.yaml }
-
-#
 # parameter configuration
 #
 

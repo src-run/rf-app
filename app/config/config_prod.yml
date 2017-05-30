@@ -26,6 +26,7 @@ imports:
 
 parameters:
     locale: en
+    rf_app.env: "%env(APP_ENV)%"
     rf_app.domain_name: "src.run"
     rf_app.assets_components_path: "/components/"
     rf_app.assets_bundles_path: "/bundles/app/"
@@ -36,7 +37,7 @@ parameters:
 #
 
 framework:
-    secret:               "%secret%"
+    secret:               "%env(APP_SECRET)%"
     form:                 ~
     csrf_protection:      ~
     default_locale:       "%locale%"

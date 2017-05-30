@@ -4,7 +4,12 @@
 
 {% block body %}
     <h1>{{ article.getTitle() }}</h1>
-    <h2><time>{{ article.getUpdatedOn().format('r') }}</time></h2>
+    <div class="time">
+        <p>Written on <time>{{ article.getCreated().format('r') }}</time></p>
+        {% if article.getCreated() != article.getUpdated() %}
+            <p>Updated on <time>{{ article.getUpdated().format('r') }}</time></p>
+        {% endif %}
+    </div>
     <hr />
     <div>
         {{ markdown(article.getContent()) }}

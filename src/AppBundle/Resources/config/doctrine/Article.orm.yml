@@ -1,0 +1,41 @@
+Rf\AppBundle\Doctrine\Entity\Article:
+    type: entity
+    table: null
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleRepository
+    fields:
+
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+
+        slug:
+            type: string
+            length: 255
+            unique: true
+            gedmo:
+                slug:
+                  separator: -
+                  style: snake
+                  fields:
+                      - title
+
+        created:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+
+        updated:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+
+        title:
+            type: string
+            length: 255
+
+        content:
+            type: text
