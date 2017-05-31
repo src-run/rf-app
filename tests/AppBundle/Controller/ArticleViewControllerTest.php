@@ -12,8 +12,10 @@
 namespace Rf\AppBundle\Tests\Controller;
 
 use Rf\AppBundle\Doctrine\Entity\Article;
+use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Rf\AppBundle\Tests\AutoSetupTestTrait;
 use Rf\AppBundle\Tests\ClientTestTrait;
+use Rf\AppBundle\Tests\CrawlerTestTrait;
 use Rf\AppBundle\Tests\KernelTestTrait;
 use Rf\AppBundle\Tests\RepositoryTestTrait;
 use Rf\AppBundle\Tests\RouterTestTrait;
@@ -24,21 +26,20 @@ class ArticleViewControllerTest extends WebTestCase
 {
     use AutoSetupTestTrait;
     use ClientTestTrait;
+    use CrawlerTestTrait;
     use KernelTestTrait;
     use RepositoryTestTrait;
     use RouterTestTrait;
 
     public function testActionNotFound()
     {
-        $uri = $this->router->getGenerator()->generate('app.article_view', [
+        $client = static::createTestClient();
+        $client->request('GET', $this->generateRoute('app.article_view', [
             'year' => '1200',
             'month' => '01',
             'day' => '01',
             'slug' => 'does-not-exist',
-        ], RouterInterface::RELATIVE_PATH);
-
-        $client = static::createTestClient();
-        $client->request('GET', $uri);
+        ]));
 
         $this->assertSame(404, $client->getResponse()->getStatusCode());
     }
@@ -48,18 +49,45 @@ class ArticleViewControllerTest extends WebTestCase
      */
     public function testActionMissingRequestAttributes()
     {
-        $uri = $this->router->getGenerator()->generate('app.article_view', [], RouterInterface::RELATIVE_PATH);
-
         $client = static::createTestClient();
-        $client->request('GET', $uri);
+        $client->request('GET', $this->generateRoute('app.article_view'));
         $client->getResponse();
     }
 
-    public function testAction()
+    public static function provideArticleData()
     {
-        foreach ($this->repository->findAll() as $entity) {
-            $this->assertEntityRouteExists($entity);
-        }
+        $kernel = static::bootKernel();
+
+        /** @var ArticleRepository $repository */
+        $repository = $kernel
+            ->getContainer()
+            ->get('doctrine')
+            ->getManager()
+            ->getRepository(Article::class);
+
+        return array_map(function (Article $article) {
+            return [$article];
+        }, $repository->findAll());
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @dataProvider provideArticleData
+     */
+    public function testAction(Article $article)
+    {
+        $this->assertEntityRouteExists($article);
+    }
+
+    /**
+     * @param Article $article
+     *
+     * @dataProvider provideArticleData
+     */
+    public function testPermalinkAction(Article $article)
+    {
+        $this->assertEntityRouteExists($article);
     }
 
     /**
@@ -67,32 +95,21 @@ class ArticleViewControllerTest extends WebTestCase
      */
     private function assertEntityRouteExists(Article $article)
     {
-        $uri = $this->router->getGenerator()->generate('app.article_view', [
+        $this->assertValidUrl($this->generateRoute('app.article_view', [
             'year' => $article->getCreated()->format('Y'),
             'month' => $article->getCreated()->format('m'),
             'day' => $article->getCreated()->format('d'),
             'slug' => $article->getSlug(),
-        ], RouterInterface::RELATIVE_PATH);
-
-        $this->assertPageIsValid($uri);
+        ], RouterInterface::RELATIVE_PATH));
     }
 
     /**
-     * @param string $uri
+     * @param Article $article
      */
-    private function assertPageIsValid(string $uri)
+    private function assertEntityPermalinkRouteExists(Article $article)
     {
-        $client = static::createTestClient();
-
-        $crawler = $client->request('GET', $uri);
-
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $this->assertTrue($crawler->filter('h1')->count() > 0);
-        $this->assertTrue($crawler->filter('h2')->count() > 0);
-        $this->assertTrue($crawler->filter('h3')->count() > 0);
-        $this->assertTrue($crawler->filter('ul')->count() > 0);
-        $this->assertTrue($crawler->filter('ol')->count() > 0);
-        $this->assertTrue($crawler->filter('li')->count() > 0);
-        $this->assertTrue($crawler->filter('p')->count() > 0);
+        $this->assertValidUrl($this->generateRoute('app.article_permalink', [
+            'uuid' => $article->getIdentity(),
+        ], RouterInterface::RELATIVE_PATH));
     }
 }

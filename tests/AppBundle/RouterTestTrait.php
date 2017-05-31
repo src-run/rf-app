@@ -12,6 +12,7 @@
 namespace Rf\AppBundle\Tests;
 
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 trait RouterTestTrait
 {
@@ -24,5 +25,17 @@ trait RouterTestTrait
     {
         $this->router = static::$kernel->getContainer()
             ->get('router');
+    }
+
+    /**
+     * @param string $name
+     * @param array  $parameters
+     * @param int    $type
+     *
+     * @return string
+     */
+    private function generateRoute(string $name, array $parameters = [], $type = RouterInterface::RELATIVE_PATH): string
+    {
+        return $this->router->getGenerator()->generate($name, $parameters, $type);
     }
 }
