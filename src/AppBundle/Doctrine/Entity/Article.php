@@ -11,12 +11,12 @@
 
 namespace Rf\AppBundle\Doctrine\Entity;
 
-use Rf\AppBundle\Doctrine\Entity\Traits\IdentityIdTrait;
+use Gedmo\Sluggable\Sluggable;
 use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableTrait;
+use SR\Doctrine\ORM\Mapping\UuidEntity;
 
-class Article
+class Article extends UuidEntity implements Sluggable
 {
-    use IdentityIdTrait;
     use TimestampableTrait;
 
     /**

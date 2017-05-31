@@ -39,9 +39,9 @@ class LoadArticleData implements FixtureInterface
 
         $article = new Article();
         $article->setTitle(ucwords(trim($generator->sentence(8), '.')));
-        $article->setSlug($this->createArticleSlug($article));
-        $article->setCreated($date = $generator->dateTimeBetween('-1 year', 'now'));
-        $article->setUpdated($date);
+        //$article->setSlug($this->createArticleSlug($article));
+        //$article->setCreated($date = $generator->dateTimeBetween('-1 year', 'now'));
+        //$article->setUpdated($date);
         $article->setContent($this->createArticleContent($generator));
 
         return $article;

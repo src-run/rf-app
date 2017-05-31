@@ -11,6 +11,7 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
@@ -73,6 +74,24 @@ class ArticleRepository extends AbstractRepository
                 'year' => $year,
                 'month' => str_pad($month, 2, '0', STR_PAD_LEFT),
                 'day' => str_pad($day, 2, '0', STR_PAD_LEFT),
+            ])
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return Article|null
+     */
+    public function findByUuid(string $uuid)
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.uuid = :uuid')
+            ->setParameters([
+                'uuid' => $uuid,
             ])
             ->setMaxResults(1)
             ->getQuery()

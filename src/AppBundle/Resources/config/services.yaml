@@ -26,11 +26,13 @@ services:
         Twig_Extension:
             tags: [ 'twig.extension' ]
 
-        Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface:
-            tags: [ 'request.param_converter' ]
-
         Symfony\Component\Console\Command\Command:
             tags: [ 'console.command' ]
+
+    article_param_converter:
+        class: Rf\AppBundle\Request\ParamConverter\ArticleParamConverter
+        tags:
+            - { name: 'request.param_converter', priority: 1 }
 
     Knp\Component\Pager\Paginator:
         alias: knp_paginator

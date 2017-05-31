@@ -16,19 +16,26 @@ use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\VarDumper\VarDumper;
 
 class ArticleParamConverter implements ParamConverterInterface
 {
     /**
-     * @var string[]
+     * @var array[]
      */
-    private static $searchFields = [
-        'slug',
-        'year',
-        'month',
-        'day',
+    private static $fieldSetMethodMaps = [
+        'findByDateAndSlug' => [
+            'slug',
+            'year',
+            'month',
+            'day',
+        ],
+        'findByUuid' => [
+            'uuid',
+        ]
     ];
 
     /**
@@ -59,7 +66,11 @@ class ArticleParamConverter implements ParamConverterInterface
      */
     public function apply(Request $request, ParamConverter $configuration): bool
     {
-        $request->attributes->set($configuration->getName(), $this->find($request));
+        if (null === $article = $this->findArticleUsingAttributes($request->attributes)) {
+            return false;
+        }
+
+        $request->attributes->set($configuration->getName(), $article);
 
         return true;
     }
@@ -75,28 +86,52 @@ class ArticleParamConverter implements ParamConverterInterface
     }
 
     /**
-     * @param Request $request
+     * @param ParameterBag $attributes
      *
-     * @return Article
+     * @return Article|null
      */
-    private function find(Request $request): Article
+    private function findArticleUsingAttributes(ParameterBag $attributes): ?Article
     {
         try {
-            return $this->repository->findByDateAndSlug(...$this->resolveSearchFields($request));
+            foreach (static::$fieldSetMethodMaps as $method => $fields) {
+                if ($this->hasAttributes($attributes, $fields)) {
+                    return call_user_func_array([$this->repository, $method], $this->resolveAttributes($attributes, $fields));
+                }
+            }
         } catch (\Exception $exception) {
-            throw new NotFoundHttpException('Could not locate the request article.', $exception);
+            throw new NotFoundHttpException('Unable to locate requested article.', $exception);
         }
+
+        return null;
     }
 
     /**
-     * @param Request $request
+     * @param ParameterBag $attributes
+     * @param string[]     $fields
      *
      * @return array
      */
-    private function resolveSearchFields(Request $request): array
+    private function resolveAttributes(ParameterBag $attributes, array $fields): array
     {
-        return array_map(function (string $field) use ($request) {
-            return $request->attributes->has($field) ? $request->attributes->get($field) : null;
-        }, static::$searchFields);
+        return array_map(function (string $field) use ($attributes) {
+            return $attributes->get($field);
+        }, $fields);
+    }
+
+    /**
+     * @param ParameterBag $attributes
+     * @param array        $fields
+     *
+     * @return bool
+     */
+    private function hasAttributes(ParameterBag $attributes, array $fields): bool
+    {
+        foreach ($fields as $f) {
+            if (!$attributes->has($f)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

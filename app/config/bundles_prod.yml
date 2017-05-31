@@ -31,6 +31,16 @@ app:
 
 
 #
+# sensio framework extra bundle
+#
+
+sensio_framework_extra:
+    request:
+        converters: true
+        auto_convert: true
+
+
+#
 # monolog configuration
 #
 monolog:
@@ -63,6 +73,10 @@ doctrine:
         user:           "%env(DB_USER)%"
         password:       "%env(DB_PASS)%"
 
+        types:
+            bin_uuid: SR\Doctrine\DBAL\Types\StringUuidType
+            str_uuid: SR\Doctrine\DBAL\Types\BinaryUuidType
+
     orm:
         metadata_cache_driver:       apc
         result_cache_driver:         apc
@@ -79,6 +93,12 @@ doctrine:
             AppBundle:
                 type: yml
                 prefix: Rf\AppBundle\Doctrine\Entity
+            GedmoLoggable:
+                type: annotation
+                prefix: Gedmo\Loggable\Entity
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                alias: GedmoLoggable # (optional) it will default to the name set for the mappingmapping
+                is_bundle: false
 
 
 #
@@ -91,6 +111,7 @@ stof_doctrine_extensions:
         default:
             timestampable: true
             sluggable: true
+            loggable: true
 
 
 #

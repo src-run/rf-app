@@ -5,11 +5,16 @@ app.default_view:
         _controller: 'Rf\AppBundle\Controller\Index\ViewController'
 
 app.article_view:
-    path: /article/{year}/{month}/{day}/{slug}
+    path: /articles/view/{year}/{month}/{day}/{slug}request:
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Article\ViewController'
+
+app.article_permalink:
+    path: /articles/view/{uuid}
     defaults:
         _controller: 'Rf\AppBundle\Controller\Article\ViewController'
 
 app.article_list:
-    path: /article/list
+    path: /articles/list
     defaults:
         _controller: 'Rf\AppBundle\Controller\Article\ListController'

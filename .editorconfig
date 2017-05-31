@@ -1,4 +1,13 @@
 
+#
+# This file is part of `src-run/rf-app`
+#
+# (c) Rob Frawley 2nd <rmf@scr.be>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this source code.
+#
+
 root = true
 
 [*]
@@ -9,5 +18,25 @@ indent_style = space
 indent_size = 4
 charset = utf-8
 
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.php]
+max_line_length = 240
+
 [*.{js|css|scss|less|yml|json}]
 indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab

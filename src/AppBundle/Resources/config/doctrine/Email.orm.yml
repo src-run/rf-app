@@ -1,14 +1,24 @@
 Rf\AppBundle\Doctrine\Entity\Email:
+
     type: entity
     table: null
+
+    options:
+        row_format: DYNAMIC
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
+
     repositoryClass: Rf\AppBundle\Doctrine\Repository\EmailRepository
-    fields:
+
+    id:
 
         id:
             type: integer
             id: true
             generator:
                 strategy: AUTO
+
+    fields:
 
         created:
             type: datetime

@@ -1,25 +1,37 @@
 Rf\AppBundle\Doctrine\Entity\Article:
+
     type: entity
     table: null
-    repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleRepository
-    fields:
 
-        id:
-            type: integer
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleRepository
+
+    gedmo:
+        loggable: true
+
+    id:
+
+       uuid:
+            type: string
+            length: 36
             id: true
             generator:
-                strategy: AUTO
+                strategy: CUSTOM
+            customIdGenerator:
+                class: "\\SR\\Doctrine\\ORM\\Id\\StringUuid4PessimisticGenerator"
+
+    fields:
 
         slug:
             type: string
             length: 255
-            unique: true
             gedmo:
                 slug:
-                  separator: -
-                  style: snake
-                  fields:
-                      - title
+                    fields:
+                        - title
+                    updatable: true
+                    unique: false
+                    separator: -
+                    style: lower
 
         created:
             type: datetime
@@ -36,6 +48,10 @@ Rf\AppBundle\Doctrine\Entity\Article:
         title:
             type: string
             length: 255
+            gedmo:
+                - versioned
 
         content:
             type: text
+            gedmo:
+                - versioned
