@@ -34,7 +34,7 @@ class ArticleViewControllerTest extends WebTestCase
     public function testActionNotFound()
     {
         $client = static::createTestClient();
-        $client->request('GET', $this->generateRoute('app.article_view', [
+        $client->request('GET', $this->generateRoute('app.articles_view', [
             'year' => '1200',
             'month' => '01',
             'day' => '01',
@@ -50,7 +50,7 @@ class ArticleViewControllerTest extends WebTestCase
     public function testActionMissingRequestAttributes()
     {
         $client = static::createTestClient();
-        $client->request('GET', $this->generateRoute('app.article_view'));
+        $client->request('GET', $this->generateRoute('app.articles_view'));
         $client->getResponse();
     }
 
@@ -95,7 +95,7 @@ class ArticleViewControllerTest extends WebTestCase
      */
     private function assertEntityRouteExists(Article $article)
     {
-        $this->assertValidUrl($this->generateRoute('app.article_view', [
+        $this->assertValidUrl($this->generateRoute('app.articles_view', [
             'year' => $article->getCreated()->format('Y'),
             'month' => $article->getCreated()->format('m'),
             'day' => $article->getCreated()->format('d'),
@@ -108,7 +108,7 @@ class ArticleViewControllerTest extends WebTestCase
      */
     private function assertEntityPermalinkRouteExists(Article $article)
     {
-        $this->assertValidUrl($this->generateRoute('app.article_permalink', [
+        $this->assertValidUrl($this->generateRoute('app.articles_permalink', [
             'uuid' => $article->getIdentity(),
         ], RouterInterface::RELATIVE_PATH));
     }

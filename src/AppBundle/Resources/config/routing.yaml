@@ -1,20 +1,46 @@
 
+
 app.default_view:
     path: /
     defaults:
         _controller: 'Rf\AppBundle\Controller\Index\ViewController'
+    methods:
+        - GET
 
-app.article_view:
-    path: /articles/view/{year}/{month}/{day}/{slug}request:
+app.articles_root:
+    path: /articles
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Redirect\NamedRouteController'
+        _redirect_name: app.articles_list
+    methods:
+        - GET
+
+app.articles_view:
+    path: /articles/view/{year}/{month}/{day}/{slug}
     defaults:
         _controller: 'Rf\AppBundle\Controller\Article\ViewController'
+    methods:
+        - GET
 
-app.article_permalink:
+app.articles_permalink:
     path: /articles/view/{uuid}
     defaults:
         _controller: 'Rf\AppBundle\Controller\Article\ViewController'
+    methods:
+        - GET
 
-app.article_list:
+app.articles_list:
     path: /articles/list
     defaults:
         _controller: 'Rf\AppBundle\Controller\Article\ListController'
+    methods:
+        - GET
+
+app.redirect_remove_trailing_slash:
+    path: /{url}
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Redirect\RemoveTrailingSlashController'
+    requirements:
+        url: .*/$
+    methods:
+        - GET

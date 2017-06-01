@@ -7,6 +7,7 @@ use Rf\AppBundle\Controller\AbstractController;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 
 class ListController extends AbstractController
 {
@@ -21,12 +22,14 @@ class ListController extends AbstractController
     private $paginator;
 
     /**
+     * @param TwigEngine        $twig
+     * @param RouterInterface   $router
      * @param ArticleRepository $repository
      * @param Paginator         $pager
      */
-    public function __construct(TwigEngine $twigEngine, ArticleRepository $repository, Paginator $pager)
+    public function __construct(TwigEngine $twig, RouterInterface $router, ArticleRepository $repository, Paginator $pager)
     {
-        parent::__construct($twigEngine);
+        parent::__construct($twig, $router);
 
         $this->repository = $repository;
         $this->paginator = $pager;

@@ -8,13 +8,13 @@
             <li>
                 <em>{{ a.getTitle() }}</em> (<time>{{ a.getCreated().format('l M j Y @ H:i') }}</time>)
                 [
-                <a href="{{ path('app.article_view', {
+                <a href="{{ path('app.articles_view', {
                     slug: a.getSlug(),
                     day: a.getCreated().format('d'),
                     month: a.getCreated().format('m'),
                     year: a.getCreated().format('Y'),
                 }) }}">date-link</a>,
-                <a href="{{ path('app.article_permalink', {
+                <a href="{{ path('app.articles_permalink', {
                     uuid: a.getIdentity(),
                 }) }}">perma-link</a>
                 ]

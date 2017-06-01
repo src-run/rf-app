@@ -11,31 +11,22 @@
 
 namespace Rf\AppBundle\Request\ParamConverter;
 
-use Doctrine\ORM\EntityManager;
+use Rf\AppBundle\Component\HttpFoundation\Request\RequestAttributesResolver;
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\VarDumper\VarDumper;
 
 class ArticleParamConverter implements ParamConverterInterface
 {
     /**
      * @var array[]
      */
-    private static $fieldSetMethodMaps = [
-        'findByDateAndSlug' => [
-            'slug',
-            'year',
-            'month',
-            'day',
-        ],
-        'findByUuid' => [
-            'uuid',
-        ]
+    private static $attributeFieldsMapping = [
+        'findByDateAndSlug' => ['slug', 'year', 'month', 'day'],
+        'findByUuid' => ['uuid',],
     ];
 
     /**
@@ -44,18 +35,11 @@ class ArticleParamConverter implements ParamConverterInterface
     private $repository;
 
     /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
      * @param ArticleRepository $repository
-     * @param EntityManager     $entityManager
      */
-    public function __construct(ArticleRepository $repository, EntityManager $entityManager)
+    public function __construct(ArticleRepository $repository)
     {
         $this->repository = $repository;
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -66,13 +50,10 @@ class ArticleParamConverter implements ParamConverterInterface
      */
     public function apply(Request $request, ParamConverter $configuration): bool
     {
-        if (null === $article = $this->findArticleUsingAttributes($request->attributes)) {
-            return false;
-        }
-
+        $article = $this->find($request);
         $request->attributes->set($configuration->getName(), $article);
 
-        return true;
+        return $article ? true : false;
     }
 
     /**
@@ -82,56 +63,39 @@ class ArticleParamConverter implements ParamConverterInterface
      */
     public function supports(ParamConverter $configuration): bool
     {
-        return $this->entityManager->isOpen() && $configuration->getClass() === Article::class;
+        return $configuration->getClass() === Article::class;
     }
 
     /**
-     * @param ParameterBag $attributes
+     * @param Request $request
      *
      * @return Article|null
      */
-    private function findArticleUsingAttributes(ParameterBag $attributes): ?Article
+    private function find(Request $request): ?Article
     {
-        try {
-            foreach (static::$fieldSetMethodMaps as $method => $fields) {
-                if ($this->hasAttributes($attributes, $fields)) {
-                    return call_user_func_array([$this->repository, $method], $this->resolveAttributes($attributes, $fields));
-                }
+        $resolver = new RequestAttributesResolver($request);
+
+        foreach (static::$attributeFieldsMapping as $method => $fields) {
+            if ($resolver->has($fields)) {
+                return $this->findUsingMethod($method, $resolver->get($fields));
             }
-        } catch (\Exception $exception) {
-            throw new NotFoundHttpException('Unable to locate requested article.', $exception);
         }
 
         return null;
     }
 
     /**
-     * @param ParameterBag $attributes
-     * @param string[]     $fields
+     * @param string $method
+     * @param array  $resolvedValues
      *
-     * @return array
+     * @return null|Article
      */
-    private function resolveAttributes(ParameterBag $attributes, array $fields): array
+    private function findUsingMethod(string $method, array $resolvedValues): ?Article
     {
-        return array_map(function (string $field) use ($attributes) {
-            return $attributes->get($field);
-        }, $fields);
-    }
-
-    /**
-     * @param ParameterBag $attributes
-     * @param array        $fields
-     *
-     * @return bool
-     */
-    private function hasAttributes(ParameterBag $attributes, array $fields): bool
-    {
-        foreach ($fields as $f) {
-            if (!$attributes->has($f)) {
-                return false;
-            }
+        try {
+            return $this->repository->{$method}(...$resolvedValues);
+        } catch (\Exception $exception) {
+            throw new NotFoundHttpException('Unable to locate requested article.', $exception);
         }
-
-        return true;
     }
 }

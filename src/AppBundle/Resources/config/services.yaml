@@ -75,5 +75,8 @@ services:
     Symfony\Bundle\TwigBundle\TwigEngine:
         alias: templating.engine.twig
 
+    Symfony\Component\Routing\RouterInterface:
+        alias: router
+
     Doctrine\ORM\EntityManager:
         alias: doctrine.orm.default_entity_manager

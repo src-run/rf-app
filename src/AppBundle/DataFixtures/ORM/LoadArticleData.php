@@ -16,14 +16,48 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 use Rf\AppBundle\Doctrine\Entity\Article;
+use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use SR\Util\Transform\StringTransform;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\VarDumper\VarDumper;
 
-class LoadArticleData implements FixtureInterface
+class LoadArticleData implements FixtureInterface, ContainerAwareInterface
 {
+    /**
+     * @var int
+     */
+    private static $loadCount = 80;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
-        foreach (range(0, 50) as $i) {
+        for ($i = 0; $i < static::$loadCount; $i++) {
             $article = $this->createArticle();
+            $manager->persist($article);
+        }
+
+        $manager->flush();
+
+        for ($i = 0; $i < static::$loadCount; $i = (int) $i + mt_rand(0, static::$loadCount / 10)) {
+            $article = $this->updateArticle($i);
             $manager->persist($article);
         }
 
@@ -31,40 +65,77 @@ class LoadArticleData implements FixtureInterface
     }
 
     /**
+     * @return Article[]
+     */
+    private function getAllArticles(): array
+    {
+        return $this->getArticleRepository()->findAll();
+    }
+
+    /**
+     * @return ArticleRepository
+     */
+    private function getArticleRepository(): ArticleRepository
+    {
+        return $this->container
+            ->get('doctrine')
+            ->getManager()
+            ->getRepository(Article::class);
+    }
+
+    /**
+     * @return Generator
+     */
+    private function getGenerator(): Generator
+    {
+        static $generator = null;
+
+        if ($generator === null) {
+            $generator = Factory::create();
+        }
+
+        return $generator;
+    }
+
+    /**
+     * @param int $index
+     *
      * @return Article
      */
-    private function createArticle(): Article
+    private function updateArticle(int $index): Article
     {
-        $generator = Factory::create();
+        static $articleCollection = null;
 
-        $article = new Article();
-        $article->setTitle(ucwords(trim($generator->sentence(8), '.')));
-        //$article->setSlug($this->createArticleSlug($article));
-        //$article->setCreated($date = $generator->dateTimeBetween('-1 year', 'now'));
-        //$article->setUpdated($date);
-        $article->setContent($this->createArticleContent($generator));
+        if ($articleCollection === null) {
+            $articleCollection = $this->getAllArticles();
+        }
+
+        $article = $articleCollection[$index];
+        $article->setTitle(ucwords(trim($this->getGenerator()->sentence(8), '.')));
+        $article->setContent($this->createArticleContent());
 
         return $article;
     }
 
     /**
-     * @param Article $article
-     *
-     * @return string
+     * @return Article
      */
-    private function createArticleSlug(Article $article)
+    private function createArticle(): Article
     {
-        return (new StringTransform($article->getTitle()))->toAlphanumericAndSpacesToDashes()->toLower()->get();
+        $article = new Article();
+        $article->setTitle(ucwords(trim($this->getGenerator()->sentence(8), '.')));
+        $article->setContent($this->createArticleContent());
+
+        return $article;
     }
 
     /**
-     * @param Generator $generator
-     *
      * @return string
      */
-    private function createArticleContent(Generator $generator): string
+    private function createArticleContent(): string
     {
         $lines = [];
+
         $this->addArticleHeader($lines, 1);
         $this->addArticleSentences($lines, mt_rand(8, 14));
 
@@ -75,6 +146,8 @@ class LoadArticleData implements FixtureInterface
 
         $this->addArticleHeader($lines, 2);
         $this->addArticleSentences($lines, mt_rand(4, 8), mt_rand(1, 6));
+        $this->addArticleCodeBlock($lines);
+        $this->addArticleSentences($lines, mt_rand(1, 2));
 
         $this->addArticleHeader($lines, 2);
         $this->addArticleSentences($lines, mt_rand(1, 2), mt_rand(2, 3));
@@ -103,11 +176,9 @@ class LoadArticleData implements FixtureInterface
      */
     private function addArticleSentences(array &$lines, $count, $multiplier = 1)
     {
-        $generator = Factory::create();
-
         foreach (range(0, $count) as $i) {
-            $lines[] = $generator->sentence(mt_rand(20 * $multiplier, 100 * $multiplier));
-            $lines[] = '';
+            $lines[] = $this->getGenerator()->sentence(mt_rand(20 * $multiplier, 100 * $multiplier));
+            $this->addArticleEmptyLine($lines);
         }
     }
 
@@ -118,13 +189,11 @@ class LoadArticleData implements FixtureInterface
      */
     private function addArticleUnorderedList(array &$lines, $count, $multiplier = 1)
     {
-        $generator = Factory::create();
-
         foreach (range(1, $count) as $i) {
-            $lines[] = sprintf('- %s', $generator->sentence(5 * $multiplier, 15 * $multiplier));
+            $lines[] = sprintf('- %s', $this->getGenerator()->sentence(5 * $multiplier, 15 * $multiplier));
         }
 
-        $lines[] = '';
+        $this->addArticleEmptyLine($lines);
     }
 
     /**
@@ -134,13 +203,11 @@ class LoadArticleData implements FixtureInterface
      */
     private function addArticleOrderedList(array &$lines, $count, $multiplier = 1)
     {
-        $generator = Factory::create();
-
         foreach (range(1, $count) as $i) {
-            $lines[] = sprintf('%d. %s', $count, $generator->sentence(8 * $multiplier, 24 * $multiplier));
+            $lines[] = sprintf('%d. %s', $count, $this->getGenerator()->sentence(8 * $multiplier, 24 * $multiplier));
         }
 
-        $lines[] = '';
+        $this->addArticleEmptyLine($lines);
     }
 
     /**
@@ -149,13 +216,47 @@ class LoadArticleData implements FixtureInterface
      */
     private function addArticleHeader(array &$lines, $level = 1)
     {
-        $generator = Factory::create();
-
-        $lines[] = '';
+        $this->addArticleEmptyLine($lines);
         $lines[] = vsprintf('%s %s', [
             str_repeat('#', $level),
-            ucwords(trim($generator->sentence(mt_rand(4, 20)), '.')),
+            ucwords(trim($this->getGenerator()->sentence(mt_rand(4, 20)), '.')),
         ]);
+        $this->addArticleEmptyLine($lines);
+    }
+
+    /**
+     * @param array $lines
+     */
+    private function addArticleCodeBlock(array &$lines)
+    {
+        $this->addArticleEmptyLine($lines);
+
+        $finder = Finder::create()
+            ->in(__DIR__.'/../../')
+            ->name('*.php')
+            ->files();
+
+        $collection = [];
+        foreach ($finder as $f) {
+            $collection[] = $f;
+        }
+
+        /** @var SplFileInfo $file */
+        $file = $collection[mt_rand(0, count($collection)-1)];
+
+        $lines = array_merge($lines, [
+            '```php',
+            sprintf('# %s', $file->getRealPath()),
+            ''
+        ], explode(PHP_EOL, file_get_contents($file->getRealPath())), [
+            '````'
+        ]);
+
+        $this->addArticleEmptyLine($lines);
+    }
+
+    private function addArticleEmptyLine(array &$lines)
+    {
         $lines[] = '';
     }
 }

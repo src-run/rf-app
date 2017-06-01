@@ -28,7 +28,7 @@ class ArticleListControllerTest extends WebTestCase
 
     public function testAction()
     {
-        $this->assertValidUrl($this->generateRoute('app.article_list'));
+        $this->assertValidUrl($this->generateRoute('app.articles_list'));
     }
 
     /**
@@ -48,6 +48,6 @@ class ArticleListControllerTest extends WebTestCase
      */
     public function testActionPaginated(int $page)
     {
-        $this->assertValidUrl(sprintf('%s?page=%d', $this->generateRoute('app.article_list'), $page));
+        $this->assertValidUrl(sprintf('%s?page=%d', $this->generateRoute('app.articles_list'), $page));
     }
 }

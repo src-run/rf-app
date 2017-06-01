@@ -3,21 +3,30 @@
 namespace Rf\AppBundle\Controller;
 
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractController
 {
     /**
      * @var TwigEngine
      */
-    private $twigEngine;
+    private $twig;
 
     /**
-     * @param TwigEngine $twigEngine
+     * @var RouterInterface
      */
-    public function __construct(TwigEngine $twigEngine)
+    private $router;
+
+    /**
+     * @param TwigEngine      $twig
+     * @param RouterInterface $router
+     */
+    public function __construct(TwigEngine $twig, RouterInterface $router)
     {
-        $this->twigEngine = $twigEngine;
+        $this->twig = $twig;
+        $this->router = $router;
     }
 
     /**
@@ -26,9 +35,9 @@ abstract class AbstractController
      *
      * @return string
      */
-    protected function renderView(string $route, array $parameters = [])
+    protected function render(string $route, array $parameters = []): string
     {
-        return $this->twigEngine->render($route, $parameters);
+        return $this->twig->render($route, $parameters);
     }
 
     /**
@@ -38,8 +47,65 @@ abstract class AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function renderResponse(string $route, array $parameters = [], Response $response = null)
+    protected function renderResponse(string $route, array $parameters = [], Response $response = null): Response
     {
-        return $this->twigEngine->renderResponse($route, $parameters, $response);
+        return $this->twig->renderResponse($route, $parameters, $response);
+    }
+
+    /**
+     * @param string   $content
+     * @param int|null $status
+     * @param array    $headers
+     *
+     * @return Response
+     */
+    protected function response(string $content, int $status = null, array $headers = []): Response
+    {
+        return new Response($content, $status ?: 200, $headers);
+    }
+
+    /**
+     * @param string   $url
+     * @param int|null $status
+     * @param array    $headers
+     *
+     * @return RedirectResponse
+     */
+    protected function redirect(string $url, int $status = null, array $headers = []): RedirectResponse
+    {
+        return new RedirectResponse($url, $status ?: 302, $headers);
+    }
+
+    /**
+     * @param string $url
+     * @param array  $headers
+     *
+     * @return RedirectResponse
+     */
+    protected function redirectTemporary(string $url, array $headers = []): RedirectResponse
+    {
+        return $this->redirect($url, 302, $headers);
+    }
+
+    /**
+     * @param string $url
+     * @param array  $headers
+     *
+     * @return RedirectResponse
+     */
+    protected function redirectPermanent(string $url, array $headers = []): RedirectResponse
+    {
+        return $this->redirect($url, 301, $headers);
+    }
+
+    /**
+     * @param string  $name
+     * @param mixed[] $parameters
+     *
+     * @return string
+     */
+    protected function route(string $name, array $parameters = []): string
+    {
+        return $this->router->generate($name, $parameters);
     }
 }

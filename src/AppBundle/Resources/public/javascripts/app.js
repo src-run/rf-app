@@ -7,9 +7,9 @@ class ArticlePage {
     }
 
     run() {
-        this.jQuery('li').css({
-            'color': 'red'
-        });
+        //this.jQuery('li').css({
+        //    'color': 'red'
+        //});
     }
 }
 
