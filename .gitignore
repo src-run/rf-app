@@ -27,3 +27,4 @@
 /.idea/
 /.web-server-pid
 /web/server.log
+/.php_cs.cache*
