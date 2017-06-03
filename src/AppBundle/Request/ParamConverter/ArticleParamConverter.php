@@ -26,7 +26,7 @@ class ArticleParamConverter implements ParamConverterInterface
      */
     private static $attributeFieldsMapping = [
         'findByDateAndSlug' => ['slug', 'year', 'month', 'day'],
-        'findByUuid' => ['uuid',],
+        'findByUuid' => ['uuid'],
     ];
 
     /**
@@ -71,7 +71,7 @@ class ArticleParamConverter implements ParamConverterInterface
      *
      * @return Article|null
      */
-    private function find(Request $request): ?Article
+    private function find(Request $request): ? Article
     {
         $resolver = new RequestAttributesResolver($request);
 
@@ -90,7 +90,7 @@ class ArticleParamConverter implements ParamConverterInterface
      *
      * @return null|Article
      */
-    private function findUsingMethod(string $method, array $resolvedValues): ?Article
+    private function findUsingMethod(string $method, array $resolvedValues) : ? Article
     {
         try {
             return $this->repository->{$method}(...$resolvedValues);

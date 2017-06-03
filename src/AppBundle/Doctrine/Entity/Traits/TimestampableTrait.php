@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-client-silverpapillon` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -58,7 +58,7 @@ trait TimestampableTrait
     /**
      * @return \DateTime
      */
-    public function getUpdated(): ? \DateTime
+    public function getUpdated() : ? \DateTime
     {
         return $this->updated;
     }

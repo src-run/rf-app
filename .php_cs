@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-namespace Rf\AppBundle\Doctrine\Repository;
+require __DIR__.'/.bldr/_helpers/php-cs-fixer/config.php';
 
-class EmailRepository extends AbstractRepository
-{
-}
+return (new SR\PhpCsFixer\Config(['location' => __DIR__, 'header' => true]))->create();

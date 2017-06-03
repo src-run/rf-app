@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-client-silverpapillon` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -11,7 +11,6 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;

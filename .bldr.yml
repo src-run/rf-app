@@ -11,6 +11,8 @@ app_prep: symfony-cp-params,composer-req,symfony-db-make,symfony-db-load,symfony
 app_post: symfony-db-down
 env_post: composer-del,ci-coveralls,ci-codacy
 app_path: bin/console
+pkg_orgn: src-run
 pkg_name: rf-app
 pkg_desc: "The core Symfony-based web application powering the robfrawley.com domain."
 pkg_bndl: false
+pkg_copy: "Rob Frawley 2nd <rmf@src.run>"

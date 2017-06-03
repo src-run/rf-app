@@ -17,12 +17,10 @@ use Faker\Factory;
 use Faker\Generator;
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
-use SR\Util\Transform\StringTransform;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\VarDumper\VarDumper;
 
 class LoadArticleData implements FixtureInterface, ContainerAwareInterface
 {
@@ -49,7 +47,7 @@ class LoadArticleData implements FixtureInterface, ContainerAwareInterface
      */
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i < static::$loadCount; $i++) {
+        for ($i = 0; $i < static::$loadCount; ++$i) {
             $article = $this->createArticle();
             $manager->persist($article);
         }
@@ -242,14 +240,14 @@ class LoadArticleData implements FixtureInterface, ContainerAwareInterface
         }
 
         /** @var SplFileInfo $file */
-        $file = $collection[mt_rand(0, count($collection)-1)];
+        $file = $collection[mt_rand(0, count($collection) - 1)];
 
         $lines = array_merge($lines, [
             '```php',
             sprintf('# %s', $file->getRealPath()),
-            ''
+            '',
         ], explode(PHP_EOL, file_get_contents($file->getRealPath())), [
-            '````'
+            '````',
         ]);
 
         $this->addArticleEmptyLine($lines);

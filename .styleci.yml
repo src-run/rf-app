@@ -9,14 +9,10 @@ enabled:
   - phpdoc_order
   - php_unit_construct
   - php_unit_dedicate_assert
+  - php_unit_strict
   - short_array_syntax
 
 finder :
-  name:
-    - "*.php"
-    - "*.twig"
-  path:
-    - "src/"
-  not-path:
-    - "vendor/"
-    - "var/"
+  name: ['*.php', '*.twig']
+  path: 'src/'
+  not-path: ['node_modules/']

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the `src-run/srw-client-silverpapillon` project.
+ * This file is part of the `src-run/rf-app` project.
  *
  * (c) Rob Frawley 2nd <rmf@src.run>
  *
@@ -59,7 +59,7 @@ class Article extends UuidEntity implements Sluggable
      *
      * @return self
      */
-    public function setTitle(string $title): self
+    public function setTitle(string $title) : self
     {
         $this->title = $title;
 
@@ -79,7 +79,7 @@ class Article extends UuidEntity implements Sluggable
      *
      * @return self
      */
-    public function setContent(string $content): self
+    public function setContent(string $content) : self
     {
         $this->content = $content;
 
@@ -99,7 +99,7 @@ class Article extends UuidEntity implements Sluggable
      *
      * @return string
      */
-    public function getContentLead(int $words = 100): string
+    public function getContentLead(int $words = 100) : string
     {
         preg_match(sprintf('/(?:\w+(?:\W+|$)){0,%n}/', $words), $this->getContent(), $matches);
 

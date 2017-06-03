@@ -92,7 +92,7 @@ class EnvInstallFileRunner extends AbstractFileRunner
     /**
      * @return int|null
      */
-    public function getResult(): ?int
+    public function getResult(): ? int
     {
         return $this->result;
     }
@@ -102,7 +102,7 @@ class EnvInstallFileRunner extends AbstractFileRunner
      *
      * @return string
      */
-    protected function buildFilePath(string $file): string
+    protected function buildFilePath(string $file) : string
     {
         return $this->getEnvironmentPath().DIRECTORY_SEPARATOR.$file;
     }

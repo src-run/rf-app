@@ -60,7 +60,7 @@ class ParameterResolver
      *
      * @return null|array[]
      */
-    private function findParameters($value): ?array
+    private function findParameters($value): ? array
     {
         if (false === preg_match_all('{%([^%]+)%}', $value, $matches, PREG_SET_ORDER)) {
             return null;
@@ -76,7 +76,7 @@ class ParameterResolver
      *
      * @return array[]
      */
-    private function resolveParameters($parameters): array
+    private function resolveParameters($parameters) : array
     {
         return array_map(function ($match) {
             list($match, $name) = $match;
