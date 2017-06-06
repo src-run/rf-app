@@ -64,19 +64,13 @@ framework:
         save_path:  "%kernel.root_dir%/../var/sessions/%kernel.environment%"
 
     assets:
-        enabled:        true
-        version:        1.0.0
-        version_format: "%%s?v=%%s"
+        enabled:            true
+        json_manifest_path: "%kernel.root_dir%/../web/assets/manifest.json"
         packages:
-
             images:
                 base_urls:
                     - "//%rf_app.domain_name%%rf_app.assets_bundles_path%images/"
-
             stylesheets:
-                base_path: "%rf_app.assets_webpack_path%"
-
-            javascripts:
-                base_path: "%rf_app.assets_webpack_path%"
+                json_manifest_path: "%kernel.root_dir%/../web/assets/manifest.json"
 
 ...

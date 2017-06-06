@@ -1,0 +1,92 @@
+
+tests:
+
+    "Pages should be fast":
+        path: "/.*"
+        assertions:
+            # wall time should not exceed 200ms * $wall_time_coefficient
+            - "main.wall_time < 200ms * var('wall_time_coefficient', 3)"
+            # wall time should not increase 10% request-to-request
+            - "percent(main.wall_time) < 10%"
+            # sub requests should not exceed 4
+            - "metrics.symfony.subrequests <= 4"
+
+    "Pages should not consume much memory":
+        path: "/.*"
+        assertions:
+            # peak memory should not exceed 2mb * $memory_peak_coefficient
+            - "main.peak_memory < 2mb * var('memory_peak_coefficient', 5)" 
+
+    "Pages should use limited database calls":
+        path: "/.*"
+        assertions:
+            # sql queries should not exceed 5 * $db_query_coefficient
+            - "diff(metrics.sql.queries.count) < 5 * var('db_query_coefficient', 2)"
+            # dsb queries should not increase 10% request-to-request
+            - "percent(metrics.sql.queries.count) < 10%"
+            # doctrine should not flush more than a few times
+            - "metrics.doctrine.orm.flush < 2"
+            # entities hydrated should be less than 100
+            - "metrics.doctrine.entities.hydrated < 100"
+
+    "Pages should use limited sent emails":
+        path: "/.*"
+        assertions:
+            # sent mail should not exceed 1
+            - "metrics.emails.sent <= 1"
+
+metrics:
+
+    ArticleParamConverter.apply:
+        label: "ArticleParamConverter::apply() calls"
+        matching_calls:
+            php:
+                - callee: "=ArticleParamConverter::apply"
+
+    DateFormatFunction.parse:
+        label: "DateFormatFunction::parse() calls"
+        matching_calls:
+            php:
+                - callee: "=DateFormatFunction::parse"
+
+    UnixTimeFunction.parse:
+        label: "UnixTimeFunction::parse() calls"
+        matching_calls:
+            php:
+                - callee: "=UnixTimeFunction::parse"
+
+    RequestAttributesResolver.has:
+        label: "RequestAttributesResolver::has() calls"
+        matching_calls:
+            php:
+                - callee: "=RequestAttributesResolver::has"
+
+    RequestAttributesResolver.get:
+        label: "RequestAttributesResolver::get() calls"
+        matching_calls:
+            php:
+                - callee: "=RequestAttributesResolver::get"
+
+    SymfonyEnvironment.isProduction:
+        label: "SymfonyEnvironment::isProduction() calls"
+        matching_calls:
+            php:
+                - callee: "=SymfonyEnvironment::isProduction"
+
+    SymfonyEnvironment.isDevelopment:
+        label: "SymfonyEnvironment::isDevelopment() calls"
+        matching_calls:
+            php:
+                - callee: "=SymfonyEnvironment::isDevelopment"
+
+    SymfonyEnvironment.isEnvironment:
+        label: "SymfonyEnvironment::isEnvironment() calls"
+        matching_calls:
+            php:
+                - callee: "=SymfonyEnvironment::isEnvironment"
+
+    SymfonyEnvironment.isDebug:
+        label: "SymfonyEnvironment::isDebug() calls"
+        matching_calls:
+            php:
+                - callee: "=SymfonyEnvironment::isDebug"

@@ -4,16 +4,16 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            <link type="text/css" src="{{ asset('app.css', 'stylesheets') }}">
+            <link rel="stylesheet" type="text/css" href="{{ asset('app.css') }}">
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
         {% block body %}{% endblock %}
         {% block javascripts %}
-            <script type="text/javascript" src="{{ asset('manifest.js', 'javascripts') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor.js', 'javascripts') }}"></script>
-            <script type="text/javascript" src="{{ asset('app.js', 'javascripts') }}"></script>
+            {% for js in ['manifest.js', 'vendor.js', 'app.js'] %}
+                <script type="text/javascript" src="{{ asset(js) }}"></script>
+            {% endfor %}
         {% endblock %}
     </body>
 </html>
