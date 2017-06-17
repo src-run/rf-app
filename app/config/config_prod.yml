@@ -70,7 +70,5 @@ framework:
             images:
                 base_urls:
                     - "//%rf_app.domain_name%%rf_app.assets_bundles_path%images/"
-            stylesheets:
-                json_manifest_path: "%kernel.root_dir%/../web/assets/manifest.json"
 
 ...

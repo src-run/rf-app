@@ -1,19 +1,39 @@
+{% import '_macros/include-assets.html.twig' as _include_assets %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
+
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}
-            <link rel="stylesheet" type="text/css" href="{{ asset('app.css') }}">
+
+        {% block generic_links %}
+            {{ _include_assets.generic_link(asset('favicon.ico'), 'image/x-icon', 'icon') }}
         {% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+        {% block stylesheets %}
+            {{ _include_assets.stylesheets(['app.css']) }}
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+
+        {% block body_head %}
+            <header>
+                {% include('_fragments/body-header.html.twig') only %}
+            </header>
+        {% endblock %}
+
+        {% block body_main %}
+            {# main body content #}
+        {% endblock %}
+
+        {% block body_foot %}
+            <footer>
+                {% include('_fragments/body-footer.html.twig') only %}
+            </footer>
+        {% endblock %}
+
         {% block javascripts %}
-            {% for js in ['manifest.js', 'vendor.js', 'app.js'] %}
-                <script type="text/javascript" src="{{ asset(js) }}"></script>
-            {% endfor %}
+            {{ _include_assets.javascripts(['manifest.js', 'vendor.js', 'app.js']) }}
         {% endblock %}
     </body>
 </html>

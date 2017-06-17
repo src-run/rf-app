@@ -1,0 +1,25 @@
+
+{#
+ # This file is part of the `robfrawley/web-app` project.
+ #
+ # (c) Rob Frawley 2nd <rmf@src.run>
+ #
+ # For the full copyright and license information, view the LICENSE.md
+ # file distributed with this vinylSourceStream code.
+ #}
+
+{% macro javascripts(javascripts) %}
+    {% for name in javascripts|default([]) %}
+        <script type="text/javascript" src="{{ asset(name) }}"></script>
+    {% endfor %}
+{% endmacro javascripts %}
+
+{% macro stylesheets(stylesheets) %}
+    {% for name in stylesheets|default([]) %}
+        <link rel="stylesheet" type="text/css" href="{{ asset(name) }}">
+    {% endfor %}
+{% endmacro stylesheets %}
+
+{% macro generic_link(href, type, relation) %}
+    <link rel="{{ relation }}" type="{{ type }}" href="{{ href }}" />
+{% endmacro generic_link %}

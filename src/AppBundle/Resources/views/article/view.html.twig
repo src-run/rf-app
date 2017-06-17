@@ -2,16 +2,21 @@
 
 {% block title %}Articles: {{ article.getTitle() }}{% endblock %}
 
-{% block body %}
+{% block body_main %}
+
     <h1>{{ article.getTitle() }}</h1>
+
     <div class="time">
         <p>Written on <time>{{ article.getCreated().format('r') }}</time></p>
         {% if article.getCreated() != article.getUpdated() %}
             <p>Updated on <time>{{ article.getUpdated().format('r') }}</time></p>
         {% endif %}
     </div>
+
     <hr />
+
     <div>
         {{ markdown(article.getContent()) }}
     </div>
+
 {% endblock %}
