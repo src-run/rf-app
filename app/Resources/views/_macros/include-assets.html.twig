@@ -15,11 +15,12 @@
 {% endmacro javascripts %}
 
 {% macro stylesheets(stylesheets) %}
+    {% import _self as _include_assets %}
     {% for name in stylesheets|default([]) %}
-        <link rel="stylesheet" type="text/css" href="{{ asset(name) }}">
+        {{ _include_assets.generic_link(name, 'text/css', 'stylesheet') }}
     {% endfor %}
 {% endmacro stylesheets %}
 
 {% macro generic_link(href, type, relation) %}
-    <link rel="{{ relation }}" type="{{ type }}" href="{{ href }}" />
+    <link rel="{{ relation }}" type="{{ type }}" href="{{ asset(href) }}" />
 {% endmacro generic_link %}

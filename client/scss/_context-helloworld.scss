@@ -8,15 +8,21 @@
  * file that was distributed with this source code.
  */
 
-class Greeter {
-    constructor(salutation = 'Hello') {
-        this.salutation = salutation;
+.helloWorld {
+
+    background-color:#eee;
+
+    h1 {
+        color: #888;
+        font-family: $font-family-serif;
     }
 
-    greet(name = 'World') {
-        const greeting = `${this.salutation}, ${name}!`;
-        console.log(greeting);
+    h2 {
+        color: #aa3333;
+    }
+
+    p {
+        font-style: italic;
+        font-family: $font-family-sans-serif-condensed;
     }
 }
-
-export default Greeter;

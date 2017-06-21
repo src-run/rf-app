@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
-@import 'bootstrap';
-@import 'root';
-@import 'context-helloworld';
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+}

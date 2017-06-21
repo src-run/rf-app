@@ -3,15 +3,16 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Rob Frawley 2nd{% endblock %}</title>
 
         {% block generic_links %}
-            {{ _include_assets.generic_link(asset('favicon.ico'), 'image/x-icon', 'icon') }}
+            {{ _include_assets.generic_link('favicon.ico', 'image/x-icon', 'icon') }}
         {% endblock %}
 
         {% block stylesheets %}
-            {{ _include_assets.stylesheets(['app.css']) }}
+            {{ _include_assets.stylesheets(['app.css', 'https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab']) }}
         {% endblock %}
     </head>
     <body>

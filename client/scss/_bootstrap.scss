@@ -1,0 +1,17 @@
+
+/*
+ * This file is part of the `src-run/rf-app` project.
+ *
+ * (c) Rob Frawley 2nd <rmf@src.run>
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+$brand-primary: darken(#428bca, 20%);
+$font-family-sans-serif:           'Roboto', sans-serif;
+$font-family-sans-serif-condensed: 'Roboto Condensed', sans-serif;
+$font-family-serif:                'Roboto Slab', serif;
+$font-family-monospace:            'Roboto Mono', monospace;
+
+@import '~bootstrap/scss/bootstrap';
