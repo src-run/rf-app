@@ -29,7 +29,7 @@ class SymfonyEnvironment implements EnvironmentInterface
      */
     public function __construct(string $environment, bool $debug)
     {
-        $this->environment = $environment;
+        $this->environment = strtolower($environment);
         $this->debug = $debug;
     }
 
@@ -64,7 +64,7 @@ class SymfonyEnvironment implements EnvironmentInterface
      */
     public function isEnvironment(string $environment): bool
     {
-        return $this->environment === $environment;
+        return $this->environment === strtolower($environment);
     }
 
     /**

@@ -14,7 +14,7 @@ namespace Rf\AppBundle\Component\Sitemap\Route;
 use Rf\AppBundle\Component\Sitemap\Uri\UriCollection;
 use Symfony\Component\Routing\Route;
 
-interface RouteGeneratorInterface
+interface RouteHandlerInterface
 {
     /**
      * @param string $name

@@ -20,8 +20,6 @@ use Rf\AppBundle\Tests\KernelTestTrait;
 use Rf\AppBundle\Tests\RepositoryTestTrait;
 use Rf\AppBundle\Tests\RouterTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class SitemapViewControllerTest extends WebTestCase
 {
@@ -56,6 +54,14 @@ class SitemapViewControllerTest extends WebTestCase
         foreach ($this->getArticleLinks() as $link) {
             $this->assertContains($link, $client->getResponse()->getContent());
         }
+    }
+
+    public function testActionViewSitemapRoot()
+    {
+        $client = static::createTestClient();
+        $client->request('GET', $this->generateRoute('app.sitemap_root'));
+
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
     }
 
     /**

@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\InvalidArgumentException;
 use Rf\AppBundle\Component\Environment\EnvironmentInterface;
-use Rf\AppBundle\Component\Sitemap\Route\RouteGeneratorInterface;
+use Rf\AppBundle\Component\Sitemap\Route\RouteHandlerInterface;
 use Rf\AppBundle\Component\Sitemap\Uri\UriCollection;
 use Rf\AppBundle\Component\Sitemap\Uri\UriDefinition;
 use SR\Exception\Runtime\RuntimeException;
@@ -50,7 +50,7 @@ class RecordGenerator
     private $environment;
 
     /**
-     * @var RouteGeneratorInterface[]
+     * @var RouteHandlerInterface[]
      */
     private $routeGenerators = [];
 
@@ -79,9 +79,9 @@ class RecordGenerator
     }
 
     /**
-     * @param RouteGeneratorInterface[] ...$routeGenerators
+     * @param RouteHandlerInterface[] ...$routeGenerators
      */
-    public function addRouteGenerators(RouteGeneratorInterface ...$routeGenerators): void
+    public function addRouteGenerators(RouteHandlerInterface ...$routeGenerators): void
     {
         foreach ($routeGenerators as $g) {
             if (!in_array($g, $this->routeGenerators)) {
@@ -89,7 +89,7 @@ class RecordGenerator
             }
         }
 
-        usort($this->routeGenerators, function (RouteGeneratorInterface $a, RouteGeneratorInterface $b) {
+        usort($this->routeGenerators, function (RouteHandlerInterface $a, RouteHandlerInterface $b) {
             return $a->getPriority() < $b->getPriority();
         });
     }

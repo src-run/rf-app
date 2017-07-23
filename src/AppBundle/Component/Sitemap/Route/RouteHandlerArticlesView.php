@@ -17,7 +17,7 @@ use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-class RouteGeneratorArticlesView extends RouteGeneratorSimple
+class RouteHandlerArticlesView extends RouteHandlerDefault
 {
     /**
      * @var ArticleRepository
@@ -60,9 +60,9 @@ class RouteGeneratorArticlesView extends RouteGeneratorSimple
      *
      * @return null|UriDefinition
      */
-    protected function handleWorkingArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
+    protected function handleArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
     {
-        if (null !== $d = parent::handleWorkingArgumentSet($name, $route, $arguments)) {
+        if (null !== $d = parent::handleArgumentSet($name, $route, $arguments)) {
             if (isset($arguments['entity']) && ($article = $arguments['entity']) instanceof Article) {
                 $this->assignLastModifiedForArticle($d, $article);
                 $this->assignPriorityForArticle($d, $article);
@@ -76,7 +76,7 @@ class RouteGeneratorArticlesView extends RouteGeneratorSimple
     /**
      * @return \Generator
      */
-    protected function getWorkingArgumentSets(): \Generator
+    protected function getArgumentSets(): \Generator
     {
         foreach ($this->getArticles() as $article) {
             yield [

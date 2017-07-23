@@ -15,7 +15,7 @@ use Rf\AppBundle\Component\Sitemap\Uri\UriDefinition;
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Symfony\Component\Routing\Route;
 
-class RouteGeneratorArticlesPermalink extends RouteGeneratorArticlesView
+class RouteHandlerArticlesPermalink extends RouteHandlerArticlesView
 {
     /**
      * @return int
@@ -39,7 +39,7 @@ class RouteGeneratorArticlesPermalink extends RouteGeneratorArticlesView
     /**
      * @return \Generator
      */
-    protected function getWorkingArgumentSets(): \Generator
+    protected function getArgumentSets(): \Generator
     {
         foreach ($this->getArticles() as $article) {
             yield [

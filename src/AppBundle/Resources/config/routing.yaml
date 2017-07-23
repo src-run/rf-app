@@ -59,6 +59,14 @@ app.articles_list:
 # robots
 #
 
+app.robots_root:
+    path: /robots
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Redirect\NamedRouteController'
+        _redirect_name: app.robots_view
+    methods:
+        - GET
+
 app.robots_view:
     path: /robots.txt
     defaults:

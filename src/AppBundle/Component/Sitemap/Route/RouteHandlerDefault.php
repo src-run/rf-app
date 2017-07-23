@@ -16,7 +16,7 @@ use Rf\AppBundle\Component\Sitemap\Uri\UriDefinition;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 
-class RouteGeneratorSimple implements RouteGeneratorInterface
+class RouteHandlerDefault implements RouteHandlerInterface
 {
     /**
      * @var RouterInterface
@@ -47,7 +47,7 @@ class RouteGeneratorSimple implements RouteGeneratorInterface
      */
     public function getPriority(): int
     {
-        return 0;
+        return -255;
     }
 
     /**
@@ -60,8 +60,8 @@ class RouteGeneratorSimple implements RouteGeneratorInterface
     {
         $collection = new UriCollection();
 
-        foreach ($this->getWorkingArgumentSets() as $arguments) {
-            if (null !== $d = $this->handleWorkingArgumentSet($name, $route, $arguments)) {
+        foreach ($this->getArgumentSets() as $arguments) {
+            if (null !== $d = $this->handleArgumentSet($name, $route, $arguments)) {
                 $collection->add($d);
             }
         }
@@ -76,27 +76,28 @@ class RouteGeneratorSimple implements RouteGeneratorInterface
      *
      * @return null|UriDefinition
      */
-    protected function handleWorkingArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
+    protected function handleArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
     {
+        $routeArguments = isset($arguments['route_arguments']) ? $arguments['route_arguments'] : [];
+
         try {
-            $a = isset($arguments['route_arguments']) ? $arguments['route_arguments'] : [];
-            $d = new UriDefinition($this->router->generate($name, $a, RouterInterface::ABSOLUTE_URL));
+            $uri = new UriDefinition($this->router->generate($name, $routeArguments, RouterInterface::ABSOLUTE_URL));
         } catch (\Exception $e) {
             return null;
         }
 
-        $this->assignChangeFrequency($d, $name, $route);
-        $this->assignLastModified($d, $name, $route);
-        $this->assignPriority($d, $name, $route);
-        $this->assignDefinitionComment($d, $name, $route);
+        $this->assignChangeFrequency($uri, $name, $route);
+        $this->assignLastModified($uri, $name, $route);
+        $this->assignPriority($uri, $name, $route);
+        $this->assignDefinitionComment($uri, $name, $route);
 
-        return $d;
+        return $uri;
     }
 
     /**
      * @return \Generator
      */
-    protected function getWorkingArgumentSets(): \Generator
+    protected function getArgumentSets(): \Generator
     {
         yield [];
     }
