@@ -13,13 +13,14 @@ namespace Rf\AppBundle\Component\Sitemap;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 use Rf\AppBundle\Component\Environment\EnvironmentInterface;
 use Rf\AppBundle\Component\Sitemap\Route\RouteGeneratorInterface;
 use Rf\AppBundle\Component\Sitemap\Uri\UriCollection;
 use Rf\AppBundle\Component\Sitemap\Uri\UriDefinition;
+use SR\Exception\Runtime\RuntimeException;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class RecordGenerator
 {
@@ -98,9 +99,13 @@ class RecordGenerator
      */
     public function generate(): UriCollection
     {
-        $item = $this->cache->getItem($this->getCacheKey());
+        try {
+            $item = $this->cache->getItem($this->getCacheKey());
+        } catch (InvalidArgumentException $e) {
+            throw new RuntimeException('Unable to acquire cache item with item key "%s".', $this->getCacheKey());
+        }
 
-        if ($this->environment->isDevelopment() || !$item->isHit()) {
+        if ($this->environment->isDevelopment() || $this->environment->isTesting() || !$item->isHit()) {
             $collection = new UriCollection();
 
             foreach ($this->getCollectionGroups() as $c) {

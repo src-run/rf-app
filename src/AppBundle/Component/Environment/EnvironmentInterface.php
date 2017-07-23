@@ -34,4 +34,9 @@ interface EnvironmentInterface
      * @return bool
      */
     public function isDebug(): bool;
+
+    /**
+     * @return bool
+     */
+    public function isTesting(): bool;
 }

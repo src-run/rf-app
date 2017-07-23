@@ -50,6 +50,14 @@ class SymfonyEnvironment implements EnvironmentInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isTesting(): bool
+    {
+        return $this->isEnvironment('test');
+    }
+
+    /**
      * @param string $environment
      *
      * @return bool
