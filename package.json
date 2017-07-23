@@ -42,9 +42,9 @@
         "style-loader": "^0.18.1",
         "stylelint": "^7.10.1",
         "tether": "^1.4.0",
-        "webpack": "^2.6.0",
+        "webpack": "^2.6.0 || ^3.0.0",
         "webpack-cleanup-plugin": "^0.5.1",
-        "webpack-dev-server": "^2.4.5",
+        "webpack-dev-server": "^2.4.5 || ^3.0.0",
         "webpack-manifest-plugin": "^1.1.0",
         "webpack-md5-hash": "^0.0.5"
     },

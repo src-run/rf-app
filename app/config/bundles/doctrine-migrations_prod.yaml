@@ -1,0 +1,20 @@
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# doctrine migrations
+#
+
+doctrine_migrations:
+    dir_name:   "%kernel.root_dir%/../src/AppBundle/Doctrine/Migrations"
+    namespace:  Rf\AppBundle\Migrations
+    table_name: migration_versions
+    name:       Rob Frawley Application Migrations

@@ -12,6 +12,7 @@ require('../scss/app.scss');
 
 import Greeter from './greeter';
 import Case from './case';
+import NavState from './nav-header-state';
 
 let helloWorld = new Greeter();
 helloWorld.greet();
@@ -27,3 +28,6 @@ h2Case.lower();
 
 let h3Case = new Case('h3');
 h3Case.upper();
+
+let navState = new NavState('nav.nav-state');
+navState.watch();

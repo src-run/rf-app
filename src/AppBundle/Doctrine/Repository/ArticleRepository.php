@@ -96,4 +96,23 @@ class ArticleRepository extends AbstractRepository
             ->getQuery()
             ->getSingleResult();
     }
+
+    /**
+     * @param string $uuid
+     *
+     * @return Article|null
+     */
+    public function findByUuidAsSimpleObject(string $uuid)
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.uuid = :uuid')
+            ->setParameters([
+                'uuid' => $uuid,
+            ])
+            ->setMaxResults(1)
+            ->getQuery()
+            ->setHydrationMode(Query::HYDRATE_SIMPLEOBJECT)
+            ->getSingleResult();
+    }
 }

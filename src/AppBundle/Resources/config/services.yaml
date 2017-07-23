@@ -29,6 +29,9 @@ services:
         Symfony\Component\Console\Command\Command:
             tags: [ 'console.command' ]
 
+        Rf\AppBundle\Component\Sitemap\Route\RouteGeneratorInterface:
+            tags: [ name: 'app.record_route_generator' ]
+
     article_param_converter:
         class: Rf\AppBundle\Request\ParamConverter\ArticleParamConverter
         tags:

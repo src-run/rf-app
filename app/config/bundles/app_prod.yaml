@@ -1,0 +1,48 @@
+---
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# app configuration
+#
+
+app:
+    metadata:
+        -
+            charset: UTF-8
+        -
+            name: robots
+            content: "index, follow"
+        -
+            name: description
+            content: ""
+        -
+            name: viewport
+            content: "width=device-width, initial-scale=1, shrink-to-fit=no"
+        -
+            name: author
+            content: "Rob Frawley 2nd"
+        -
+            name: keywords
+            content: "Rob Frawley 2nd, robfrawley, rmf, articles, php, symfony, code, projects, github"
+
+    entities:
+        Rf\AppBundle\Doctrine\Entity\Article: ~
+        Rf\AppBundle\Doctrine\Entity\ArticleComment: ~
+        Rf\AppBundle\Doctrine\Entity\Email: ~
+        Rf\AppBundle\Doctrine\Entity\Project: ~
+
+    robots:
+        "*":
+            allow:
+                - "/"
+            disallow:
+                - "/admin"

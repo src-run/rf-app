@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+{% for uri in uri_definitions %}
+
+    {% if uri.hasComment() -%}
+        <!-- {{ uri.getComment() }} -->
+    {% endif -%}
+    <url>
+        <loc>{{ uri.getLocation() }}</loc>
+        {% if uri.hasLastModified() -%}
+            <lastmod>{{ uri.getLastModifiedString() }}</lastmod>
+        {% endif -%}
+        {% if uri.hasChangeFrequency() -%}
+            <changefreq>{{ uri.getChangeFrequency() }}</changefreq>
+        {% endif -%}
+        <priority>{{ uri.getPriority() }}</priority>
+        {% if uri.isMediaImage() -%}
+            <image:image>
+                <image:loc>{{ uri.getMedia().getLocation() }}</image:loc>
+                {% if uri.getMedia().hasDescription() -%}
+                    <image:caption>{{ uri.getMedia().getDescription() }}</image:caption>
+                {% endif -%}
+                {% if uri.getMedia().hasGeoLocation() -%}
+                    <image:geo_location>{{ uri.getMedia().getGeoLocation() }}</image:geo_location>
+                {% endif -%}
+                {% if uri.getMedia().hasLicense() -%}
+                    <image:license>{{ uri.getMedia().getLicense() }}</image:license>
+                {% endif -%}
+            </image:image>
+        {% elseif uri.isMediaVideo() -%}
+            <video:video>
+                <video:thumbnail_loc>{{ uri.getMedia().getThumbnail() }}</video:thumbnail_loc>
+                <video:title>{{ uri.getMedia().getTitle() }}</video:title>
+                <video:description>{{ uri.getMedia().getDescription() }}</video:description>
+                <video:content_loc>{{ uri.getMedia().getLocation() }}</video:content_loc>
+                {% if uri.getMedia().hasPlayerLocation() -%}
+                    <video:player_loc allow_embed="
+                        {%- if uri.getMedia().isPlayerEmbeddable() %}yes{% else %}no{% endif -%}" autoplay="ap=
+                        {%- if uri.getMedia().isPlayerAutoPlayable() %}1{% else %}0{% endif -%}">
+                    {{- uri.getMedia().getPlayerLocation() -}}
+                </video:player_loc>
+                {% endif -%}
+                {% if uri.getMedia().hasDuration() -%}
+                    <video:duration>{{ uri.getMedia().getDuration() }}</video:duration>
+                {% endif -%}
+                {% if uri.getMedia().hasExpirationDate() -%}
+                    <video:expiration_date>{{ uri.getMedia().getExpirationDateString() }}</video:expiration_date>
+                {% endif -%}
+                {% if uri.getMedia().hasRating() -%}
+                    <video:rating>{{ uri.getMedia().getRating() }}</video:rating>
+                {% endif -%}
+                {% if uri.getMedia().hasViewCount() -%}
+                    <video:view_count>{{ uri.getMedia().getViewCount() }}</video:view_count>
+                {% endif -%}
+                {% if uri.getMedia().hasPublicationDate() -%}
+                    <video:publication_date>{{ uri.getMedia().getPublicationDateString() }}</video:publication_date>
+                {% endif -%}
+                {% for tag in uri.getMedia().getTags() -%}
+                    <video:tag>{{ tag }}</video:tag>
+                {% endfor -%}
+                {% if uri.getMedia().hasCategory() -%}
+                    <video:category>{{ uri.getMedia().getCategory() }}</video:category>
+                {% endif -%}
+                <video:family_friendly>{%- if uri.getMedia().isFamilyFriendly() %}yes{% else %}no{% endif -%}</video:family_friendly>
+                {% if uri.getMedia().hasCountryRestrictions() -%}
+                    <video:restriction relationship="{{ uri.getMedia().getCountryRestrictionsRelationship() }}">
+                        {{- uri.getMedia().getCountryRestrictions()|join(' ') -}}
+                    </video:restriction>
+                {% endif -%}
+                {% if uri.getMedia().hasPlatformRestrictions() -%}
+                    <video:platform relationship="{{ uri.getMedia().getPlatformRestrictionsRelationship() }}">
+                        {{- uri.getMedia().getPlatformRestrictions()|join(' ') -}}
+                    </video:platform>
+                {% endif -%}
+                <video:live>{%- if uri.getMedia().isLive() %}yes{% else %}no{% endif -%}</video:live>
+                {% if uri.getMedia().hasIdentifier() -%}
+                    <video:id type="{{ uri.getMedia().getIdentifierContext() }}">{{ uri.getMedia().getIdentifier() }}</video:id>
+                {% endif -%}
+                {% if uri.getMedia().hasUploaderName() -%}
+                    <video:uploader
+                        {%- if uri.getMedia().hasUploaderLink() %} info="{{ uri.getMedia().getUploaderLink() }}"{% endif -%}>
+                        {{- uri.getMedia().getUploaderName() -}}
+                    </video:uploader>
+                {% endif -%}
+            </video:video>
+        {% endif -%}
+    </url>
+
+{% endfor %}
+</urlset>

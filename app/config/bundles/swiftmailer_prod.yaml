@@ -1,0 +1,23 @@
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# mail configuration
+#
+
+swiftmailer:
+    transport: "%mail_transport%"
+    host:      "%env(MAIL_HOST)%"
+    port:      "%env(MAIL_PORT)%"
+    username:  "%env(MAIL_USER)%"
+    password:  "%env(MAIL_PASS)%"
+    spool:
+        type: "%mail_spool%"

@@ -1,0 +1,16 @@
+#
+# robots configuration file
+#
+# www.robotstxt.org
+# www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156449
+#
+{% for entry in robots_registry %}
+
+User-agent: {{ entry.getUserAgent() }}
+{% for path in entry.getAllowList() %}
+Allow: {{ path }}
+{% endfor %}
+{% for path in entry.getDisallowList() %}
+Disallow: {{ path }}
+{% endfor %}
+{% endfor %}

@@ -2,8 +2,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block metadata %}
+            {% for meta in meta_registry() %}
+                <meta {% for k, v in meta %}{{ k }}="{{ v }}" {% endfor %}/>
+            {% endfor %}
+        {% endblock %}
 
         <title>{% block title %}Rob Frawley 2nd{% endblock %}</title>
 
@@ -14,21 +18,26 @@
         {% block stylesheets %}
             {{ _include_assets.stylesheets(['app.css', 'https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Mono|Roboto+Slab']) }}
         {% endblock %}
+
     </head>
     <body>
 
         {% block body_head %}
-            <header>
+            <header id="main-header">
                 {% include('_fragments/body-header.html.twig') only %}
             </header>
         {% endblock %}
 
-        {% block body_main %}
-            {# main body content #}
-        {% endblock %}
+        {% block body_before %}{% endblock %}
+
+        <div id="main-content">
+            {% block body_main %}
+                {# main body content #}
+            {% endblock %}
+        </div>
 
         {% block body_foot %}
-            <footer>
+            <footer id="main-footer">
                 {% include('_fragments/body-footer.html.twig') only %}
             </footer>
         {% endblock %}
@@ -36,5 +45,6 @@
         {% block javascripts %}
             {{ _include_assets.javascripts(['manifest.js', 'vendor.js', 'app.js']) }}
         {% endblock %}
+
     </body>
 </html>

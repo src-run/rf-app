@@ -1,4 +1,3 @@
----
 
 #
 # This file is part of the `robfrawley/web-app` project.
@@ -9,25 +8,6 @@
 # file distributed with this vinylSourceStream code.
 #
 
-#
-# import resources
-#
-
-imports:
-    - { resource: bundles_prod.yml }
-
-#
-# profiler configuration
-#
-web_profiler:
-    toolbar: false
-    intercept_redirects: false
-
-#
-# mailer configuration
-#
-swiftmailer:
-    disable_delivery: true
 
 #
 # doctrine configuration
@@ -38,5 +18,3 @@ doctrine:
         metadata_cache_driver: array
         result_cache_driver:   array
         query_cache_driver:    array
-
-...

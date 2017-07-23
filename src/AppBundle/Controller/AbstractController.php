@@ -11,9 +11,10 @@
 
 namespace Rf\AppBundle\Controller;
 
+use Rf\AppBundle\Component\HttpFoundation\Response\Response;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as BaseResponse;
 use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractController
@@ -50,13 +51,13 @@ abstract class AbstractController
     }
 
     /**
-     * @param string        $route
-     * @param array         $parameters
-     * @param Response|null $response
+     * @param string            $route
+     * @param array             $parameters
+     * @param BaseResponse|null $response
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return BaseResponse|Response
      */
-    protected function renderResponse(string $route, array $parameters = [], Response $response = null): Response
+    protected function renderResponse(string $route, array $parameters = [], BaseResponse $response = null): BaseResponse
     {
         return $this->twig->renderResponse($route, $parameters, $response);
     }

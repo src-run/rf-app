@@ -1,0 +1,49 @@
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# framework
+#
+
+framework:
+    secret:               "%env(APP_SECRET)%"
+    form:                 ~
+    csrf_protection:      ~
+    default_locale:       "%locale%"
+    trusted_hosts:        ~
+    fragments:            ~
+    http_method_override: true
+    assets:               ~
+
+    templating:
+        engines: [ 'twig' ]
+
+    validation:
+      enable_annotations: true
+
+    php_errors:
+        log: true
+
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+
+    session:
+        handler_id: session.handler.native_file
+        save_path:  "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+
+    assets:
+        enabled:            true
+        json_manifest_path: "%kernel.root_dir%/../web/assets/manifest.json"
+        packages:
+            images:
+                base_urls:
+                    - "//%rf_app.domain_name%%rf_app.assets_bundles_path%images/"

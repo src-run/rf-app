@@ -1,0 +1,52 @@
+
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# doctrine configuration
+#
+
+doctrine:
+    dbal:
+        driver:         "%database_driver%"
+        server_version: "%database_version%"
+        charset:        "%database_charset%"
+        host:           "%env(DB_HOST)%"
+        port:           "%env(DB_PORT)%"
+        dbname:         "%env(DB_NAME)%"
+        user:           "%env(DB_USER)%"
+        password:       "%env(DB_PASS)%"
+
+        types:
+            bin_uuid: SR\Doctrine\DBAL\Types\StringUuidType
+            str_uuid: SR\Doctrine\DBAL\Types\BinaryUuidType
+
+    orm:
+        metadata_cache_driver:       apc
+        result_cache_driver:         apc
+        query_cache_driver:          apc
+        auto_generate_proxy_classes: "%kernel.debug%"
+        naming_strategy:             doctrine.orm.naming_strategy.underscore
+
+        dql:
+            string_functions:
+                date_format: Rf\AppBundle\Doctrine\Query\Functions\DateFormatFunction
+                unix_time: Rf\AppBundle\Doctrine\Query\Functions\UnitTimeFunction
+
+        mappings:
+            AppBundle:
+                type: yml
+                prefix: Rf\AppBundle\Doctrine\Entity
+            GedmoLoggable:
+                type: annotation
+                prefix: Gedmo\Loggable\Entity
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                alias: GedmoLoggable # (optional) it will default to the name set for the mappingmapping
+                is_bundle: false

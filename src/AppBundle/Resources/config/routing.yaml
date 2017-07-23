@@ -1,4 +1,17 @@
 
+#
+# This file is part of the `robfrawley/web-app` project.
+#
+# (c) Rob Frawley 2nd <rmf@src.run>
+#
+# For the full copyright and license information, view the LICENSE.md
+# file distributed with this vinylSourceStream code.
+#
+
+
+#
+# default
+#
 
 app.default_view:
     path: /
@@ -6,6 +19,11 @@ app.default_view:
         _controller: 'Rf\AppBundle\Controller\Index\ViewController'
     methods:
         - GET
+
+
+#
+# articles
+#
 
 app.articles_root:
     path: /articles
@@ -35,6 +53,50 @@ app.articles_list:
         _controller: 'Rf\AppBundle\Controller\Article\ListController'
     methods:
         - GET
+
+
+#
+# robots
+#
+
+app.robots_view:
+    path: /robots.txt
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Robots\ViewController'
+    methods:
+        - GET
+
+
+#
+# sitemap
+#
+
+app.sitemap_root:
+    path: /sitemap
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Redirect\NamedRouteController'
+        _redirect_name: app.sitemap_view_xml
+    methods:
+        - GET
+
+app.sitemap_view_xml:
+    path: /sitemap.xml
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Sitemap\ViewXmlController'
+    methods:
+        - GET
+
+app.sitemap_view_txt:
+    path: /sitemap.txt
+    defaults:
+        _controller: 'Rf\AppBundle\Controller\Sitemap\ViewTxtController'
+    methods:
+        - GET
+
+
+#
+# slash redirect
+#
 
 app.redirect_remove_trailing_slash:
     path: /{url}

@@ -1,4 +1,3 @@
----
 
 #
 # This file is part of the `robfrawley/web-app` project.
@@ -15,16 +14,4 @@
 
 imports:
     - { resource: config_prod.yml }
-    - { resource: bundles_test.yml }
-
-#
-# framework configuration
-#
-framework:
-    test: ~
-    session:
-        storage_id: session.storage.mock_file
-    profiler:
-        collect: false
-
-...
+    - { resource: bundles/*_test.yaml }
