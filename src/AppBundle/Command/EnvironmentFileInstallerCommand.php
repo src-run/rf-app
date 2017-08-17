@@ -23,16 +23,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EnvironmentFileInstallerCommand extends Command
 {
     use StyleAwareTrait;
 
     /**
-     * @var ContainerInterface
+     * @var ParameterResolver
      */
-    private $container;
+    private $parameterResolver;
 
     /**
      * @var OutputErrorHandler
@@ -45,22 +44,18 @@ class EnvironmentFileInstallerCommand extends Command
     private $inputParamResolver;
 
     /**
-     * @param ContainerInterface $container
+     * @param ParameterResolver $parameterResolver
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ParameterResolver $parameterResolver)
     {
         parent::__construct();
 
-        $this->container = $container;
+        $this->parameterResolver = $parameterResolver;
     }
 
     protected function configure()
     {
-        $this->setName('sr:environment:file-installer');
-        $this->setDescription('Installs a collection of files (such as "dot files") into the repository root depending on environment.');
-        $this->setAliases([
-            'env:file-installer',
-        ]);
+        $this->setDescription('Install env config files into the repository root');
 
         $this->addArgument(
             'environment-name',
@@ -139,7 +134,7 @@ class EnvironmentFileInstallerCommand extends Command
     {
         $this->io = new Style($input, $output);
         $this->outputErrorHandler = new OutputErrorHandler($this->io);
-        $this->inputParamResolver = new InputParamResolver($this->io, $this->outputErrorHandler, new ParameterResolver($this->container));
+        $this->inputParamResolver = new InputParamResolver($this->io, $this->outputErrorHandler, $this->parameterResolver);
     }
 
     /**

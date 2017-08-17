@@ -1,0 +1,28 @@
+Rf\AppBundle\Doctrine\Entity\SearchStem:
+
+    type: entity
+    table: sys_search_word_stems
+
+    options:
+        row_format: DYNAMIC
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
+
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\SearchStemRepository
+
+    id:
+
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+            options:
+                unsigned: true
+
+    fields:
+
+        stem:
+            type: string
+            length: 128
+            unique: true

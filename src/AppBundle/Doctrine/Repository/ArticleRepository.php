@@ -41,6 +41,18 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @return Article[]|null
+     */
+    public function findAllOrderByCreated(): array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->orderBy('p.created', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param Paginator $pager
      * @param int       $page
      * @param int       $limit

@@ -1,23 +1,29 @@
 Rf\AppBundle\Doctrine\Entity\Article:
 
     type: entity
-    table: null
+    table: content_articles
+
+    options:
+        row_format: DYNAMIC
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
 
     repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleRepository
 
     gedmo:
-        loggable: true
+        loggable:
+            logEntryClass: Rf\AppBundle\Doctrine\Entity\RevisionLog
 
     id:
 
-       uuid:
+        uuid:
             type: string
             length: 36
             id: true
             generator:
                 strategy: CUSTOM
             customIdGenerator:
-                class: "\\SR\\Doctrine\\ORM\\Id\\StringUuid4PessimisticGenerator"
+                class: SR\Doctrine\ORM\Id\StringUuid4PessimisticGenerator
 
     fields:
 
@@ -55,3 +61,10 @@ Rf\AppBundle\Doctrine\Entity\Article:
             type: text
             gedmo:
                 - versioned
+
+    oneToMany:
+
+        indices:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\SearchIndex
+            mappedBy: article
+            fetch: LAZY

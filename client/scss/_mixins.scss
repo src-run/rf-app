@@ -1,0 +1,38 @@
+
+/*
+ * This file is part of the `src-run/rf-app` project.
+ *
+ * (c) Rob Frawley 2nd <rmf@src.run>
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+@mixin breakpoint($point)
+{
+    @if ($point == xl) {
+        @media (min-width: map-get($grid-breakpoints, xl)) {
+            @content
+        }
+    }
+    @else if ($point == lg) {
+        @media (min-width: map-get($grid-breakpoints, lg)) and (max-width: map-get($grid-breakpoints, xl) - 1) {
+            @content
+        }
+    }
+    @else if ($point == md) {
+        @media (min-width: map-get($grid-breakpoints, md)) and (max-width: map-get($grid-breakpoints, lg) - 1) {
+            @content
+        }
+    }
+    @else if ($point == sm) {
+        @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, md) - 1) {
+            @content
+        }
+    }
+    @else if ($point == xs) {
+        @media (min-width: map-get($grid-breakpoints, xs)) and (max-width: map-get($grid-breakpoints, sm) - 1) {
+            @content
+        }
+    }
+}

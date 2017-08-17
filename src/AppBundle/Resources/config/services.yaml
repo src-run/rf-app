@@ -19,18 +19,20 @@ parameters:
 services:
 
     _defaults:
+
         autowire: true
         public: false
 
     _instanceof:
+
         Twig_Extension:
             tags: [ 'twig.extension' ]
 
-        Symfony\Component\Console\Command\Command:
-            tags: [ 'console.command' ]
+        Symfony\Component\EventDispatcher\EventSubscriberInterface:
+            tags: [ kernel.event_subscriber ]
 
         Rf\AppBundle\Component\Sitemap\Route\RouteHandlerInterface:
-            tags: [ name: 'app.record_route_generator' ]
+            tags: [ app.record_route_generator ]
 
     article_param_converter:
         class: Rf\AppBundle\Request\ParamConverter\ArticleParamConverter
@@ -68,12 +70,34 @@ services:
         arguments:
             - Rf\AppBundle\Doctrine\Entity\Article
 
+    Rf\AppBundle\Doctrine\Repository\SearchStemRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory:
+            - '@doctrine.orm.default_entity_manager'
+            - getRepository
+        arguments:
+            - Rf\AppBundle\Doctrine\Entity\SearchStem
+
+    Rf\AppBundle\Doctrine\Repository\SearchIndexRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory:
+            - '@doctrine.orm.default_entity_manager'
+            - getRepository
+        arguments:
+            - Rf\AppBundle\Doctrine\Entity\SearchIndex
+
     SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer:
 
     SR\Cocoa\Transformer\TransformerInterface:
         alias: SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer
 
     Rf\AppBundle\Command\EnvironmentFileInstallerCommand:
+        tags:
+            - { name: console.command, command: rf:environment:file-installer, alias: rf:env:file-inst }
+
+    Rf\AppBundle\Command\ArticleSearchIndexCommand:
+        tags:
+            - { name: console.command, command: rf:search:create-index:articles, alias: rf:search:idx:articles }
 
     Symfony\Bundle\TwigBundle\TwigEngine:
         alias: templating.engine.twig
@@ -83,3 +107,14 @@ services:
 
     Doctrine\ORM\EntityManager:
         alias: doctrine.orm.default_entity_manager
+
+    SR\Cocoa\Word\Stem\Stemmer:
+
+    SR\Cocoa\Word\Stem\Driver\PorterDriver:
+
+    SR\Cocoa\Word\Stop\Stopwords:
+
+    SR\Cocoa\Word\Stop\Driver\RanksExtendedDriver:
+
+    Rf\AppBundle\Subscriber\DoctrineLoggableSubscriber:
+        public: true

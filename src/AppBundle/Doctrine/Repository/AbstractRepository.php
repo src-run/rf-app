@@ -25,11 +25,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 abstract class AbstractRepository extends EntityRepository
 {
     /**
-     * @var bool
-     */
-    private const CACHE_ENABLED = true;
-
-    /**
      * @var int
      */
     private const DEFAULT_TTL = 300;

@@ -74,12 +74,34 @@ class InputParamResolver
     private function resolve($type, $name, $required)
     {
         try {
-            return $this->parameterResolver->resolveValue($this->getValue($type, $name));
+            return is_array($value = $this->getValue($type, $name)) ? $this->resolveArray($value) : $this->resolveScalar($value);
         } catch (InvalidArgumentException $exception) {
             $this->handleThrownException($type, $name, $required, $exception);
 
             return null;
         }
+    }
+
+    /**
+     * @param array $values
+     *
+     * @return mixed
+     */
+    private function resolveArray(array $values)
+    {
+        return array_map(function ($v) {
+            return $this->resolveScalar($v);
+        }, $values);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function resolveScalar($value)
+    {
+        return $this->parameterResolver->resolveValue($value);
     }
 
     /**

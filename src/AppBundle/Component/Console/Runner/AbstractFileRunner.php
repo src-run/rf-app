@@ -13,13 +13,8 @@ namespace Rf\AppBundle\Component\Console\Runner;
 
 use SR\Console\Output\Style\StyleInterface;
 
-abstract class AbstractFileRunner
+abstract class AbstractFileRunner extends AbstractRunner
 {
-    /**
-     * @var StyleInterface
-     */
-    protected $io;
-
     /**
      * @var string
      */
@@ -37,7 +32,8 @@ abstract class AbstractFileRunner
      */
     public function __construct(StyleInterface $io, string $repositoryPath, array $ignoredFiles)
     {
-        $this->io = $io;
+        parent::__construct($io);
+
         $this->repositoryPath = $repositoryPath;
         $this->ignoredFiles = $ignoredFiles;
     }

@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Symfony\Component\Console\Helper\HelperSet;
+
+$possibleConfigFiles = [
+    __DIR__.'/../app/config/doctrine-cli.php',
+    getcwd().'/cli-config.php',
+    getcwd().'/config/cli-config.php',
+];
+
+foreach ($possibleConfigFiles as $config) {
+    if (file_exists($config) && is_readable($config)) {
+        $hs = require_once $config;
+        break;
+    }
+}
+
+ConsoleRunner::run(resolveHelperSet($hs ?? new HelperSet()), []);

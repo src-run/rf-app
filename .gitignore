@@ -21,6 +21,9 @@
 /node_modules/
 /bin/*
 !/bin/console
+!/bin/doctrine
+!/bin/doctrine-dbal
+!/bin/doctrine-migrations
 /cs_fixer*
 /composer*
 !/composer.json

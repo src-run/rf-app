@@ -26,11 +26,6 @@ class EnvInstallFileRunner extends AbstractFileRunner
     private $configurationPath;
 
     /**
-     * @var int
-     */
-    private $result;
-
-    /**
      * @param StyleInterface $io
      * @param string         $environment
      * @param string         $repositoryPath
@@ -70,7 +65,7 @@ class EnvInstallFileRunner extends AbstractFileRunner
         }
 
         $this->outputResults($filesSkipped, 'skipped', $filesInstall, 'installed');
-        $this->result = $filesInstall > 0 ? 0 : 1;
+        $this->setResult($filesInstall > 0 ? 0 : 1);
     }
 
     /**
@@ -87,14 +82,6 @@ class EnvInstallFileRunner extends AbstractFileRunner
         }
 
         return sprintf('%s -> %s', $file, $copyTo);
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getResult(): ? int
-    {
-        return $this->result;
     }
 
     /**

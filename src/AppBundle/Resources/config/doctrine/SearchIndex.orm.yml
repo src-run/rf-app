@@ -1,0 +1,67 @@
+Rf\AppBundle\Doctrine\Entity\SearchIndex:
+
+    type: entity
+    table: sys_search_rev_index
+
+    options:
+        row_format: DYNAMIC
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
+
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\SearchIndexRepository
+
+    id:
+
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+            options:
+                unsigned: true
+
+    fields:
+
+        position:
+            type: bigint
+            options:
+                unsigned: true
+
+    manyToOne:
+
+        stem:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\SearchStem
+            joinColumn:
+                name: stem_id
+                referencedColumnName: id
+            cascade:
+                - persist
+
+        article:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\Article
+            joinColumn:
+                name: article_uuid
+                referencedColumnName: uuid
+            inversedBy: indices
+
+    uniqueConstraints:
+
+        stem_article_position_uniq:
+            columns:
+                - stem_id
+                - article_uuid
+                - position
+
+    indexes:
+
+        id_stem_article_idx:
+            columns:
+                - id
+                - stem_id
+                - article_uuid
+
+        id_article_stem_idx:
+            columns:
+                - id
+                - article_uuid
+                - stem_id

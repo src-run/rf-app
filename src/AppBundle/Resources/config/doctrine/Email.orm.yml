@@ -1,7 +1,7 @@
 Rf\AppBundle\Doctrine\Entity\Email:
 
     type: entity
-    table: null
+    table: sys_email_spool
 
     options:
         row_format: DYNAMIC
@@ -17,6 +17,8 @@ Rf\AppBundle\Doctrine\Entity\Email:
             id: true
             generator:
                 strategy: AUTO
+            options:
+                unsigned: true
 
     fields:
 
@@ -35,10 +37,14 @@ Rf\AppBundle\Doctrine\Entity\Email:
         status:
             type: string
             length: 2
+            options:
+                unsigned: true
+            nullable: true
 
         environment:
             type: string
             length: 8
+            nullable: true
 
         message:
             type: text

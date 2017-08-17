@@ -23,11 +23,11 @@ body {
     transition  : background-color 1s;
 
     &.nav-state-transparent {
-        background-color : rgba(#292b2c, 0.1) !important;
+        background-color : rgba(#292b2c, 0.15) !important;
     }
 
     &.nav-state-opaque {
-        background-color : rgba(#292b2c, 0.9) !important;
+        background-color : rgba(#292b2c, 0.95) !important;
     }
 }
 
@@ -40,10 +40,21 @@ body {
     }
 
     &.banner-programming-image {
-        background-color : transparent;
-        background-image : url(/bundles/app/images/banner-programming.png);
-        background-size  : cover;
-        height           : 400px;
+        background-color    : #26a9e1;
+        background-image    : url(/bundles/app/images/banner-main.png);
+        background-size     : cover;
+        background-position : center;
+        height              : 300px;
+
+        @media (min-width: map-get($grid-breakpoints, xl)) {
+            height : 600px;
+        }
+        @media (min-width: map-get($grid-breakpoints, lg)) and (max-width: map-get($grid-breakpoints, xl) - 1) {
+            height : 500px;
+        }
+        @media (min-width: map-get($grid-breakpoints, md)) and (max-width: map-get($grid-breakpoints, lg) - 1) {
+            height : 400px;
+        }
     }
 }
 

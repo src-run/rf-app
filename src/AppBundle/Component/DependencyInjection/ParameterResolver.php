@@ -37,7 +37,7 @@ class ParameterResolver
     public function resolve(...$values): array
     {
         return array_map(function ($v) {
-            return $this->resolveValue($v);
+            return is_array($v) ? $this->resolve(...$v) : $this->resolveValue($v);
         }, $values);
     }
 

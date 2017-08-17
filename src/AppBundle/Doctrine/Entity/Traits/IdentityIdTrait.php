@@ -11,6 +11,8 @@
 
 namespace Rf\AppBundle\Doctrine\Entity\Traits;
 
+use SR\Exception\Logic\LogicException;
+
 trait IdentityIdTrait
 {
     /**
@@ -19,10 +21,34 @@ trait IdentityIdTrait
     private $id;
 
     /**
+     * @param int $id
+     *
+     * @return IdentityIdTrait
+     */
+    public function setId(int $id): IdentityIdTrait
+    {
+        if (null !== $this->id) {
+            throw new LogicException('Cannot overwrite the id value of "%d" as property is read-only once set!', $this->id);
+        }
+
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ? int
     {
         return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasId(): bool
+    {
+        return null !== $this->id;
     }
 }

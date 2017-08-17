@@ -15,6 +15,6 @@
 
 doctrine_migrations:
     dir_name:   "%kernel.root_dir%/../src/AppBundle/Doctrine/Migrations"
-    namespace:  Rf\AppBundle\Migrations
-    table_name: migration_versions
-    name:       Rob Frawley Application Migrations
+    namespace:  Rf\AppBundle\Doctrine\Migrations
+    table_name: _doctrine_migrations
+    name:       "[src-run] robfrawley-app"

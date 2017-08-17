@@ -17,10 +17,14 @@ use Faker\Factory;
 use Faker\Generator;
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
+use Rf\AppBundle\Subscriber\DoctrineLoggableSubscriber;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class LoadArticleData implements FixtureInterface, ContainerAwareInterface
 {
@@ -40,6 +44,19 @@ class LoadArticleData implements FixtureInterface, ContainerAwareInterface
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+        $this->setupLoggableUsernameListener();
+    }
+
+    private function setupLoggableUsernameListener(): void
+    {
+        $kernel = $this->container->get('http_kernel');
+        $request = new Request();
+        $event = new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+
+        /** @var DoctrineLoggableSubscriber $subscriber */
+        $subscriber = $this->container->get('Rf\AppBundle\Subscriber\DoctrineLoggableSubscriber');
+        $subscriber->setDefaultUser('system:cli');
+        $subscriber->assignActiveUserToLogListener($event);
     }
 
     /**

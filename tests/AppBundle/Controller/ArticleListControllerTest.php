@@ -38,7 +38,7 @@ class ArticleListControllerTest extends WebTestCase
     {
         return array_map(function (int $page) {
             return [$page];
-        }, [0, 1, 2, 3, 4]);
+        }, range(0, 4));
     }
 
     /**
