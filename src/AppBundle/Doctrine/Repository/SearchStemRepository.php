@@ -11,35 +11,52 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
-use Doctrine\ORM\Query;
+use Doctrine\ORM\ORMException;
 use Rf\AppBundle\Doctrine\Entity\SearchStem;
 
 class SearchStemRepository extends AbstractRepository
 {
     /**
-     * @return Query
+     * @return int[]
      */
-    public function createFindAllQuery(): Query
+    public function getIdsWithNoIndices(): array
     {
-        return $this->createQueryBuilder('s')->getQuery();
+        $query = $this
+            ->createQueryBuilder('s')
+            ->select('s', 'indices')
+            ->leftJoin('s.indices', 'indices')
+            ->getQuery();
+
+        $rows = array_filter($query->getArrayResult(), function (array $row) {
+            return 0 === count($row['indices']);
+        });
+
+        return array_map(function (array $row) {
+            return $row['id'];
+        }, $rows);
     }
 
     /**
-     * @param string $stem
+     * @param int $id
      *
      * @return SearchStem|null
      */
-    public function findSingleByStem(string $stem): ?SearchStem
+    public function findById(int $id): ?SearchStem
     {
-        return $this
+        $query = $this
             ->createQueryBuilder('s')
-            ->where('s.stem = :stem')
+            ->where('s.id = :id')
             ->setParameters([
-                'stem' => $stem,
+                'id' => $id,
             ])
             ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+            ->getQuery();
+
+        try {
+            return $query->getSingleResult();
+        } catch (ORMException $exception) {
+            return null;
+        }
     }
 
     /**
@@ -49,20 +66,19 @@ class SearchStemRepository extends AbstractRepository
      */
     public function findByStem(string $stem): ?SearchStem
     {
-        $results = $this
+        $query = $this
             ->createQueryBuilder('s')
             ->where('s.stem = :stem')
             ->setParameters([
                 'stem' => $stem,
             ])
             ->setMaxResults(1)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
 
-        if (null !== $results && 1 === count($results)) {
-            return $results[0];
+        try {
+            return $query->getSingleResult();
+        } catch (ORMException $exception) {
+            return null;
         }
-
-        return null;
     }
 }

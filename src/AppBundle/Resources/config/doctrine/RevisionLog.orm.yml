@@ -4,7 +4,7 @@ Rf\AppBundle\Doctrine\Entity\RevisionLog:
     table: sys_revision_logs
 
     options:
-        row_format: DYNAMIC
+        row_format: COMPRESSED
         charset: utf8mb4
         collate: utf8mb4_unicode_ci
 

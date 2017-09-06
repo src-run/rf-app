@@ -12,6 +12,7 @@
 namespace Rf\AppBundle;
 
 use Rf\AppBundle\DependencyInjection\Compiler\RecordRouteGeneratorCompilerPass;
+use Rf\AppBundle\DependencyInjection\Compiler\SearchIndexEntityProviderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -25,5 +26,6 @@ class AppBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new RecordRouteGeneratorCompilerPass());
+        $container->addCompilerPass(new SearchIndexEntityProviderPass());
     }
 }

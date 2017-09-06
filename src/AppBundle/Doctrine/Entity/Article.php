@@ -11,13 +11,12 @@
 
 namespace Rf\AppBundle\Doctrine\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Sluggable\Sluggable;
+use Rf\AppBundle\Doctrine\Entity\Interfaces\IndexableInterface;
+use Rf\AppBundle\Doctrine\Entity\Interfaces\SluggableInterface;
 use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableTrait;
 use SR\Doctrine\ORM\Mapping\UuidEntity;
-use SR\Exception\Logic\LogicException;
 
-class Article extends UuidEntity implements Sluggable
+class Article extends UuidEntity implements SluggableInterface, IndexableInterface
 {
     use TimestampableTrait;
 
@@ -35,21 +34,6 @@ class Article extends UuidEntity implements Sluggable
      * @var string
      */
     private $content;
-
-    /**
-     * @var ArrayCollection|SearchIndex[]
-     */
-    private $indices;
-
-    /**
-     * @return Article
-     */
-    public function initializeIndices(): self
-    {
-        $this->indices = new ArrayCollection();
-
-        return $this;
-    }
 
     /**
      * @param string $slug
@@ -92,6 +76,22 @@ class Article extends UuidEntity implements Sluggable
     }
 
     /**
+     * @return null|string
+     */
+    public function getSubject(): ?string
+    {
+        return $this->getTitle();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSubject(): bool
+    {
+        return null !== $this->getTitle();
+    }
+
+    /**
      * @param string $content
      *
      * @return self
@@ -112,6 +112,14 @@ class Article extends UuidEntity implements Sluggable
     }
 
     /**
+     * @return bool
+     */
+    public function hasContent(): bool
+    {
+        return null !== $this->content;
+    }
+
+    /**
      * @param int $words
      *
      * @return string
@@ -121,33 +129,5 @@ class Article extends UuidEntity implements Sluggable
         preg_match(sprintf('/(?:\w+(?:\W+|$)){0,%n}/', $words), $this->getContent(), $matches);
 
         return isset($matches[0]) && $matches[0] ? $matches[0] : $this->getContent();
-    }
-
-    /**
-     * @param ArrayCollection|SearchIndex[] $indices
-     *
-     * @return self
-     */
-    public function setIndices($indices): self
-    {
-        $this->indices = $indices;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getIndices(): ArrayCollection
-    {
-        return $this->indices;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasIndices(): bool
-    {
-        return !$this->indices->isEmpty();
     }
 }

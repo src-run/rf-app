@@ -12,19 +12,17 @@
 namespace Rf\AppBundle\Doctrine\Entity;
 
 use Rf\AppBundle\Doctrine\Entity\Interfaces\ObjectIdentityInterface;
+use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableUpdatedTrait;
 use SR\Doctrine\ORM\Mapping\IdEntity;
 
-class SearchIndex extends IdEntity implements ObjectIdentityInterface
+class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
 {
-    /**
-     * @var int
-     */
-    private $position;
+    use TimestampableUpdatedTrait;
 
     /**
-     * @var SearchStem
+     * @var bool
      */
-    private $stem;
+    private $success;
 
     /**
      * @var string
@@ -37,43 +35,36 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
     private $objectIdentity;
 
     /**
-     * @param int $position
+     * @var string|null
+     */
+    private $objectHash;
+
+    /**
+     * @return void
+     */
+    public function initializeSuccess(): void
+    {
+        $this->success = false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess(): bool
+    {
+        return $this->success;
+    }
+
+    /**
+     * @param bool $success
      *
      * @return self
      */
-    public function setPosition(int $position): self
+    public function setSuccess(bool $success): self
     {
-        $this->position = $position;
+        $this->success = $success;
 
         return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPosition(): ?int
-    {
-        return $this->position;
-    }
-
-    /**
-     * @param SearchStem $stem
-     *
-     * @return self
-     */
-    public function setStem(SearchStem $stem): self
-    {
-        $this->stem = $stem;
-
-        return $this;
-    }
-
-    /**
-     * @return null|SearchStem
-     */
-    public function getStem(): ?SearchStem
-    {
-        return $this->stem;
     }
 
     /**
@@ -114,5 +105,33 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
         $this->objectIdentity = $objectIdentity;
 
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getObjectHash(): ?string
+    {
+        return $this->objectHash;
+    }
+
+    /**
+     * @param string|null $objectHash
+     *
+     * @return self
+     */
+    public function setObjectHash(string $objectHash = null): self
+    {
+        $this->objectHash = $objectHash;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasObjectHash(): bool
+    {
+        return null !== $this->objectHash;
     }
 }

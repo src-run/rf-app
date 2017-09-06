@@ -27,6 +27,21 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @return string[]
+     */
+    public function getUuids(): array
+    {
+        $query = $this
+            ->createQueryBuilder('a')
+            ->select('a.uuid')
+            ->getQuery();
+
+        return array_map(function (array $row) {
+            return $row['uuid'];
+        }, $query->getArrayResult());
+    }
+
+    /**
      * @param int $id
      *
      * @return Query

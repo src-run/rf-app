@@ -4,7 +4,7 @@ Rf\AppBundle\Doctrine\Entity\Email:
     table: sys_email_spool
 
     options:
-        row_format: DYNAMIC
+        row_format: COMPRESSED
         charset: utf8mb4
         collate: utf8mb4_unicode_ci
 
@@ -37,8 +37,6 @@ Rf\AppBundle\Doctrine\Entity\Email:
         status:
             type: string
             length: 2
-            options:
-                unsigned: true
             nullable: true
 
         environment:

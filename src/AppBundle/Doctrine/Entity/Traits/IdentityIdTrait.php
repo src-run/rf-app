@@ -23,9 +23,9 @@ trait IdentityIdTrait
     /**
      * @param int $id
      *
-     * @return IdentityIdTrait
+     * @return self
      */
-    public function setId(int $id): IdentityIdTrait
+    public function setId(int $id)
     {
         if (null !== $this->id) {
             throw new LogicException('Cannot overwrite the id value of "%d" as property is read-only once set!', $this->id);

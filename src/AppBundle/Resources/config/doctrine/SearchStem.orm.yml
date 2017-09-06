@@ -4,7 +4,7 @@ Rf\AppBundle\Doctrine\Entity\SearchStem:
     table: sys_search_word_stems
 
     options:
-        row_format: DYNAMIC
+        row_format: COMPRESSED
         charset: utf8mb4
         collate: utf8mb4_unicode_ci
 
@@ -26,3 +26,10 @@ Rf\AppBundle\Doctrine\Entity\SearchStem:
             type: string
             length: 128
             unique: true
+
+    oneToMany:
+
+        indices:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\SearchIndex
+            mappedBy: stem
+            fetch: LAZY

@@ -28,13 +28,13 @@ class EnvInstallFileRunner extends AbstractFileRunner
     /**
      * @param StyleInterface $io
      * @param string         $environment
-     * @param string         $repositoryPath
+     * @param string         $mapsRepoPath
      * @param string         $configurationPath
      * @param string[]       $ignoredFiles
      */
-    public function __construct(StyleInterface $io, string $environment, string $repositoryPath, string $configurationPath, array $ignoredFiles)
+    public function __construct(StyleInterface $io, string $environment, string $mapsRepoPath, string $configurationPath, array $ignoredFiles)
     {
-        parent::__construct($io, $repositoryPath, $ignoredFiles);
+        parent::__construct($io, $mapsRepoPath, $ignoredFiles);
 
         $this->environment = $environment;
         $this->configurationPath = $configurationPath;

@@ -4,7 +4,7 @@ Rf\AppBundle\Doctrine\Entity\Article:
     table: content_articles
 
     options:
-        row_format: DYNAMIC
+        row_format: COMPRESSED
         charset: utf8mb4
         collate: utf8mb4_unicode_ci
 
@@ -61,10 +61,3 @@ Rf\AppBundle\Doctrine\Entity\Article:
             type: text
             gedmo:
                 - versioned
-
-    oneToMany:
-
-        indices:
-            targetEntity: Rf\AppBundle\Doctrine\Entity\SearchIndex
-            mappedBy: article
-            fetch: LAZY

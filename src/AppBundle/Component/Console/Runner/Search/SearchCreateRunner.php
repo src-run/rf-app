@@ -13,242 +13,591 @@ namespace Rf\AppBundle\Component\Console\Runner\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
-use Psr\Cache\CacheItemPoolInterface;
 use Rf\AppBundle\Component\Console\Runner\AbstractRunner;
-use Rf\AppBundle\Doctrine\Entity\Article;
+use Rf\AppBundle\Component\Search\Indexing\EntityProviderInterface;
+use Rf\AppBundle\Component\Search\Indexing\Model\IndexableEntityModel;
 use Rf\AppBundle\Doctrine\Entity\SearchIndex;
+use Rf\AppBundle\Doctrine\Entity\SearchIndexLog;
 use Rf\AppBundle\Doctrine\Entity\SearchStem;
-use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
+use Rf\AppBundle\Doctrine\Repository\SearchIndexLogRepository;
 use Rf\AppBundle\Doctrine\Repository\SearchIndexRepository;
 use Rf\AppBundle\Doctrine\Repository\SearchStemRepository;
 use SR\Cocoa\Word\Stem\Stemmer;
 use SR\Cocoa\Word\Stop\Stopwords;
-use SR\Console\Output\Style\StyleInterface;
 use SR\Doctrine\ORM\Mapping\Entity;
 
 class SearchCreateRunner extends AbstractRunner
 {
+    /**
+     * @var Stemmer
+     */
+    private $stemWords;
+
+    /**
+     * @var Stopwords
+     */
+    private $stopWords;
+
+    /**
+     * @var EntityProviderInterface[]|iterable
+     */
+    private $providers;
+
     /**
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
-     * @var ArticleRepository
-     */
-    private $articleRepository;
-
-    /**
      * @var SearchStemRepository
      */
-    private $searchStemRepository;
+    private $wordStemsRepo;
 
     /**
      * @var SearchIndexRepository
      */
-    private $searchIndexRepository;
+    private $indexMapsRepo;
 
     /**
-     * @var Stemmer
+     * @var SearchIndexLogRepository
      */
-    private $stemmer;
-
-    /**
-     * @var Stopwords
-     */
-    private $stopwords;
-
-    /**
-     * @var CacheItemPoolInterface
-     */
-    private $cache;
+    private $indexLogsRepo;
 
     /**
      * @var bool
      */
-    private $cacheEnabled = true;
+    private $cache = true;
 
     /**
-     * @param EntityManagerInterface $em
-     * @param ArticleRepository      $articleRepository
-     * @param SearchStemRepository   $searchStemRepository
-     * @param SearchIndexRepository  $searchIndexRepository
-     * @param Stemmer                $stemmer
-     * @param Stopwords              $stopwords
+     * @var string[]
      */
-    public function __construct(EntityManagerInterface $em, ArticleRepository $articleRepository, SearchStemRepository $searchStemRepository, SearchIndexRepository $searchIndexRepository, Stemmer $stemmer, Stopwords $stopwords, CacheItemPoolInterface $cache)
+    private $uuids = [];
+
+    /**
+     * @param Stemmer                  $stemWords
+     * @param Stopwords                $stopWords
+     * @param EntityManagerInterface   $em
+     * @param SearchStemRepository     $wordStemsRepo
+     * @param SearchIndexRepository    $indexMapsRepo
+     * @param SearchIndexLogRepository $indexLogsRepo
+     */
+    public function __construct(Stemmer $stemWords, Stopwords $stopWords, EntityManagerInterface $em, SearchStemRepository $wordStemsRepo, SearchIndexRepository $indexMapsRepo, SearchIndexLogRepository $indexLogsRepo)
     {
         parent::__construct(null);
 
+        $this->stemWords = $stemWords;
+        $this->stopWords = $stopWords;
         $this->em = $em;
-        $this->articleRepository = $articleRepository;
-        $this->searchStemRepository = $searchStemRepository;
-        $this->searchIndexRepository = $searchIndexRepository;
-        $this->stemmer = $stemmer;
-        $this->stopwords = $stopwords;
-        $this->cache = $cache;
+        $this->wordStemsRepo = $wordStemsRepo;
+        $this->indexMapsRepo = $indexMapsRepo;
+        $this->indexLogsRepo = $indexLogsRepo;
     }
 
     /**
-     * @param bool $cacheEnabled
+     * @param string[] ...$uuids
      */
-    public function setCacheEnabled(bool $cacheEnabled): void
+    public function setUuids(string ...$uuids): void
     {
-        $this->cacheEnabled = $cacheEnabled;
+        $this->uuids = $uuids;
     }
 
-    public function run()
+    /**
+     * @param bool $enabled
+     */
+    public function setCache(bool $enabled): void
     {
-        $this->io->section('Resolving Article Stems and Indexes');
+        $this->cache = $enabled;
+    }
 
-        $articleList = $this->articleRepository->findAllOrderByCreated();
-        $articleSize = count($articleList);
+    /**
+     * @param iterable|EntityProviderInterface[] $providers
+     */
+    public function setProviders($providers): void
+    {
+        $this->providers = $providers;
+    }
 
-        for ($i = 0; $i < $articleSize; $i++) {
-            $this->io->subSection(sprintf("%'.04d. Processing Article %s (%s)", $i + 1, $articleList[$i]->getUuid(), $articleList[$i]->getTitle()));
-            $this->persistIndexes($articleList[$i], ...$this->persistStems($articleList[$i]));
+    /**
+     * @return void
+     */
+    public function run(): void
+    {
+        $this->io->section('Creating stems/indices');
+
+        if (false === $this->createSearchEntries()) {
+            $this->setResult(255);
         }
     }
 
     /**
-     * @param Article $article
-     *
-     * @return array
+     * @return bool
      */
-    private function stemArticle(Article $article): array
+    private function createSearchEntries(): bool
     {
-        $item = $this->cache->getItem(vsprintf('%s_%s_%s', [
-            spl_object_id($this),
-            hash('sha256', $article->getSlug().$article->getCreated()->format('r')),
-            hash('sha256', $article->getContent())
-        ]));
-
-        if ($this->cacheEnabled && $item->isHit()) {
-            $this->io->write('...');
-            return $item->get();
+        foreach ($this->providers as $provider) {
+            $this->handleProvider($provider);
         }
 
-        $stems = $this->stemmer->stem(
-            preg_replace('{[^^0-9a-z\' ]}i', '', $article->getContent())
-        );
-
-        $this->io->write(sprintf('(%d) ...', count($stems)));
-
-        $stems = array_map(function(string $s) {
-            return strtolower($s);
-        }, $stems);
-
-        $stems = array_filter($stems, function (string $s) {
-            return strlen($s) > 2 && 1 === preg_match('{^[a-z]+$}', $s);
-        });
-
-        $stems = array_map(function (string $name) {
-            return $this->resolveSearchStemEntity($name);
-        }, $this->stopwords->sanitize($stems));
-
-        $item->set($stems);
-        $this->cache->save($item);
-
-        return array_filter($stems, function (SearchStem $stem) {
-            return null !== $stem->getStem();
-        });
+        return true;
     }
 
     /**
-     * @param Article $article
+     * @param EntityProviderInterface $provider
      *
-     * @return SearchStem[]
+     * @return bool
      */
-    private function persistStems(Article $article): array
+    private function handleProvider(EntityProviderInterface $provider): bool
     {
-        $this->io->write('- Stemming the content ');
+        foreach ($provider->getModels() as $model) {
+            $this->io->info([sprintf('Processing "%s:%s"', $model->getObjectClass(), $model->getObjectIdentity())]);
 
-        $stems = $this->stemArticle($article);
+            if (false === $this->handleModel($model)) {
+                return false;
+            }
+        }
 
-        $this->emFlush(...$stems);
-        $this->io->writeln([' OK']);
+        return true;
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     *
+     * @return bool
+     */
+    private function handleModel(IndexableEntityModel $model): bool
+    {
+        if (null === $log = $this->hasSearchIndexLog($model)) {
+            return $this->doModelPersist($model);
+        }
+
+        return $this->doModelSkipped($model, $log);
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     * @param SearchIndexLog       $log
+     *
+     * @return bool
+     */
+    private function doModelSkipped(IndexableEntityModel $model, SearchIndexLog $log): bool
+    {
+        if ($log->getObjectHash() === $model->getObjectHash()) {
+            $explains = sprintf('content unchanged: object hash match "%s"', $log->getObjectHash());
+        } else {
+            $interval = $this->getLogOldestValidDateTime()->diff($log->getUpdated());
+            $explains = vsprintf('indexed on %s: fresh for another %d hours and %d minutes', [
+                $log->getUpdated()->format('Y/m/d @ H:i:s'),
+                $interval->format('%R%h'),
+                $interval->format('%R%i'),
+            ]);
+        }
+
+        $this->io->comment([sprintf('skipping entity (%s)', $explains)]);
+
+        return true;
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     *
+     * @return bool
+     */
+    private function doModelPersist(IndexableEntityModel $model): bool
+    {
+        $wordStems = $this->handleModelStems($model);
+        $this->doEntityDetach(...$wordStems);
+
+        $indexMaps = $this->handleModelIndices($model, ...$wordStems);
+        $this->doEntityDetach(...$indexMaps);
+
+        $this->doEntityFlush(true);
+
+        return 0 !== count($indexMaps) && $this->handleModelLog($model);
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     *
+     * @return array|SearchStem[]
+     */
+    private function handleModelStems(IndexableEntityModel $model): array
+    {
+        $this->io->action('stemming model contents');
+        $this->io->write(sprintf('(%d chars) ', strlen($model->getStemmableString())));
+        $stems = $this->stemWords->stem($model->getStemmableString());
+        $this->io->actionOkay();
+
+        $this->io->action('persisting word stems');
+        $this->io->write(sprintf('(%d items) ', count($stems)));
+        $stems = $this->findOrPersistStems($stems);
+        $this->io->actionOkay();
 
         return $stems;
     }
 
     /**
-     * @param Article      $article
-     * @param SearchStem[] ...$stems
+     * @param IndexableEntityModel $model
+     * @param SearchStem[]         ...$stems
+     *
+     * @return SearchIndex[]
      */
-    private function persistIndexes(Article $article, SearchStem ...$stems)
+    private function handleModelIndices(IndexableEntityModel $model, SearchStem ...$stems): array
     {
-        $this->io->write(sprintf('- Creating the indexes (%d) ...', count($stems)));
+        $this->io->action('persisting indices');
+        $this->io->write(sprintf('(%d items) ', count($stems)));
+        $indices = $this->findOrPersistIndices($model, ...$stems);
+        $this->io->actionOkay();
 
-        $work = [];
-        foreach ($stems as $position => $stem) {
-            $this->io
-                ->environment(StyleInterface::VERBOSITY_VERY_VERBOSE)
-                ->write('.');
+        $this->io->action('cleaning up indices');
+        $stale = $this->removeStaleIndices($model, ...$indices);
+        $this->io->write(sprintf('(%d items) ', count($stale)));
+        $this->io->actionOkay();
 
-            if (null !== $this->searchIndexRepository->findByArticleStemPosition($article, $stem, $position)) {
-                continue;
+        return $indices;
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     *
+     * @return bool
+     */
+    private function handleModelLog(IndexableEntityModel $model): bool
+    {
+        $this->io->action('checking for index log entry');
+
+        if (null !== $log = $this->indexLogsRepo->findByObjectClassAndId($model->getObjectClass(), $model->getObjectIdentity())) {
+            if ($log->getObjectHash() === $model->getObjectHash()) {
+                try {
+                    $this->doEntityPersist($log);
+                    $this->doEntityFlush(true);
+                    $this->doEntityDetach($log);
+                } catch (ORMException $exception) {
+                    return false;
+                } finally {
+                    $this->io->write('(updated expiration) ');
+                    $this->io->actionOkay();
+
+                    return true;
+                }
             }
 
-            $index = new SearchIndex();
-            $index->setArticle($article);
-            $index->setStem($stem);
-            $index->setPosition($position);
+            if ($log->getUpdated() > $this->getLogOldestValidDateTime()) {
+                $this->io->write('(leaving existing) ');
+                $this->io->actionOkay();
+
+                return true;
+            }
 
             try {
-                $this->em->persist($index);
-            } catch (\Exception $e) {
-                $this->io->warning(sprintf('Could not persist index: %s', var_export($index, true)));
+                $this->doEntityDeletes($log);
+                $this->doEntityFlush(true);
+                $this->doEntityDetach($log);
+            } catch (ORMException $exception) {
+                return false;
+            } finally {
+                $this->io->write('(removing stale) ');
+                $this->io->actionFail('RM');
+
+                return true;
             }
 
-            if ($position % 100 === 0) {
-                $this->emFlush(...$work);
-                $work = [];
-            } else {
-                $work[] = $index;
+        }
+
+        $log = new SearchIndexLog();
+        $log->setObjectClass($model->getObjectClass());
+        $log->setObjectIdentity($model->getObjectIdentity());
+        $log->setObjectHash($model->getObjectHash());
+        $log->setSuccess(true);
+
+        try {
+            $this->doEntityPersist($log);
+            $this->doEntityFlush(true);
+            $this->doEntityDetach($log);
+        } catch (ORMException $exception) {
+            return false;
+        } finally {
+            $this->io->write('(persisting new) ');
+            $this->io->actionOkay();
+
+            return true;
+        }
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     *
+     * @return null|SearchIndexLog
+     */
+    private function hasSearchIndexLog(IndexableEntityModel $model): ?SearchIndexLog
+    {
+        if (null === $log = $this->indexLogsRepo->findByObjectClassAndId($model->getObjectClass(), $model->getObjectIdentity())) {
+            return null;
+        }
+
+        if ($log->getObjectHash() !== $model->getObjectHash() && $log->getUpdated() <= $this->getLogOldestValidDateTime()) {
+            return null;
+        }
+
+        return $log->isSuccess() ? $log : null;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    private function getLogOldestValidDateTime(): \DateTime
+    {
+        return new \DateTime('-12 hours');
+    }
+
+    /**
+     * @param string[] $stems
+     *
+     * @return string[]
+     */
+    private function findOrPersistStems(array $stems): array
+    {
+        $stems = array_map(function (string $stem) {
+            return strtolower($stem);
+        }, $stems);
+
+        $stems = array_filter($stems, function (string $stem): bool {
+            return null !== $stem && 2 < strlen($stem) && 1 === preg_match('{^[a-z].*[a-z]$}i', $stem);
+        });
+
+        $entities = [];
+        $position = -1;
+        $size = count($stems);
+
+        foreach ($stems as $i => $stem) {
+            $entities[$i] = $this->getSearchStemEntity($stem);
+            $this->writeProgress(++$position, $size);
+        }
+
+        return $entities;
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     * @param SearchStem[]         ...$stems
+     *
+     * @return SearchIndex[]
+     */
+    private function findOrPersistIndices(IndexableEntityModel $model, SearchStem ...$stems): array
+    {
+        $entities = [];
+        $size = count($stems);
+
+        foreach ($stems as $position => $stem) {
+            $entities[] = $this->getSearchIndexEntity($model, $stem, $position);
+            $this->writeProgress($position, $size);
+
+            if (0 === $position % 1000) {
+                $this->doEntityFlush(true);
+                $this->doEntityClear();
+                $detaches = [];
             }
         }
 
-        $this->emFlush($article);
-        $this->io->writeln([' OK']);
+        $this->doEntityFlush(true);
+        $this->doEntityClear();
+
+        return $entities;
+    }
+
+    /**
+     * @param int $position
+     * @param int $size
+     */
+    private function writeProgress(int $position, int $size): void
+    {
+        if (!$this->io->isVerbose()) {
+            return;
+        }
+
+        if ($position === 0) {
+            $this->io->write('(');
+        }
+
+        if ($position === ($size - 1)) {
+            $this->io->write(sprintf('..%d) ', $size));
+        }
+        elseif (0 === $position % 1000) {
+            $this->io->write($position);
+        }
+        elseif (0 === $position % 200) {
+            $this->io->write('.');
+        }
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     * @param SearchIndex[]        ...$indices
+     *
+     * @return SearchIndex[]
+     */
+    private function removeStaleIndices(IndexableEntityModel $model, SearchIndex ...$indices): array
+    {
+        $staleIndices = $this
+            ->indexMapsRepo
+            ->findByObjectAndNotInSet($model->getObjectClass(), $model->getObjectIdentity(), ...$indices);
+
+        try {
+            $this->doEntityDeletesDetach(...$staleIndices);
+            $this->doEntityFlush(true);
+        } catch (ORMException $exception) {
+            // ignore exception
+        } finally {
+            return $staleIndices;
+        }
+    }
+
+    /**
+     * @param string $stem
+     *
+     * @return SearchStem
+     */
+    private function getSearchStemEntity(string $stem): SearchStem
+    {
+        if (null === $entity = $this->wordStemsRepo->findByStem($stem)) {
+            $entity = new SearchStem();
+            $entity->setStem($stem);
+
+            $this->doEntityPersist($entity);
+            $this->doEntityFlush(true);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param IndexableEntityModel $model
+     * @param SearchStem           $stem
+     * @param int                  $position
+     *
+     * @return SearchIndex
+     */
+    private function getSearchIndexEntity(IndexableEntityModel $model, SearchStem $stem, int $position): SearchIndex
+    {
+        if (null === $entity = $this->indexMapsRepo->findByObjectAndStemAndPosition($model->getObjectClass(), $model->getObjectIdentity(), $stem, $position)) {
+            list($stem) = $this->doEntityMerges($stem);
+
+            $entity = new SearchIndex();
+            $entity->setObjectClass($model->getObjectClass());
+            $entity->setObjectIdentity($model->getObjectIdentity());
+            $entity->setStem($stem);
+            $entity->setPosition($position);
+
+            $this->doEntityPersist($entity, $stem);
+        }
+
+        return $entity;
     }
 
     /**
      * @param Entity[] ...$entities
      */
-    private function emFlush(Entity ...$entities): void
+    private function doEntityPersist(Entity ...$entities): void
     {
-        try {
+        foreach ($entities as $entity) {
+            $this->em->persist($entity);
+        }
+
+        $this->doEntityFlush();
+    }
+
+    /**
+     * @param Entity[] ...$entities
+     */
+    private function doEntityPersistDetach(Entity ...$entities): void
+    {
+        $this->doEntityPersist(...$entities);
+        $this->doEntityFlush();
+        $this->doEntityDetach(...$entities);
+    }
+
+    /**
+     * @param Entity[] ...$entities
+     */
+    private function doEntityDeletes(Entity ...$entities): void
+    {
+        foreach ($entities as $entity) {
+            $this->em->remove($entity);
+        }
+
+        $this->doEntityFlush();
+    }
+
+    /**
+     * @param Entity[] ...$entities
+     */
+    private function doEntityDeletesDetach(Entity ...$entities): void
+    {
+        $this->doEntityDeletes(...$entities);
+        $this->doEntityDetach(...$entities);
+    }
+
+    /**
+     * @param Entity[] ...$entities
+     */
+    private function doEntityDetach(Entity ...$entities): void
+    {
+        foreach ($entities as $entity) {
+            $this->em->detach($entity);
+        }
+
+        $this->doEntityFlush();
+    }
+
+    /**
+     * @param bool $force
+     *
+     * @return void
+     */
+    private function doEntityFlush(bool $force = false): void
+    {
+        if ($force || $this->isUnitOfWorkMoreThan()) {
             $this->em->flush();
-        } catch (ORMException $e) {
-            $this->io->warning(sprintf('Could not flush entity manager: %s', $e->getMessage()));
         }
     }
 
     /**
-     * @param string $name
+     * @param Entity[] ...$entities
      *
-     * @return SearchStem
+     * @return Entity[]
      */
-    private function resolveSearchStemEntity(string $name): SearchStem
+    private function doEntityMerges(Entity ...$entities): array
     {
-        $this->io
-            ->environment(StyleInterface::VERBOSITY_VERY_VERBOSE)
-            ->write('.');
+        $entities = array_map(function (Entity $entity) {
+            return $this->em->contains($entity) ? $entity : $this->em->merge($entity);
+        }, $entities);
 
-        $item = $this->cache->getItem(sprintf('stem-entity-%s', hash('sha256', $name)));
+        $this->doEntityFlush();
 
-        if (!$item->isHit()) {
-            if (null === $stem = $this->searchStemRepository->findByStem($name)) {
-                $stem = new SearchStem();
-                $stem->setStem($name);
-                $this->em->persist($stem);
-            }
+        return $entities;
+    }
 
-            $item->set($stem);
-            $item->expiresAfter(new \DateInterval('PT1M'));
-            $this->cache->save($item);
+    /**
+     * @return void
+     */
+    private function doEntityClear(): void
+    {
+        $this->em->clear();
+    }
+
+    /**
+     * @param int $size
+     *
+     * @return bool
+     */
+    private function isUnitOfWorkMoreThan(int $size = 1000): bool
+    {
+        $u = $this->em->getUnitOfWork();
+        $s = 0;
+
+        foreach (['EntityInsertions', 'EntityUpdates', 'EntityDeletions', 'CollectionUpdates', 'CollectionDeletions'] as $type) {
+            $s += count(call_user_func([$u, sprintf('getScheduled%s', $type)]));
         }
 
-        return $item->get();
+        return $s > $size;
     }
 }

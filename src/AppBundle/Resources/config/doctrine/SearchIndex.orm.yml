@@ -1,10 +1,10 @@
 Rf\AppBundle\Doctrine\Entity\SearchIndex:
 
     type: entity
-    table: sys_search_rev_index
+    table: sys_search_index_maps
 
     options:
-        row_format: DYNAMIC
+        row_format: COMPRESSED
         charset: utf8mb4
         collate: utf8mb4_unicode_ci
 
@@ -27,6 +27,14 @@ Rf\AppBundle\Doctrine\Entity\SearchIndex:
             options:
                 unsigned: true
 
+        objectIdentity:
+            type: string
+            length: 64
+
+        objectClass:
+            type: string
+            length: 384
+
     manyToOne:
 
         stem:
@@ -34,34 +42,13 @@ Rf\AppBundle\Doctrine\Entity\SearchIndex:
             joinColumn:
                 name: stem_id
                 referencedColumnName: id
-            cascade:
-                - persist
-
-        article:
-            targetEntity: Rf\AppBundle\Doctrine\Entity\Article
-            joinColumn:
-                name: article_uuid
-                referencedColumnName: uuid
             inversedBy: indices
 
     uniqueConstraints:
 
-        stem_article_position_uniq:
+        object_stem_position_uniq:
             columns:
+                - object_class
+                - object_identity
                 - stem_id
-                - article_uuid
                 - position
-
-    indexes:
-
-        id_stem_article_idx:
-            columns:
-                - id
-                - stem_id
-                - article_uuid
-
-        id_article_stem_idx:
-            columns:
-                - id
-                - article_uuid
-                - stem_id
