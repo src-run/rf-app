@@ -16,13 +16,16 @@
 doctrine:
     dbal:
         driver:         "%database_driver%"
-        server_version: "%database_version%"
-        charset:        "%database_charset%"
         host:           "%env(DB_HOST)%"
         port:           "%env(DB_PORT)%"
         dbname:         "%env(DB_NAME)%"
         user:           "%env(DB_USER)%"
         password:       "%env(DB_PASS)%"
+        server_version: "%database_version%"
+        charset:        "%database_charset%"
+        default_table_options:
+            charset: "%database_charset%"
+            collate: "%database_collate%"
 
         types:
             bin_uuid: SR\Doctrine\DBAL\Types\StringUuidType

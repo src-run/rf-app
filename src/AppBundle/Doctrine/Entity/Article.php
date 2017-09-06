@@ -11,6 +11,8 @@
 
 namespace Rf\AppBundle\Doctrine\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Rf\AppBundle\Doctrine\Entity\Interfaces\IndexableInterface;
 use Rf\AppBundle\Doctrine\Entity\Interfaces\SluggableInterface;
 use Rf\AppBundle\Doctrine\Entity\Traits\TimestampableTrait;
@@ -34,6 +36,21 @@ class Article extends UuidEntity implements SluggableInterface, IndexableInterfa
      * @var string
      */
     private $content;
+
+    /**
+     * @var PersistentCollection|ArrayCollection|ArticleTag[]
+     */
+    private $tags;
+
+    /**
+     * @var PersistentCollection|ArrayCollection|ArticleComment[]
+     */
+    private $comments;
+
+    protected function initializeTags(): void
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     /**
      * @param string $slug
@@ -129,5 +146,61 @@ class Article extends UuidEntity implements SluggableInterface, IndexableInterfa
         preg_match(sprintf('/(?:\w+(?:\W+|$)){0,%n}/', $words), $this->getContent(), $matches);
 
         return isset($matches[0]) && $matches[0] ? $matches[0] : $this->getContent();
+    }
+
+    /**
+     * @param PersistentCollection|ArrayCollection|ArticleTag[] $tags
+     *
+     * @return self
+     */
+    public function setTags($tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection|ArticleTag[]
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTags(): bool
+    {
+        return false === $this->tags->isEmpty();
+    }
+
+    /**
+     * @param $comments
+     *
+     * @return self
+     */
+    public function setComments($comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|PersistentCollection|ArticleComment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasComments(): bool
+    {
+        return false === $this->tags->isEmpty();
     }
 }

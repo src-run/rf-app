@@ -15,8 +15,33 @@
 
     <hr />
 
+    <p><strong>Article Tags</strong></p>
+    <ul>
+        {% for tag in article.getTags() if article.hasTags() %}
+            <li>{{ tag.getName() }}</li>
+        {% endfor %}
+    </ul>
+
+    <hr />
+
     <div>
         {{ markdown(article.getContent()) }}
     </div>
+
+    <hr />
+
+    <p><strong>Article Comment</strong></p>
+
+    {% for comment in article.getComments() if article.hasComments() %}
+        <div>
+            <h2>{{ comment.getTitle() }}</h2>
+            <p>Written on <time>{{ comment.getCreated().format('r') }}</time> by <em>{{ comment.getAuthorName() }} 	&lt;{{ comment.getAuthorEmail() }}&gt;</em></p>
+
+            <div>
+                {{ markdown(comment.getContent()) }}
+            </div>
+        </div>
+        <hr />
+    {% endfor %}
 
 {% endblock %}

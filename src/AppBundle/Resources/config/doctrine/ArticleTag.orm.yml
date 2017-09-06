@@ -1,0 +1,56 @@
+Rf\AppBundle\Doctrine\Entity\ArticleTag:
+
+    type: entity
+    table: article_tags
+
+    options:
+        row_format: COMPRESSED
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
+
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleTagRepository
+
+    id:
+
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+            options:
+                unsigned: true
+
+    fields:
+
+        slug:
+            type: string
+            length: 80
+            gedmo:
+                slug:
+                    fields:
+                        - name
+                    updatable: true
+                    unique: false
+                    separator: -
+                    style: lower
+
+        name:
+            type: string
+            length: 255
+            slug: true
+
+        description:
+            type: text
+
+    manyToMany:
+
+        articles:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\Article
+            fetch: LAZY
+            mappedBy: tags
+
+    uniqueConstraints:
+
+        slug_uniq:
+            columns:
+                - slug

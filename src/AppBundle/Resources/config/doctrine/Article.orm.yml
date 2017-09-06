@@ -1,7 +1,7 @@
 Rf\AppBundle\Doctrine\Entity\Article:
 
     type: entity
-    table: content_articles
+    table: article_contents
 
     options:
         row_format: COMPRESSED
@@ -61,3 +61,24 @@ Rf\AppBundle\Doctrine\Entity\Article:
             type: text
             gedmo:
                 - versioned
+
+    oneToMany:
+
+        comments:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\ArticleComment
+            mappedBy: article
+            fetch: LAZY
+
+    manyToMany:
+
+        tags:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\ArticleTag
+            fetch: LAZY
+            joinTable:
+                name: article_tags_mapping
+                joinColumns:
+                    article_uuid:
+                        referencedColumnName: uuid
+                inverseJoinColumns:
+                    tag_id:
+                        referencedColumnName: id

@@ -1,0 +1,54 @@
+Rf\AppBundle\Doctrine\Entity\ArticleComment:
+
+    type: entity
+    table: article_comments
+
+    options:
+        row_format: COMPRESSED
+        charset: utf8mb4
+        collate: utf8mb4_unicode_ci
+
+    repositoryClass: Rf\AppBundle\Doctrine\Repository\ArticleCommentRepository
+
+    id:
+
+        uuid:
+            type: string
+            length: 36
+            id: true
+            generator:
+                strategy: CUSTOM
+            customIdGenerator:
+                class: SR\Doctrine\ORM\Id\StringUuid4PessimisticGenerator
+
+    fields:
+
+        created:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+
+        title:
+            type: string
+            length: 255
+
+        content:
+            type: text
+
+        authorName:
+            type: string
+            length: 255
+
+        authorEmail:
+            type: string
+            length: 255
+
+    manyToOne:
+
+        article:
+            targetEntity: Rf\AppBundle\Doctrine\Entity\Article
+            joinColumn:
+                name: article_uuid
+                referencedColumnName: uuid
+            inversedBy: comments
