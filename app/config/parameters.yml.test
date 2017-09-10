@@ -4,8 +4,8 @@ parameters:
     database_version: 5.6
     database_charset: utf8mb4
     database_collate: utf8mb4_unicode_ci
-    env(DB_HOST): 127.0.0.1
-    env(DB_PORT): 2525
+    env(DB_HOST): localhost
+    env(DB_PORT): null
     env(DB_NAME): rf
     env(DB_USER): root
     env(DB_PASS): null
