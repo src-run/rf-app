@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
+require __DIR__.'/.bldr/_helpers/php-cs-fixer/config.php';
 
-class AppCache extends HttpCache
-{
-}
+return (new SR\PhpCsFixer\Config(['location' => __DIR__, 'header' => true]))->create();

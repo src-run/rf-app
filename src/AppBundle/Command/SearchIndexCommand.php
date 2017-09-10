@@ -11,6 +11,7 @@
 
 namespace Rf\AppBundle\Command;
 
+use Rf\AppBundle\Component\Console\Registry\ConfigurationRegistry;
 use Rf\AppBundle\Component\Console\Runner\Search\SearchCreateRunner;
 use Rf\AppBundle\Component\Console\Runner\Search\SearchPurgeRunner;
 use SR\Console\Output\Style\Style;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SearchIndexCommand extends Command
+class SearchIndexCommand extends AbstractCommand
 {
     use StyleAwareTrait;
 
@@ -92,14 +93,28 @@ class SearchIndexCommand extends Command
     }
 
     /**
-     * @param string[] ...$uuids
+     * @param ConfigurationRegistry $c
      *
      * @return int
      */
-    private function doPruneRunner(string ...$uuids): int
+    protected function doExecute(ConfigurationRegistry $c): int
+    {
+        if ((true === $c->get('purge') && 0 !== $return = $this->doPruneRunner($c)) || 0 !== $return = $this->doIndexRunner($c)) {
+            return $return;
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param ConfigurationRegistry $c
+     *
+     * @return int
+     */
+    private function doPruneRunner(ConfigurationRegistry $c): int
     {
         $this->searchPurgeRunner->setStyle($this->io);
-        $this->searchPurgeRunner->setUuids(...$uuids);
+        $this->searchPurgeRunner->setUuids(...$c->get('uuids'));
         $this->searchPurgeRunner->run();
 
         if (0 !== $result = $this->searchPurgeRunner->getResult()) {
@@ -110,16 +125,15 @@ class SearchIndexCommand extends Command
     }
 
     /**
-     * @param bool     $cache
-     * @param string[] ...$uuids
+     * @param ConfigurationRegistry $c
      *
      * @return int
      */
-    private function doIndexRunner(bool $cache, string ...$uuids): int
+    private function doIndexRunner(ConfigurationRegistry $c): int
     {
         $this->searchCreateRunner->setStyle($this->io);
-        $this->searchCreateRunner->setCache($cache);
-        $this->searchCreateRunner->setUuids(...$uuids);
+        $this->searchCreateRunner->setCache($c->get('cache'));
+        $this->searchCreateRunner->setUuids(...$c->get('uuids'));
         $this->searchCreateRunner->run();
 
         if (0 !== $result = $this->searchCreateRunner->getResult()) {
@@ -130,27 +144,26 @@ class SearchIndexCommand extends Command
     }
 
     /**
-     * @param array $uuidList
-     * @param bool  $purge
-     * @param bool  $cache
+     * @return ConfigurationRegistry
      */
-    private function writeConfiguration(array $uuidList, bool $purge, bool $cache): void
+    protected function initializeConfiguration(): ConfigurationRegistry
     {
-        if ($this->io->isDebug()) {
-            $this->io->comment('Resolved runtime configuration:');
-        }
+        $c = new ConfigurationRegistry();
+        $c->set('uuids', $this->io->getInput()->getArgument('uuid'));
+        $c->set('purge', $this->io->getInput()->getOption('purge'));
+        $c->set('cache', $this->io->getInput()->getOption('no-cache') !== true);
 
-        if ($this->io->isVeryVerbose()) {
-            $this->io->tableVertical([
-                'Article Identities',
-                'Purge Existing Data',
-                'Cache Stem Data',
-            ], ...[
-                [sprintf('list=[%s]%s', implode(',', $uuidList) ?: '<none>',
-                    (count($uuidList) === 0 ? '' : sprintf(' (%d)', count($uuidList))))],
-                [sprintf('enabled=[%s]', $purge ? 'yes' : 'no')],
-                [sprintf('enabled=[%s]', $cache ? 'yes' : 'no')],
-            ]);
-        }
+        $this->writeConfiguration([
+            'Article Identities',
+            'Purge Existing Data',
+            'Cache Stem Data',
+        ], [
+            [sprintf('list=[%s]%s', implode(',', $c->get('uuids')) ?: '<none>',
+                (count($c->get('uuids')) === 0 ? '' : sprintf(' (%d)', count($c->get('uuids')))))],
+            [sprintf('enabled=[%s]', $c->get('purge') ? 'yes' : 'no')],
+            [sprintf('enabled=[%s]', $c->get('cache') ? 'yes' : 'no')],
+        ]);
+
+        return $c;
     }
 }

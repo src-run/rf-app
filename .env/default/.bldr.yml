@@ -4,7 +4,7 @@ api_cfgmod: clone
 api_runner: ~
 api_paths: src
 env_make: ~
-env_prep: mysql-setup-utf8mb4,mysql-setup-innodb,composer-get
+env_prep: composer-get
 php_conf: timezone
 php_exts: ~
 app_prep: symfony-cp-params,composer-req,symfony-db-make,symfony-db-load,symfony-assets-install,yarn-req,yarn-run-build

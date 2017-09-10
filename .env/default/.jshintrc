@@ -1,0 +1,23 @@
+{
+    "asi": true,
+    "browser": true,
+    "bitwise": true,
+    "curly": true,
+    "devel": false,
+    "esversion": 6,
+    "eqeqeq": true,
+    "expr": true,
+    "futurehostile": true,
+    "jquery": true,
+    "latedef": true,
+    "nonbsp": true,
+    "maxdepth": 10,
+    "mocha": true,
+    "noarg": true,
+    "node": true,
+    "shadow": false,
+    "strict": true,
+    "undef": true,
+    "unused": true,
+    "varstmt": true
+}

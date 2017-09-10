@@ -1,11 +1,28 @@
 <?php
 
+/*
+ * This file is part of the `src-run/rf-app` project.
+ *
+ * (c) Rob Frawley 2nd <rmf@src.run>
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    /**
+     * @var string
+     */
+    private static $appName = 'rf.app';
+
+    /**
+     * @return array
+     */
+    public function registerBundles(): array
     {
         $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -37,23 +54,47 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    public function getRootDir()
+    /**
+     * @return string
+     */
+    public function getRootDir(): string
     {
         return __DIR__;
     }
 
-    public function getCacheDir()
+    /**
+     * @return string
+     */
+    public function getCacheDir(): string
     {
-        return dirname(__DIR__).'/var/cache/'.$this->getEnvironment();
+        return sprintf('%s/cache/%s', $this->getVarRootPath(), $this->getEnvironment());
     }
 
-    public function getLogDir()
+    /**
+     * @return string
+     */
+    public function getLogDir(): string
     {
-        return dirname(__DIR__).'/var/logs';
+        return sprintf('%s/logs', $this->getVarRootPath());
     }
 
+    /**
+     * @param LoaderInterface $loader
+     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+    }
+
+    /**
+     * @return string
+     */
+    private function getVarRootPath(): string
+    {
+        if (in_array($this->getEnvironment(), ['dev', 'test'])) {
+            return sprintf('/dev/shm/%s/var', static::$appName);
+        }
+
+        return sprintf('%s/var', dirname(__DIR__));
     }
 }

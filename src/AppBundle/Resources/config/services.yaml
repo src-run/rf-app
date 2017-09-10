@@ -99,7 +99,7 @@ services:
     SR\Cocoa\Transformer\TransformerInterface:
         alias: SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer
 
-    Rf\AppBundle\Command\EnvironmentInstallCommand:
+    Rf\AppBundle\Command\EnvFilesCommand:
         tags:
             - { name: console.command, command: rf:env:install }
 
