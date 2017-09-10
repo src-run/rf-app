@@ -2,16 +2,18 @@ parameters:
     locale: en_US
     database_driver: pdo_mysql
     database_version: 5.6
-    database_host: 127.0.0.1
-    database_port: null
-    database_name: rf
-    database_user: root
-    database_password: null
     database_charset: utf8mb4
-    mailer_transport: smtp
-    mailer_host: 127.0.0.1
-    mailer_port: 2525
-    mailer_user: null
-    mailer_password: null
-    mailer_spool: file
-    secret: my-public-test-secret
+    database_collate: utf8mb4_unicode_ci
+    env(DB_HOST): 127.0.0.1
+    env(DB_PORT): 2525
+    env(DB_NAME): rf
+    env(DB_USER): root
+    env(DB_PASS): null
+    mail_transport: smtp
+    mail_spool: file
+    env(MAIL_HOST): 127.0.0.1
+    env(MAIL_PORT): 2525
+    env(MAIL_USER): null
+    env(MAIL_PASS): null
+    env(APP_SECRET): my-public-test-secret
+    env(APP_ENV): default
