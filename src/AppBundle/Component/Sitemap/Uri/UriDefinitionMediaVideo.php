@@ -136,10 +136,10 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     private $identifierContext;
 
     /**
-     * @param string         $location
-     * @param string         $thumbnail
-     * @param string         $title
-     * @param string         $description
+     * @param string $location
+     * @param string $thumbnail
+     * @param string $title
+     * @param string $description
      */
     public function __construct(string $location, string $thumbnail, string $title = '', string $description = '')
     {
@@ -218,7 +218,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return \DateTime|null
      */
-    public function getPublicationDate(): ?\DateTime
+    public function getPublicationDate(): ? \DateTime
     {
         return $this->publicationDate;
     }
@@ -228,7 +228,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setExpirationDate(\DateTime $expirationDate = null): self
+    public function setExpirationDate(\DateTime $expirationDate = null) : self
     {
         $this->expirationDate = $this->sanitizeDateTime($expirationDate, true);
 
@@ -246,7 +246,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return \DateTime|null
      */
-    public function getExpirationDate(): ?\DateTime
+    public function getExpirationDate(): ? \DateTime
     {
         return $this->expirationDate;
     }
@@ -254,7 +254,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return string
      */
-    public function getExpirationDateString(): string
+    public function getExpirationDateString() : string
     {
         return $this->formatDateTimeAsW3C($this->expirationDate);
     }
@@ -290,7 +290,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getPlayerLocation(): ?string
+    public function getPlayerLocation(): ? string
     {
         return $this->playerLocation;
     }
@@ -300,7 +300,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setPlayerEmbeddable(bool $playerEmbeddable): self
+    public function setPlayerEmbeddable(bool $playerEmbeddable) : self
     {
         $this->playerEmbeddable = $playerEmbeddable;
 
@@ -362,7 +362,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return int|null
      */
-    public function getDuration(): ?int
+    public function getDuration(): ? int
     {
         return $this->duration;
     }
@@ -372,7 +372,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setRating(float $rating = null): self
+    public function setRating(float $rating = null) : self
     {
         if (null !== $rating && ($rating > 5 || $rating < 0)) {
             throw new InvalidArgumentException('Rating must be between 0 and 5 (got %d).', $rating);
@@ -394,7 +394,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return float|null
      */
-    public function getRating(): ?float
+    public function getRating(): ? float
     {
         return $this->rating;
     }
@@ -404,7 +404,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setViewCount(int $viewCount = null): self
+    public function setViewCount(int $viewCount = null) : self
     {
         if (null !== $viewCount && $viewCount < 0) {
             throw new InvalidArgumentException('View count must be a non-negative number (got %d).', $viewCount);
@@ -426,7 +426,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return int|null
      */
-    public function getViewCount(): ?int
+    public function getViewCount(): ? int
     {
         return $this->viewCount;
     }
@@ -436,7 +436,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setTags(string ...$tags): self
+    public function setTags(string ...$tags) : self
     {
         foreach ($tags as $tag) {
             $this->addTag($tag);
@@ -514,18 +514,18 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getCategory(): ?string
+    public function getCategory(): ? string
     {
         return $this->category;
     }
 
     /**
-     * @param string   $relationship
+     * @param string $relationship
      * @param string[] ...$platforms
      *
      * @return self
      */
-    public function setPlatformRestrictions(string $relationship, string ...$platforms): self
+    public function setPlatformRestrictions(string $relationship, string ...$platforms) : self
     {
         $this->platformRestrictionsRelationship = $this->sanitizeRelationship($relationship);
         $this->addPlatformRestrictions(...$platforms);
@@ -580,18 +580,18 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getPlatformRestrictionsRelationship(): ?string
+    public function getPlatformRestrictionsRelationship(): ? string
     {
         return $this->platformRestrictionsRelationship;
     }
 
     /**
-     * @param string   $relationship
+     * @param string $relationship
      * @param string[] ...$countries
      *
      * @return self
      */
-    public function setCountryRestrictions(string $relationship, string ...$countries): self
+    public function setCountryRestrictions(string $relationship, string ...$countries) : self
     {
         $this->countryRestrictionsRelationship = $this->sanitizeRelationship($relationship);
         $this->addCountryRestrictions(...$countries);
@@ -646,7 +646,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getCountryRestrictionsRelationship(): ?string
+    public function getCountryRestrictionsRelationship(): ? string
     {
         return $this->countryRestrictionsRelationship;
     }
@@ -656,7 +656,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setFamilyFriendly(bool $familyFriendly): self
+    public function setFamilyFriendly(bool $familyFriendly) : self
     {
         $this->familyFriendly = $familyFriendly;
 
@@ -708,7 +708,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getUploaderName(): ?string
+    public function getUploaderName(): ? string
     {
         return $this->uploaderName;
     }
@@ -718,7 +718,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setUploaderLink(string $uploaderLink = null): self
+    public function setUploaderLink(string $uploaderLink = null) : self
     {
         $uploaderLink = $this->sanitizeLocation($uploaderLink);
 
@@ -742,7 +742,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getUploaderLink(): ?string
+    public function getUploaderLink(): ? string
     {
         return $this->uploaderLink;
     }
@@ -752,7 +752,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setLive(bool $live): self
+    public function setLive(bool $live) : self
     {
         $this->live = $live;
 
@@ -813,7 +813,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getIdentifier(): ?string
+    public function getIdentifier(): ? string
     {
         return $this->identifier;
     }
@@ -821,7 +821,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getIdentifierContext(): ?string
+    public function getIdentifierContext() : ? string
     {
         return $this->identifierContext;
     }
@@ -829,7 +829,7 @@ class UriDefinitionMediaVideo implements UriDefinitionMediaInterface
     /**
      * @return string
      */
-    static public function getType(): string
+    public static function getType() : string
     {
         return UriDefinitionMediaInterface::MEDIA_TYPE_IMAGE;
     }

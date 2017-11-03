@@ -41,7 +41,7 @@ trait TimestampableUpdatedTrait
     /**
      * @return bool
      */
-    public function hasUpdated(): bool
+    public function hasUpdated() : bool
     {
         return null !== $this->updated;
     }

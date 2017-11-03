@@ -52,7 +52,7 @@ class SearchStem extends IdEntity
     /**
      * @return string|null
      */
-    public function getStem(): ?string
+    public function getStem(): ? string
     {
         return $this->stem;
     }
@@ -62,7 +62,7 @@ class SearchStem extends IdEntity
      *
      * @return self
      */
-    public function setIndices($indices): self
+    public function setIndices($indices) : self
     {
         $this->indices = $indices;
 

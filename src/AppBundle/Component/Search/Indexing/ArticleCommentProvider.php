@@ -11,14 +11,14 @@
 
 namespace Rf\AppBundle\Component\Search\Indexing;
 
-use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
+use Rf\AppBundle\Doctrine\Repository\ArticleCommentRepository;
 
-final class ArticleProvider extends AbstractProvider implements EntityProviderInterface
+final class ArticleCommentProvider extends AbstractProvider implements EntityProviderInterface
 {
     /**
-     * @param ArticleRepository $repository
+     * @param ArticleCommentRepository $repository
      */
-    public function __construct(ArticleRepository $repository)
+    public function __construct(ArticleCommentRepository $repository)
     {
         parent::__construct($repository);
     }
@@ -28,6 +28,6 @@ final class ArticleProvider extends AbstractProvider implements EntityProviderIn
      */
     protected function getEntityStemableFieldNames(): array
     {
-        return ['slug', 'title', 'content'];
+        return ['title', 'content', 'authorName', 'authorEmail'];
     }
 }

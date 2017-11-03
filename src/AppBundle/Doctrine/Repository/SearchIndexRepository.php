@@ -37,7 +37,7 @@ class SearchIndexRepository extends AbstractRepository
      *
      * @return null|SearchIndex
      */
-    public function findById(int $id): ?SearchIndex
+    public function findById(int $id): ? SearchIndex
     {
         $query = $this
             ->createQueryBuilder('i')
@@ -60,7 +60,7 @@ class SearchIndexRepository extends AbstractRepository
      *
      * @return null|SearchIndex
      */
-    public function findByObjectIdentity(string $objectIdentity): ?SearchIndex
+    public function findByObjectIdentity(string $objectIdentity) : ? SearchIndex
     {
         $query = $this
             ->createQueryBuilder('i')
@@ -86,7 +86,7 @@ class SearchIndexRepository extends AbstractRepository
      *
      * @return null|SearchIndex
      */
-    public function findByObjectAndStemAndPosition(string $objectClass, string $objectIdentity, SearchStem $stem, int $position): ?SearchIndex
+    public function findByObjectAndStemAndPosition(string $objectClass, string $objectIdentity, SearchStem $stem, int $position) : ? SearchIndex
     {
         $query = $this
             ->createQueryBuilder('i')
@@ -111,13 +111,13 @@ class SearchIndexRepository extends AbstractRepository
     }
 
     /**
-     * @param string        $objectClass
-     * @param string        $objectIdentity
+     * @param string $objectClass
+     * @param string $objectIdentity
      * @param SearchIndex[] ...$indices
      *
      * @return SearchIndex[]
      */
-    public function findByObjectAndNotInSet(string $objectClass, string $objectIdentity, SearchIndex ...$indices): array
+    public function findByObjectAndNotInSet(string $objectClass, string $objectIdentity, SearchIndex ...$indices) : array
     {
         $query = $this
             ->createQueryBuilder('i')

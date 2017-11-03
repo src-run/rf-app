@@ -15,9 +15,6 @@ use SR\Console\Output\Style\StyleInterface;
 
 class FileCleanupRunner extends AbstractFileRunner
 {
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $this->io->section('Cleanup');
@@ -76,6 +73,10 @@ class FileCleanupRunner extends AbstractFileRunner
      */
     private function doRemoveFile(\SplFileInfo $file): bool
     {
+        if ($this->isDryRun()) {
+            return true;
+        }
+
         if (!file_exists($file->getPathname()) || !is_writable($file->getPathname()) || !@unlink($file)) {
             $this->io->error(sprintf('Unable to remove "%s" file: it does not exist or is not writeable.', $file->getPathname()));
 

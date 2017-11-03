@@ -56,7 +56,7 @@ class RouteHandlerDefault implements RouteHandlerInterface
      *
      * @return UriCollection|null
      */
-    public function handle(string $name, Route $route): ?UriCollection
+    public function handle(string $name, Route $route): ? UriCollection
     {
         $collection = new UriCollection();
 
@@ -76,7 +76,7 @@ class RouteHandlerDefault implements RouteHandlerInterface
      *
      * @return null|UriDefinition
      */
-    protected function handleArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
+    protected function handleArgumentSet(string $name, Route $route, array $arguments) : ? UriDefinition
     {
         $routeArguments = isset($arguments['route_arguments']) ? $arguments['route_arguments'] : [];
 
@@ -97,7 +97,7 @@ class RouteHandlerDefault implements RouteHandlerInterface
     /**
      * @return \Generator
      */
-    protected function getArgumentSets(): \Generator
+    protected function getArgumentSets() : \Generator
     {
         yield [];
     }
@@ -142,6 +142,7 @@ class RouteHandlerDefault implements RouteHandlerInterface
         foreach (['robots', 'sitemap'] as $lowPriority) {
             if (false !== strpos($name, $lowPriority)) {
                 $definition->setPriority(0.4);
+
                 return;
             }
         }
@@ -149,6 +150,7 @@ class RouteHandlerDefault implements RouteHandlerInterface
         foreach (['articles'] as $highPriority) {
             if (false !== strpos($name, $highPriority)) {
                 $definition->setPriority(0.6);
+
                 return;
             }
         }

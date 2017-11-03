@@ -11,9 +11,14 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Parameter;
+use SR\Doctrine\Exception\OrmException as SROrmException;
+use SR\Doctrine\ORM\Mapping\Entity;
 use SR\Exception\Exception;
 use SR\Exception\ExceptionInterface;
 use SR\Util\Info\ClassInfo;
@@ -82,11 +87,46 @@ abstract class AbstractRepository extends EntityRepository
     }
 
     /**
+     * @param array      $criteria
+     * @param array|null $orderBy
+     *
+     * @throws SROrmException
+     *
+     * @return Entity|null
+     */
+    public function findOneBy(array $criteria, array $orderBy = null): ? Entity
+    {
+        $entity = null;
+
+        try {
+            $entity = parent::findOneBy($criteria, $orderBy);
+        } catch (ORMException $exception) {
+            throw new SROrmException($exception->getMessage(), $exception);
+        }
+
+        return $entity instanceof Entity ? $entity : null;
+    }
+
+    /**
+     * @param string|int $identity
+     *
+     * @return Entity|null
+     */
+    public function findOneByIdentity($identity) : ? Entity
+    {
+        try {
+            return $this->findOneBy([$this->getIdentityFieldName() => $identity]);
+        } catch (SROrmException $exception) {
+            return null;
+        }
+    }
+
+    /**
      * @param string|null $indexBy
      *
      * @return array
      */
-    public function findAll($indexBy = null): array
+    public function findAll($indexBy = null) : array
     {
         $data = $this->findBy([]);
 
@@ -98,14 +138,54 @@ abstract class AbstractRepository extends EntityRepository
     }
 
     /**
-     * @return int
+     * @return null|string
      */
-    public function getAutoIncrement(): int
+    public function getIdentityFieldName(): ? string
     {
-        $statement = $this->getEntityManager()->getConnection()->prepare(
-            sprintf('show table status like "%s"', $this->getClassMetadata()->getTableName())
-        );
-        $statement->execute();
+        try {
+            return $this->getClassMetadata()->getSingleIdentifierFieldName();
+        } catch (MappingException $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getIdentities() : array
+    {
+        try {
+            $identityFieldName = $this->getClassMetadata()->getSingleIdentifierFieldName();
+        } catch (MappingException $exception) {
+            $identityFieldName = 'id';
+        }
+
+        $collection = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select(sprintf('entity.%s', $identityFieldName))
+            ->from($this->getEntityName(), 'entity')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(function (array $element) use ($identityFieldName) {
+            return $element[$identityFieldName];
+        }, $collection);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAutoIncrement(): ? int
+    {
+        try {
+            $statement = $this->getEntityManager()->getConnection()->prepare(
+                sprintf('show table status like "%s"', $this->getClassMetadata()->getTableName())
+            );
+            $statement->execute();
+        } catch (DBALException $exception) {
+            return null;
+        }
 
         return (int) $statement->fetch()['Auto_increment'];
     }
@@ -113,33 +193,29 @@ abstract class AbstractRepository extends EntityRepository
     /**
      * @return int
      */
-    public function getNumberOfElement(): int
+    public function getNumberOfElement() : int
     {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(a)')
-            ->from($this->getEntityName(), 'a')
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            return $this
+                ->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(a)')
+                ->from($this->getEntityName(), 'a')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (ORMException $exception) {
+            return 0;
+        }
     }
 
     /**
+     * @deprecated
+     *
      * @return array
      */
     public function getIds(): array
     {
-        $collection = $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select(sprintf('entity.%s', $this->getClassMetadata()->getSingleIdentifierFieldName()))
-            ->from($this->getEntityName(), 'entity')
-            ->getQuery()
-            ->getArrayResult();
-
-        return array_map(function (array $element) {
-            return $element[$this->getClassMetadata()->getSingleIdentifierFieldName()];
-        }, $collection);
+        return $this->getIdentities();
     }
 
     /**
@@ -155,7 +231,7 @@ abstract class AbstractRepository extends EntityRepository
         $currentObject = current($collection);
 
         if ($indexBy === '_primary_id') {
-            $indexBy = $this->getClassMetadata()->getSingleIdentifierFieldName();
+            $indexBy = $this->getIdentityFieldName();
         }
 
         if (is_object($currentObject) && property_exists($currentObject, $indexBy) && method_exists($currentObject, 'get'.ucfirst($indexBy))) {

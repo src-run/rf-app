@@ -41,7 +41,7 @@ class SearchStemRepository extends AbstractRepository
      *
      * @return SearchStem|null
      */
-    public function findById(int $id): ?SearchStem
+    public function findById(int $id): ? SearchStem
     {
         $query = $this
             ->createQueryBuilder('s')
@@ -64,7 +64,7 @@ class SearchStemRepository extends AbstractRepository
      *
      * @return SearchStem|null
      */
-    public function findByStem(string $stem): ?SearchStem
+    public function findByStem(string $stem) : ? SearchStem
     {
         $query = $this
             ->createQueryBuilder('s')

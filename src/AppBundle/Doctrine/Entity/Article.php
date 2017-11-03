@@ -95,7 +95,7 @@ class Article extends UuidEntity implements SluggableInterface, IndexableInterfa
     /**
      * @return null|string
      */
-    public function getSubject(): ?string
+    public function getSubject() : ? string
     {
         return $this->getTitle();
     }
@@ -103,7 +103,7 @@ class Article extends UuidEntity implements SluggableInterface, IndexableInterfa
     /**
      * @return bool
      */
-    public function hasSubject(): bool
+    public function hasSubject() : bool
     {
         return null !== $this->getTitle();
     }
@@ -131,7 +131,7 @@ class Article extends UuidEntity implements SluggableInterface, IndexableInterfa
     /**
      * @return bool
      */
-    public function hasContent(): bool
+    public function hasContent() : bool
     {
         return null !== $this->content;
     }

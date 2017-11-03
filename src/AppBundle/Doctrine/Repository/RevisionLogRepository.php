@@ -23,7 +23,7 @@ use SR\Doctrine\ORM\Mapping\EntityInterface;
 class RevisionLogRepository extends AbstractRepository
 {
     /**
-     * Currently used loggable listener
+     * Currently used loggable listener.
      *
      * @var LoggableListener
      */
@@ -49,7 +49,7 @@ class RevisionLogRepository extends AbstractRepository
     public function getLogEntriesQuery(EntityInterface $entity): Query
     {
         $dql = vsprintf('SELECT log FROM %s log WHERE log.objectId = :objectId AND log.objectClass = :objectClass ORDER BY log.version DESC', [
-            $this->getClassMetadata()->name
+            $this->getClassMetadata()->name,
         ]);
 
         $wrap = new EntityWrapper($entity, $this->_em);
@@ -69,10 +69,10 @@ class RevisionLogRepository extends AbstractRepository
      *
      * @throws UnexpectedValueException
      */
-    public function revert(EntityInterface$entity, int $version = 1): void
+    public function revert(EntityInterface $entity, int $version = 1): void
     {
         $dql = vsprintf('SELECT log FROM %s log WHERE log.objectId = :objectId AND log.objectClass = :objectClass AND log.version <= :version ORDER BY log.version ASC', [
-            $this->getClassMetadata()->name
+            $this->getClassMetadata()->name,
         ]);
 
         $wrap = new EntityWrapper($entity, $this->_em);
@@ -141,7 +141,7 @@ class RevisionLogRepository extends AbstractRepository
     /**
      * @return LoggableListener|null
      */
-    private function findLoggableListener(): ?LoggableListener
+    private function findLoggableListener(): ? LoggableListener
     {
         foreach ($this->_em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {

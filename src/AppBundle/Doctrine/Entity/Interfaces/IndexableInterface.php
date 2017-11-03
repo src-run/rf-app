@@ -16,30 +16,30 @@ interface IndexableInterface
     /**
      * @return \DateTime|null
      */
-    public function getUpdated() : ?\DateTime;
+    public function getUpdated() : ? \DateTime;
 
     /**
      * @return bool
      */
-    public function hasUpdated(): bool;
+    public function hasUpdated() : bool;
 
     /**
      * @return string
      */
-    public function getContent(): ?string;
+    public function getContent(): ? string;
 
     /**
      * @return bool
      */
-    public function hasContent(): bool;
+    public function hasContent() : bool;
 
     /**
      * @return null|string
      */
-    public function getSubject(): ?string;
+    public function getSubject(): ? string;
 
     /**
      * @return bool
      */
-    public function hasSubject(): bool;
+    public function hasSubject() : bool;
 }

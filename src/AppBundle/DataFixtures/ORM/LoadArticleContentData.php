@@ -13,15 +13,11 @@ namespace Rf\AppBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Faker\Factory;
-use Faker\Generator;
 use Rf\AppBundle\Doctrine\Entity\Article;
 use Rf\AppBundle\Doctrine\Repository\ArticleRepository;
 use Rf\AppBundle\Subscriber\DoctrineLoggableSubscriber;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

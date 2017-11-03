@@ -39,7 +39,7 @@ trait IdentityUuidTrait
     /**
      * @return string|null
      */
-    public function getUuid(): ?string
+    public function getUuid(): ? string
     {
         return $this->uuid;
     }
@@ -47,7 +47,7 @@ trait IdentityUuidTrait
     /**
      * @return bool
      */
-    public function hasUuid(): bool
+    public function hasUuid() : bool
     {
         return null !== $this->uuid;
     }

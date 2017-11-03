@@ -13,7 +13,7 @@ namespace Rf\AppBundle\Component\Console\Registry;
 
 use SR\Exception\Logic\InvalidArgumentException;
 
-class Registry
+abstract class AbstractRegistry
 {
     /**
      * @var mixed[]
@@ -31,8 +31,11 @@ class Registry
      */
     public function __construct(array $elements = [], bool $strict = false)
     {
-        $this->elements = $elements;
         $this->strict = $strict;
+
+        foreach ($elements as $name => $value) {
+            $this->set($name, $value);
+        }
     }
 
     /**
@@ -50,6 +53,21 @@ class Registry
         $this->elements[$name] = $value;
 
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param        $path
+     *
+     * @return self
+     */
+    public function setRealPath(string $name, $path): self
+    {
+        if (false === $real = realpath($path)) {
+            throw new InvalidArgumentException('Unable to resolve real path for "%s" argument/option with value "%s".', $name, $path);
+        }
+
+        return $this->set($name, $real);
     }
 
     /**
@@ -91,7 +109,7 @@ class Registry
      *
      * @return null|string
      */
-    public function getElementKey($value): ?string
+    public function getElementKey($value): ? string
     {
         if (false !== $name = array_search($value, $this->elements)) {
             return $name;
@@ -107,7 +125,7 @@ class Registry
     /**
      * @return bool
      */
-    private function isStrict(): bool
+    private function isStrict() : bool
     {
         return true === $this->strict;
     }

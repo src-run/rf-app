@@ -46,7 +46,7 @@ class LoadArticleCommentData implements DependentFixtureInterface, ContainerAwar
     public function getDependencies(): array
     {
         return [
-            LoadArticleContentData::class
+            LoadArticleContentData::class,
         ];
     }
 

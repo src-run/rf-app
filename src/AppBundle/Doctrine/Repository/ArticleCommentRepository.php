@@ -11,6 +11,7 @@
 
 namespace Rf\AppBundle\Doctrine\Repository;
 
+use Doctrine\ORM\ORMException;
 use Rf\AppBundle\Doctrine\Entity\ArticleComment;
 
 class ArticleCommentRepository extends AbstractRepository
@@ -37,14 +38,18 @@ class ArticleCommentRepository extends AbstractRepository
      */
     public function findByUuid(string $uuid)
     {
-        return $this
-            ->createQueryBuilder('p')
-            ->where('p.uuid = :uuid')
-            ->setParameters([
-                'uuid' => $uuid,
-            ])
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+        try {
+            return $this
+                ->createQueryBuilder('p')
+                ->where('p.uuid = :uuid')
+                ->setParameters([
+                    'uuid' => $uuid,
+                ])
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (ORMException $exception) {
+            return null;
+        }
     }
 }

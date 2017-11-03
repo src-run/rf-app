@@ -15,7 +15,6 @@ use Rf\AppBundle\Component\Sitemap\RecordGenerator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\VarDumper\VarDumper;
 
 class RecordRouteGeneratorCompilerPass implements CompilerPassInterface
 {

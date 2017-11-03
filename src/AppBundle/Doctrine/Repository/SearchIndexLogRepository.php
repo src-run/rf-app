@@ -13,7 +13,6 @@ namespace Rf\AppBundle\Doctrine\Repository;
 
 use Doctrine\ORM\ORMException;
 use Rf\AppBundle\Doctrine\Entity\SearchIndexLog;
-use SR\Doctrine\ORM\Mapping\Entity;
 
 class SearchIndexLogRepository extends AbstractRepository
 {
@@ -37,7 +36,7 @@ class SearchIndexLogRepository extends AbstractRepository
      *
      * @return null|SearchIndexLog
      */
-    public function findByObjectIdentity(string $objectIdentity): ?SearchIndexLog
+    public function findByObjectIdentity(string $objectIdentity): ? SearchIndexLog
     {
         $query = $this
             ->createQueryBuilder('l')
@@ -61,7 +60,7 @@ class SearchIndexLogRepository extends AbstractRepository
      *
      * @return null|SearchIndexLog
      */
-    public function findByObjectClassAndId(string $objectClass, string $objectIdentity): ?SearchIndexLog
+    public function findByObjectClassAndId(string $objectClass, string $objectIdentity) : ? SearchIndexLog
     {
         $query = $this
             ->createQueryBuilder('l')
@@ -88,7 +87,7 @@ class SearchIndexLogRepository extends AbstractRepository
      *
      * @return null|SearchIndexLog
      */
-    public function findByObjectClassAndIdAndHash(string $objectClass, string $objectIdentity, string $objectHash): ?SearchIndexLog
+    public function findByObjectClassAndIdAndHash(string $objectClass, string $objectIdentity, string $objectHash) : ? SearchIndexLog
     {
         $query = $this
             ->createQueryBuilder('l')

@@ -39,9 +39,6 @@ class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
      */
     private $objectHash;
 
-    /**
-     * @return void
-     */
     public function initializeSuccess(): void
     {
         $this->success = false;
@@ -70,7 +67,7 @@ class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
     /**
      * @return null|string
      */
-    public function getObjectClass(): ?string
+    public function getObjectClass(): ? string
     {
         return $this->objectClass;
     }
@@ -80,7 +77,7 @@ class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
      *
      * @return self
      */
-    public function setObjectClass(string $objectClass): self
+    public function setObjectClass(string $objectClass) : self
     {
         $this->objectClass = $objectClass;
 
@@ -110,7 +107,7 @@ class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
     /**
      * @return null|string
      */
-    public function getObjectHash(): ?string
+    public function getObjectHash(): ? string
     {
         return $this->objectHash;
     }
@@ -120,7 +117,7 @@ class SearchIndexLog extends IdEntity implements ObjectIdentityInterface
      *
      * @return self
      */
-    public function setObjectHash(string $objectHash = null): self
+    public function setObjectHash(string $objectHash = null) : self
     {
         $this->objectHash = $objectHash;
 

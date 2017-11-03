@@ -13,9 +13,10 @@ namespace Rf\AppBundle\Component\Console\Runner\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
+use Rf\AppBundle\Component\Console\IO\ActionIO;
 use Rf\AppBundle\Component\Console\Runner\AbstractRunner;
 use Rf\AppBundle\Component\Search\Indexing\EntityProviderInterface;
-use Rf\AppBundle\Component\Search\Indexing\Model\IndexableEntityModel;
+use Rf\AppBundle\Component\Search\Indexing\Model\IndexableEntity;
 use Rf\AppBundle\Doctrine\Entity\SearchIndex;
 use Rf\AppBundle\Doctrine\Entity\SearchIndexLog;
 use Rf\AppBundle\Doctrine\Entity\SearchStem;
@@ -24,9 +25,10 @@ use Rf\AppBundle\Doctrine\Repository\SearchIndexRepository;
 use Rf\AppBundle\Doctrine\Repository\SearchStemRepository;
 use SR\Cocoa\Word\Stem\Stemmer;
 use SR\Cocoa\Word\Stop\Stopwords;
+use SR\Console\Output\Style\StyleInterface;
 use SR\Doctrine\ORM\Mapping\Entity;
 
-class SearchCreateRunner extends AbstractRunner
+final class SearchIndexRunner extends AbstractSearchRunner
 {
     /**
      * @var Stemmer
@@ -39,39 +41,19 @@ class SearchCreateRunner extends AbstractRunner
     private $stopWords;
 
     /**
+     * @var ActionIO
+     */
+    private $actionIO;
+
+    /**
      * @var EntityProviderInterface[]|iterable
      */
     private $providers;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var SearchStemRepository
-     */
-    private $wordStemsRepo;
-
-    /**
-     * @var SearchIndexRepository
-     */
-    private $indexMapsRepo;
-
-    /**
-     * @var SearchIndexLogRepository
-     */
-    private $indexLogsRepo;
-
-    /**
      * @var bool
      */
     private $cache = true;
-
-    /**
-     * @var string[]
-     */
-    private $uuids = [];
 
     /**
      * @param Stemmer                  $stemWords
@@ -83,22 +65,22 @@ class SearchCreateRunner extends AbstractRunner
      */
     public function __construct(Stemmer $stemWords, Stopwords $stopWords, EntityManagerInterface $em, SearchStemRepository $wordStemsRepo, SearchIndexRepository $indexMapsRepo, SearchIndexLogRepository $indexLogsRepo)
     {
-        parent::__construct(null);
+        parent::__construct($em, $wordStemsRepo, $indexMapsRepo, $indexLogsRepo);
 
         $this->stemWords = $stemWords;
         $this->stopWords = $stopWords;
-        $this->em = $em;
-        $this->wordStemsRepo = $wordStemsRepo;
-        $this->indexMapsRepo = $indexMapsRepo;
-        $this->indexLogsRepo = $indexLogsRepo;
     }
 
     /**
-     * @param string[] ...$uuids
+     * @param StyleInterface $style
+     *
+     * @return AbstractRunner
      */
-    public function setUuids(string ...$uuids): void
+    public function setStyle(StyleInterface $style): AbstractRunner
     {
-        $this->uuids = $uuids;
+        $this->actionIO = new ActionIO($style);
+
+        return parent::setStyle($style);
     }
 
     /**
@@ -117,13 +99,8 @@ class SearchCreateRunner extends AbstractRunner
         $this->providers = $providers;
     }
 
-    /**
-     * @return void
-     */
     public function run(): void
     {
-        $this->io->section('Creating stems/indices');
-
         if (false === $this->createSearchEntries()) {
             $this->setResult(255);
         }
@@ -148,10 +125,14 @@ class SearchCreateRunner extends AbstractRunner
      */
     private function handleProvider(EntityProviderInterface $provider): bool
     {
-        foreach ($provider->getModels() as $model) {
-            $this->io->info([sprintf('Processing "%s:%s"', $model->getObjectClass(), $model->getObjectIdentity())]);
+        $this->io->section(sprintf('Processing "%s" Provider (%d Entities)', $provider->getName(), $provider->count()));
 
-            if (false === $this->handleModel($model)) {
+        foreach ($provider->forEachIndexableModels() as $i => $model) {
+            if ($this->io->isVerbose()) {
+                $this->io->text(sprintf('• %\'.04d. <options=bold>%s</> <fg=blue>[</><fg=blue;options=bold>%s</><fg=blue>]</>', $i + 1, $model->getClassName(), $model->getIdentity()));
+            }
+
+            if (false === $this->isDryRun() && false === $this->handleModel($model)) {
                 return false;
             }
         }
@@ -160,11 +141,11 @@ class SearchCreateRunner extends AbstractRunner
     }
 
     /**
-     * @param IndexableEntityModel $model
+     * @param IndexableEntity $model
      *
      * @return bool
      */
-    private function handleModel(IndexableEntityModel $model): bool
+    private function handleModel(IndexableEntity $model): bool
     {
         if (null === $log = $this->hasSearchIndexLog($model)) {
             return $this->doModelPersist($model);
@@ -174,14 +155,14 @@ class SearchCreateRunner extends AbstractRunner
     }
 
     /**
-     * @param IndexableEntityModel $model
-     * @param SearchIndexLog       $log
+     * @param IndexableEntity $model
+     * @param SearchIndexLog  $log
      *
      * @return bool
      */
-    private function doModelSkipped(IndexableEntityModel $model, SearchIndexLog $log): bool
+    private function doModelSkipped(IndexableEntity $model, SearchIndexLog $log): bool
     {
-        if ($log->getObjectHash() === $model->getObjectHash()) {
+        if ($log->getObjectHash() === $model->getHash()) {
             $explains = sprintf('content unchanged: object hash match "%s"', $log->getObjectHash());
         } else {
             $interval = $this->getLogOldestValidDateTime()->diff($log->getUpdated());
@@ -192,17 +173,19 @@ class SearchCreateRunner extends AbstractRunner
             ]);
         }
 
-        $this->io->comment([sprintf('skipping entity (%s)', $explains)]);
+        if ($this->io->isDebug()) {
+            $this->actionIO->actionSingle(sprintf('skipping entry (%s)', $explains));
+        }
 
         return true;
     }
 
     /**
-     * @param IndexableEntityModel $model
+     * @param IndexableEntity $model
      *
      * @return bool
      */
-    private function doModelPersist(IndexableEntityModel $model): bool
+    private function doModelPersist(IndexableEntity $model): bool
     {
         $wordStems = $this->handleModelStems($model);
         $this->doEntityDetach(...$wordStems);
@@ -216,57 +199,58 @@ class SearchCreateRunner extends AbstractRunner
     }
 
     /**
-     * @param IndexableEntityModel $model
+     * @param IndexableEntity $model
      *
      * @return array|SearchStem[]
      */
-    private function handleModelStems(IndexableEntityModel $model): array
+    private function handleModelStems(IndexableEntity $model): array
     {
-        $this->io->action('stemming model contents');
-        $this->io->write(sprintf('(%d chars) ', strlen($model->getStemmableString())));
-        $stems = $this->stemWords->stem($model->getStemmableString());
-        $this->io->actionOkay();
+        $this->actionIO->action('stemming entity   ', true);
+        $this->actionIO->enumeration(strlen($model->getStemableImploded()), 'chars');
+        $stems = $this->stemWords->stem($model->getStemableImploded());
+        $this->actionIO->okay();
 
-        $this->io->action('persisting word stems');
-        $this->io->write(sprintf('(%d items) ', count($stems)));
+        $this->actionIO->action('persisting stems  ');
+        $this->actionIO->enumeration(count($stems));
         $stems = $this->findOrPersistStems($stems);
-        $this->io->actionOkay();
+        $this->actionIO->okay();
 
         return $stems;
     }
 
     /**
-     * @param IndexableEntityModel $model
-     * @param SearchStem[]         ...$stems
+     * @param IndexableEntity $model
+     * @param SearchStem[]    ...$stems
      *
      * @return SearchIndex[]
      */
-    private function handleModelIndices(IndexableEntityModel $model, SearchStem ...$stems): array
+    private function handleModelIndices(IndexableEntity $model, SearchStem ...$stems): array
     {
-        $this->io->action('persisting indices');
-        $this->io->write(sprintf('(%d items) ', count($stems)));
+        $this->actionIO->action('persisting indices');
+        $this->actionIO->enumeration(count($stems));
         $indices = $this->findOrPersistIndices($model, ...$stems);
-        $this->io->actionOkay();
+        $this->actionIO->okay();
 
-        $this->io->action('cleaning up indices');
+        $this->actionIO->action('cleaning indices  ');
         $stale = $this->removeStaleIndices($model, ...$indices);
-        $this->io->write(sprintf('(%d items) ', count($stale)));
-        $this->io->actionOkay();
+        $this->actionIO->enumeration(count($stale));
+        $this->actionIO->okay();
 
         return $indices;
     }
 
     /**
-     * @param IndexableEntityModel $model
+     * @param IndexableEntity $model
      *
      * @return bool
      */
-    private function handleModelLog(IndexableEntityModel $model): bool
+    private function handleModelLog(IndexableEntity $model): bool
     {
-        $this->io->action('checking for index log entry');
+        $this->actionIO->action('checking index log');
+        $this->actionIO->status(sprintf('(%s)', hash('crc32b', $model->getHash()).substr(hash('adler32', $model->getHash()), 0, 4)));
 
-        if (null !== $log = $this->indexLogsRepo->findByObjectClassAndId($model->getObjectClass(), $model->getObjectIdentity())) {
-            if ($log->getObjectHash() === $model->getObjectHash()) {
+        if (null !== $log = $this->indexLogsRepo->findByObjectClassAndId($model->getClassName(), $model->getIdentity())) {
+            if ($log->getObjectHash() === $model->getHash()) {
                 try {
                     $this->doEntityPersist($log);
                     $this->doEntityFlush(true);
@@ -274,16 +258,14 @@ class SearchCreateRunner extends AbstractRunner
                 } catch (ORMException $exception) {
                     return false;
                 } finally {
-                    $this->io->write('(updated expiration) ');
-                    $this->io->actionOkay();
+                    $this->actionIO->done('updated', true);
 
                     return true;
                 }
             }
 
             if ($log->getUpdated() > $this->getLogOldestValidDateTime()) {
-                $this->io->write('(leaving existing) ');
-                $this->io->actionOkay();
+                $this->actionIO->done('exists', true);
 
                 return true;
             }
@@ -295,18 +277,16 @@ class SearchCreateRunner extends AbstractRunner
             } catch (ORMException $exception) {
                 return false;
             } finally {
-                $this->io->write('(removing stale) ');
-                $this->io->actionFail('RM');
+                $this->actionIO->done('removed-stale', true, false);
 
                 return true;
             }
-
         }
 
         $log = new SearchIndexLog();
-        $log->setObjectClass($model->getObjectClass());
-        $log->setObjectIdentity($model->getObjectIdentity());
-        $log->setObjectHash($model->getObjectHash());
+        $log->setObjectClass($model->getClassName());
+        $log->setObjectIdentity($model->getIdentity());
+        $log->setObjectHash($model->getHash());
         $log->setSuccess(true);
 
         try {
@@ -316,25 +296,24 @@ class SearchCreateRunner extends AbstractRunner
         } catch (ORMException $exception) {
             return false;
         } finally {
-            $this->io->write('(persisting new) ');
-            $this->io->actionOkay();
+            $this->actionIO->done('persisted', true);
 
             return true;
         }
     }
 
     /**
-     * @param IndexableEntityModel $model
+     * @param IndexableEntity $model
      *
      * @return null|SearchIndexLog
      */
-    private function hasSearchIndexLog(IndexableEntityModel $model): ?SearchIndexLog
+    private function hasSearchIndexLog(IndexableEntity $model): ? SearchIndexLog
     {
-        if (null === $log = $this->indexLogsRepo->findByObjectClassAndId($model->getObjectClass(), $model->getObjectIdentity())) {
+        if (null === $log = $this->indexLogsRepo->findByObjectClassAndId($model->getClassName(), $model->getIdentity())) {
             return null;
         }
 
-        if ($log->getObjectHash() !== $model->getObjectHash() && $log->getUpdated() <= $this->getLogOldestValidDateTime()) {
+        if ($log->getObjectHash() !== $model->getHash() && $log->getUpdated() <= $this->getLogOldestValidDateTime()) {
             return null;
         }
 
@@ -344,7 +323,7 @@ class SearchCreateRunner extends AbstractRunner
     /**
      * @return \DateTime
      */
-    private function getLogOldestValidDateTime(): \DateTime
+    private function getLogOldestValidDateTime() : \DateTime
     {
         return new \DateTime('-12 hours');
     }
@@ -370,26 +349,26 @@ class SearchCreateRunner extends AbstractRunner
 
         foreach ($stems as $i => $stem) {
             $entities[$i] = $this->getSearchStemEntity($stem);
-            $this->writeProgress(++$position, $size);
+            $this->actionIO->progress(++$position, $size);
         }
 
         return $entities;
     }
 
     /**
-     * @param IndexableEntityModel $model
-     * @param SearchStem[]         ...$stems
+     * @param IndexableEntity $model
+     * @param SearchStem[]    ...$stems
      *
      * @return SearchIndex[]
      */
-    private function findOrPersistIndices(IndexableEntityModel $model, SearchStem ...$stems): array
+    private function findOrPersistIndices(IndexableEntity $model, SearchStem ...$stems): array
     {
         $entities = [];
         $size = count($stems);
 
         foreach ($stems as $position => $stem) {
             $entities[] = $this->getSearchIndexEntity($model, $stem, $position);
-            $this->writeProgress($position, $size);
+            $this->actionIO->progress($position, $size);
 
             if (0 === $position % 1000) {
                 $this->doEntityFlush(true);
@@ -405,41 +384,16 @@ class SearchCreateRunner extends AbstractRunner
     }
 
     /**
-     * @param int $position
-     * @param int $size
-     */
-    private function writeProgress(int $position, int $size): void
-    {
-        if (!$this->io->isVerbose()) {
-            return;
-        }
-
-        if ($position === 0) {
-            $this->io->write('(');
-        }
-
-        if ($position === ($size - 1)) {
-            $this->io->write(sprintf('..%d) ', $size));
-        }
-        elseif (0 === $position % 1000) {
-            $this->io->write($position);
-        }
-        elseif (0 === $position % 200) {
-            $this->io->write('.');
-        }
-    }
-
-    /**
-     * @param IndexableEntityModel $model
-     * @param SearchIndex[]        ...$indices
+     * @param IndexableEntity $model
+     * @param SearchIndex[]   ...$indices
      *
      * @return SearchIndex[]
      */
-    private function removeStaleIndices(IndexableEntityModel $model, SearchIndex ...$indices): array
+    private function removeStaleIndices(IndexableEntity $model, SearchIndex ...$indices): array
     {
         $staleIndices = $this
             ->indexMapsRepo
-            ->findByObjectAndNotInSet($model->getObjectClass(), $model->getObjectIdentity(), ...$indices);
+            ->findByObjectAndNotInSet($model->getClassName(), $model->getIdentity(), ...$indices);
 
         try {
             $this->doEntityDeletesDetach(...$staleIndices);
@@ -470,20 +424,20 @@ class SearchCreateRunner extends AbstractRunner
     }
 
     /**
-     * @param IndexableEntityModel $model
-     * @param SearchStem           $stem
-     * @param int                  $position
+     * @param IndexableEntity $model
+     * @param SearchStem      $stem
+     * @param int             $position
      *
      * @return SearchIndex
      */
-    private function getSearchIndexEntity(IndexableEntityModel $model, SearchStem $stem, int $position): SearchIndex
+    private function getSearchIndexEntity(IndexableEntity $model, SearchStem $stem, int $position): SearchIndex
     {
-        if (null === $entity = $this->indexMapsRepo->findByObjectAndStemAndPosition($model->getObjectClass(), $model->getObjectIdentity(), $stem, $position)) {
+        if (null === $entity = $this->indexMapsRepo->findByObjectAndStemAndPosition($model->getClassName(), $model->getIdentity(), $stem, $position)) {
             list($stem) = $this->doEntityMerges($stem);
 
             $entity = new SearchIndex();
-            $entity->setObjectClass($model->getObjectClass());
-            $entity->setObjectIdentity($model->getObjectIdentity());
+            $entity->setObjectClass($model->getClassName());
+            $entity->setObjectIdentity($model->getIdentity());
             $entity->setStem($stem);
             $entity->setPosition($position);
 
@@ -550,8 +504,6 @@ class SearchCreateRunner extends AbstractRunner
 
     /**
      * @param bool $force
-     *
-     * @return void
      */
     private function doEntityFlush(bool $force = false): void
     {
@@ -576,9 +528,6 @@ class SearchCreateRunner extends AbstractRunner
         return $entities;
     }
 
-    /**
-     * @return void
-     */
     private function doEntityClear(): void
     {
         $this->em->clear();

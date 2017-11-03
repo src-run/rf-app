@@ -12,8 +12,6 @@
 namespace Rf\AppBundle\Component\Console\Runner\Search;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
-use Rf\AppBundle\Component\Console\Runner\AbstractRunner;
 use Rf\AppBundle\Doctrine\Entity\Interfaces\ObjectIdentityInterface;
 use Rf\AppBundle\Doctrine\Entity\SearchIndexLog;
 use Rf\AppBundle\Doctrine\Entity\SearchStem;
@@ -21,63 +19,26 @@ use Rf\AppBundle\Doctrine\Repository\SearchIndexLogRepository;
 use Rf\AppBundle\Doctrine\Repository\SearchIndexRepository;
 use Rf\AppBundle\Doctrine\Repository\SearchStemRepository;
 
-class SearchPurgeRunner extends AbstractRunner
+final class SearchPruneRunner extends AbstractSearchRunner
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var SearchStemRepository
-     */
-    private $searchStemRepository;
-
-    /**
-     * @var SearchIndexRepository
-     */
-    private $searchIndexRepository;
-
-    /**
-     * @var SearchIndexLogRepository
-     */
-    private $searchIndexLogRepository;
-
-    /**
-     * @var string[]
-     */
-    private $uuids = [];
-
-    /**
      * @param EntityManagerInterface   $em
-     * @param SearchStemRepository     $searchWordStemsRepo
-     * @param SearchIndexRepository    $searchIndexMapsRepo
+     * @param SearchStemRepository     $wordStemsRepo
+     * @param SearchIndexRepository    $indexMapsRepo
      * @param SearchIndexLogRepository $indexLogsRepo
      */
-    public function __construct(EntityManagerInterface $em, SearchStemRepository $searchWordStemsRepo, SearchIndexRepository $searchIndexMapsRepo, SearchIndexLogRepository $indexLogsRepo)
+    public function __construct(EntityManagerInterface $em, SearchStemRepository $wordStemsRepo, SearchIndexRepository $indexMapsRepo, SearchIndexLogRepository $indexLogsRepo)
     {
-        parent::__construct(null);
-
-        $this->em = $em;
-        $this->searchStemRepository = $searchWordStemsRepo;
-        $this->searchIndexRepository = $searchIndexMapsRepo;
-        $this->searchIndexLogRepository = $indexLogsRepo;
+        parent::__construct($em, $wordStemsRepo, $indexMapsRepo, $indexLogsRepo);
     }
 
-    /**
-     * @param string[] ...$uuids
-     */
-    public function setUuids(string ...$uuids): void
-    {
-        $this->uuids = $uuids;
-    }
-
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $this->io->section('Purging stems/indices');
+
+        if ($this->isDryRun()) {
+            return;
+        }
 
         if (false === $this->purgeSearchIndexLogs() ||
             false === $this->purgeSearchIndexMaps() ||
@@ -127,10 +88,10 @@ class SearchPurgeRunner extends AbstractRunner
      */
     private function getMatchingSearchIndexLogs(): \Generator
     {
-        $identities = 0 === count($this->uuids) ? $this->searchIndexLogRepository->getObjectIdentities() : $this->uuids;
+        $identities = 0 === count($this->uuids) ? $this->indexLogsRepo->getObjectIdentities() : $this->uuids;
 
         foreach ($identities as $id) {
-            if (null !== $entity = $this->searchIndexLogRepository->findByObjectIdentity($id)) {
+            if (null !== $entity = $this->indexLogsRepo->findByObjectIdentity($id)) {
                 yield $entity;
             }
         }
@@ -141,10 +102,10 @@ class SearchPurgeRunner extends AbstractRunner
      */
     private function getMatchingSearchIndexMaps(): \Generator
     {
-        $identities = 0 === count($this->uuids) ? $this->searchIndexRepository->getObjectIdentities() : $this->uuids;
+        $identities = 0 === count($this->uuids) ? $this->indexMapsRepo->getObjectIdentities() : $this->uuids;
 
         foreach ($identities as $id) {
-            if (null !== $entity = $this->searchIndexRepository->findByObjectIdentity($id)) {
+            if (null !== $entity = $this->indexMapsRepo->findByObjectIdentity($id)) {
                 yield $entity;
             }
         }
@@ -155,8 +116,8 @@ class SearchPurgeRunner extends AbstractRunner
      */
     private function getMatchingSearchWordStems(): \Generator
     {
-        foreach ($this->searchStemRepository->getIdsWithNoIndices() as $id) {
-            if (null !== $entity = $this->searchStemRepository->findById($id)) {
+        foreach ($this->wordStemsRepo->getIdsWithNoIndices() as $id) {
+            if (null !== $entity = $this->wordStemsRepo->findById($id)) {
                 yield $entity;
             }
         }
@@ -176,8 +137,9 @@ class SearchPurgeRunner extends AbstractRunner
 
             try {
                 $this->em->flush();
-            } catch (ORMException $exception) {
+            } catch (\Exception $exception) {
                 $this->writeActionDone(false);
+
                 return false;
             }
 
@@ -198,7 +160,7 @@ class SearchPurgeRunner extends AbstractRunner
                 $this->io->action(vsprintf('Pruning %s "%s:%s"', [
                     $action,
                     $entity->getObjectClass(),
-                    $entity->getObjectIdentity()
+                    $entity->getObjectIdentity(),
                 ]));
             } elseif ($entity instanceof SearchStem) {
                 $this->io->action(vsprintf('Pruning %s "%s"', [
@@ -211,9 +173,6 @@ class SearchPurgeRunner extends AbstractRunner
         }
     }
 
-    /**
-     * @return void
-     */
     private function writeActionDone(bool $success = true): void
     {
         if ($this->io->isVeryVerbose()) {
@@ -222,8 +181,7 @@ class SearchPurgeRunner extends AbstractRunner
             } else {
                 $this->io->actionFail();
             }
-        }
-        elseif ($this->io->isVerbose()) {
+        } elseif ($this->io->isVerbose()) {
             $this->io->writeln([]);
         }
     }

@@ -51,7 +51,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return null|string
      */
-    public function getAction(): ?string
+    public function getAction(): ? string
     {
         return $this->action;
     }
@@ -61,7 +61,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setAction(string $action): self
+    public function setAction(string $action) : self
     {
         $this->action = $action;
 
@@ -71,7 +71,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return null|string
      */
-    public function getObjectClass(): ?string
+    public function getObjectClass(): ? string
     {
         return $this->objectClass;
     }
@@ -81,7 +81,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setObjectClass(string $objectClass = null): self
+    public function setObjectClass(string $objectClass = null) : self
     {
         $this->objectClass = $objectClass;
 
@@ -91,7 +91,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return null|string
      */
-    public function getObjectId(): ?string
+    public function getObjectId(): ? string
     {
         return $this->objectId;
     }
@@ -101,7 +101,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setObjectId(string $objectId): self
+    public function setObjectId(string $objectId) : self
     {
         $this->objectId = $objectId;
 
@@ -111,7 +111,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return null|string
      */
-    public function getUsername(): ?string
+    public function getUsername(): ? string
     {
         return $this->username;
     }
@@ -121,7 +121,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setUsername(string $username = null): self
+    public function setUsername(string $username = null) : self
     {
         $this->username = $username;
 
@@ -139,7 +139,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return array|null
      */
-    public function getData(): ?array
+    public function getData(): ? array
     {
         return $this->data;
     }
@@ -149,7 +149,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setData(array $data): self
+    public function setData(array $data) : self
     {
         $this->data = $data;
 
@@ -159,7 +159,7 @@ class RevisionLog extends UuidEntity
     /**
      * @return int|null
      */
-    public function getVersion(): ?int
+    public function getVersion(): ? int
     {
         return $this->version;
     }
@@ -169,7 +169,7 @@ class RevisionLog extends UuidEntity
      *
      * @return self
      */
-    public function setVersion(int $version): self
+    public function setVersion(int $version) : self
     {
         $this->version = $version;
 

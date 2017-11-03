@@ -68,7 +68,7 @@ class ArticleTag extends IdEntity implements SluggableInterface
      *
      * @return ArticleTag
      */
-    public function setName(string $name): self
+    public function setName(string $name) : self
     {
         $this->name = $name;
 
@@ -78,7 +78,7 @@ class ArticleTag extends IdEntity implements SluggableInterface
     /**
      * @return null|string
      */
-    public function getName(): ?string
+    public function getName(): ? string
     {
         return $this->name;
     }
@@ -88,7 +88,7 @@ class ArticleTag extends IdEntity implements SluggableInterface
      *
      * @return ArticleTag
      */
-    public function setDescription(string $description = null): self
+    public function setDescription(string $description = null) : self
     {
         $this->description = $description;
 
@@ -98,7 +98,7 @@ class ArticleTag extends IdEntity implements SluggableInterface
     /**
      * @return null|string
      */
-    public function getDescription(): ?string
+    public function getDescription(): ? string
     {
         return $this->description;
     }
@@ -106,7 +106,7 @@ class ArticleTag extends IdEntity implements SluggableInterface
     /**
      * @return bool
      */
-    public function hasDescription(): bool
+    public function hasDescription() : bool
     {
         return null !== $this->description;
     }

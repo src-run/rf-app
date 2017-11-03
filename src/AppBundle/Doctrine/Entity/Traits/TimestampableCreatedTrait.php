@@ -41,7 +41,7 @@ trait TimestampableCreatedTrait
     /**
      * @return bool
      */
-    public function hasCreated(): bool
+    public function hasCreated() : bool
     {
         return null !== $this->created;
     }

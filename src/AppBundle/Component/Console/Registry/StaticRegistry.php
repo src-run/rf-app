@@ -11,7 +11,7 @@
 
 namespace Rf\AppBundle\Component\Console\Registry;
 
-class ConfigurationRegistry extends Registry
+class StaticRegistry extends AbstractRegistry
 {
     /**
      * @param array $elements

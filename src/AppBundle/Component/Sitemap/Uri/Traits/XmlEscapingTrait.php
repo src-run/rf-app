@@ -28,7 +28,7 @@ trait XmlEscapingTrait
      *
      * @return null|string
      */
-    private function toHtmlEntities(string $string = null): ?string
+    private function toHtmlEntities(string $string = null): ? string
     {
         return $string ? htmlentities($string, static::$htmlEncodingFlags, static::$htmlEncodingCharset) : $string;
     }
@@ -38,7 +38,7 @@ trait XmlEscapingTrait
      *
      * @return null|string
      */
-    private function toHtmlSpecialChars(string $string = null): ?string
+    private function toHtmlSpecialChars(string $string = null) : ? string
     {
         return $string ? htmlspecialchars($string, static::$htmlEncodingFlags, static::$htmlEncodingCharset) : $string;
     }
@@ -48,7 +48,7 @@ trait XmlEscapingTrait
      *
      * @return string
      */
-    private function toEncodedUrl(string $string): string
+    private function toEncodedUrl(string $string) : string
     {
         return urlencode($string);
     }

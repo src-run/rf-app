@@ -89,7 +89,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
      *
      * @return self
      */
-    public function setAuthorName(string $authorName): self
+    public function setAuthorName(string $authorName) : self
     {
         $this->authorName = $authorName;
 
@@ -99,7 +99,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
     /**
      * @return null|string
      */
-    public function getAuthorName(): ?string
+    public function getAuthorName(): ? string
     {
         return $this->authorName;
     }
@@ -109,7 +109,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
      *
      * @return self
      */
-    public function setAuthorEmail(string $authorEmail): self
+    public function setAuthorEmail(string $authorEmail) : self
     {
         $this->authorEmail = $authorEmail;
 
@@ -119,7 +119,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
     /**
      * @return null|string
      */
-    public function getAuthorEmail(): ?string
+    public function getAuthorEmail(): ? string
     {
         return $this->authorEmail;
     }
@@ -129,7 +129,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
      *
      * @return self
      */
-    public function setArticle(Article $article): self
+    public function setArticle(Article $article) : self
     {
         $this->article = $article;
 
@@ -139,7 +139,7 @@ class ArticleComment extends UuidEntity implements SluggableInterface
     /**
      * @return null|Article
      */
-    public function getArticle(): ?Article
+    public function getArticle(): ? Article
     {
         return $this->article;
     }

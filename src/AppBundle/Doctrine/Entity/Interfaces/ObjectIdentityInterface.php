@@ -16,10 +16,10 @@ interface ObjectIdentityInterface
     /**
      * @return null|string
      */
-    public function getObjectClass(): ?string;
+    public function getObjectClass(): ? string;
 
     /**
      * @return string
      */
-    public function getObjectIdentity(): string;
+    public function getObjectIdentity() : string;
 }

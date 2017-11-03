@@ -46,7 +46,7 @@ trait LocationTrait
      *
      * @return string
      */
-    protected function sanitizeLocation(string $location = null, bool $throwError = true): ?string
+    protected function sanitizeLocation(string $location = null, bool $throwError = true): ? string
     {
         if ($location) {
             try {

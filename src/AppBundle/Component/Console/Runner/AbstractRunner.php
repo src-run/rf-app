@@ -26,6 +26,11 @@ abstract class AbstractRunner
     protected $result = 0;
 
     /**
+     * @var bool
+     */
+    protected $dryRun;
+
+    /**
      * @param StyleInterface|null $io
      */
     public function __construct(StyleInterface $io = null)
@@ -63,5 +68,25 @@ abstract class AbstractRunner
         $this->result = $result;
 
         return $this;
+    }
+
+    /**
+     * @param bool $dryRun
+     *
+     * @return self
+     */
+    public function setDryRun(bool $dryRun): self
+    {
+        $this->dryRun = $dryRun;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDryRun(): bool
+    {
+        return true === $this->dryRun;
     }
 }

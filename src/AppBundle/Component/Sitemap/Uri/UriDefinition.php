@@ -53,10 +53,10 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     private $media;
 
     /**
-     * @param string                           $location
-     * @param string|null                      $changeFrequency
-     * @param float|null                       $priority
-     * @param \DateTime|null                   $lastModified
+     * @param string         $location
+     * @param string|null    $changeFrequency
+     * @param float|null     $priority
+     * @param \DateTime|null $lastModified
      */
     public function __construct(string $location, string $changeFrequency = null, float $priority = 0.5, \DateTime $lastModified = null)
     {
@@ -93,7 +93,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return string
      */
-    public function getChangeFrequency(): ?string
+    public function getChangeFrequency(): ? string
     {
         return $this->changeFrequency;
     }
@@ -103,7 +103,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
      *
      * @return self
      */
-    public function setPriority(float $priority): self
+    public function setPriority(float $priority) : self
     {
         if ($priority > 1 || $priority < 0) {
             throw new InvalidArgumentException('Priority "%f" must be between 0 and 1.', $priority);
@@ -145,7 +145,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return \DateTime|null
      */
-    public function getLastModified(): ?\DateTime
+    public function getLastModified(): ? \DateTime
     {
         return $this->lastModified;
     }
@@ -153,7 +153,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return null|string
      */
-    public function getLastModifiedString(): ?string
+    public function getLastModifiedString() : ? string
     {
         return $this->formatDateTimeAsW3C($this->lastModified, $this->lastModifiedPrecise);
     }
@@ -173,7 +173,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return bool
      */
-    public function isLastModifiedPrecise(): bool
+    public function isLastModifiedPrecise() : bool
     {
         return $this->lastModifiedPrecise;
     }
@@ -201,7 +201,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return null|string
      */
-    public function getComment(): ?string
+    public function getComment(): ? string
     {
         return $this->comment;
     }
@@ -211,7 +211,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
      *
      * @return self
      */
-    public function setMedia(UriDefinitionMediaInterface $media = null): self
+    public function setMedia(UriDefinitionMediaInterface $media = null) : self
     {
         if (null !== $media && !($media instanceof UriDefinitionMediaImage || $media instanceof UriDefinitionMediaVideo)) {
             throw new InvalidArgumentException('Media supported types include "%s" and "%s".', UriDefinitionMediaImage::class, UriDefinitionMediaVideo::class);
@@ -249,7 +249,7 @@ class UriDefinition implements UriDefinitionInterface, UriDefinitionChangeFreqIn
     /**
      * @return null|UriDefinitionMediaInterface|UriDefinitionMediaImage|UriDefinitionMediaVideo
      */
-    public function getMedia(): ?UriDefinitionMediaInterface
+    public function getMedia(): ? UriDefinitionMediaInterface
     {
         return $this->media;
     }

@@ -60,7 +60,7 @@ class RouteHandlerArticlesView extends RouteHandlerDefault
      *
      * @return null|UriDefinition
      */
-    protected function handleArgumentSet(string $name, Route $route, array $arguments): ?UriDefinition
+    protected function handleArgumentSet(string $name, Route $route, array $arguments): ? UriDefinition
     {
         if (null !== $d = parent::handleArgumentSet($name, $route, $arguments)) {
             if (isset($arguments['entity']) && ($article = $arguments['entity']) instanceof Article) {
@@ -76,7 +76,7 @@ class RouteHandlerArticlesView extends RouteHandlerDefault
     /**
      * @return \Generator
      */
-    protected function getArgumentSets(): \Generator
+    protected function getArgumentSets() : \Generator
     {
         foreach ($this->getArticles() as $article) {
             yield [

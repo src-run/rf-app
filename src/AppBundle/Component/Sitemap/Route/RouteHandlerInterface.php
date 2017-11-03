@@ -22,12 +22,12 @@ interface RouteHandlerInterface
      *
      * @return UriCollection|null
      */
-    public function handle(string $name, Route $route): ?UriCollection;
+    public function handle(string $name, Route $route): ? UriCollection;
 
     /**
      * @return int
      */
-    public function getPriority(): int;
+    public function getPriority() : int;
 
     /**
      * @param string $name

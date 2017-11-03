@@ -131,7 +131,7 @@ abstract class AbstractFileRunner extends AbstractRunner
      *
      * @return string|null
      */
-    protected function handleSkippedFile(\SplFileInfo $file): ?string
+    protected function handleSkippedFile(\SplFileInfo $file): ? string
     {
         if (in_array($file->getBasename(), $this->ignoredFiles)) {
             return 'user-ignored';
@@ -153,7 +153,7 @@ abstract class AbstractFileRunner extends AbstractRunner
      *
      * @return string[]
      */
-    protected function findFilesInPath(string $path, bool $dot = true): array
+    protected function findFilesInPath(string $path, bool $dot = true) : array
     {
         return $this->buildScannedFilePaths(array_filter(scandir($path), function (string $file) use ($dot) {
             return $file !== '.'

@@ -66,9 +66,6 @@ class FileInstallRunner extends AbstractFileRunner
         return $this;
     }
 
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $this->io->section(sprintf('Install (%s)', $this->environment));
@@ -124,6 +121,10 @@ class FileInstallRunner extends AbstractFileRunner
      */
     private function doInstallFile(\SplFileInfo $file): bool
     {
+        if ($this->isDryRun()) {
+            return true;
+        }
+
         if ((file_exists($file->getPathname()) && !is_readable($file->getPathname())) || !is_writable($file->getPath()) || !@copy($file, $this->getOutputFile($file))) {
             $this->io->error(sprintf('Unable to install "%s" file: the path is not writable or the copy otherwise failed.', $file->getPathname()));
 

@@ -47,7 +47,7 @@ trait IdentityIdTrait
     /**
      * @return bool
      */
-    public function hasId(): bool
+    public function hasId() : bool
     {
         return null !== $this->id;
     }

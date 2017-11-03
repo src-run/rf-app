@@ -142,7 +142,7 @@ class RecordGenerator
      *
      * @return UriCollection|null
      */
-    private function getCollectionForRoute(string $name, Route $route): ?UriCollection
+    private function getCollectionForRoute(string $name, Route $route): ? UriCollection
     {
         foreach ($this->routeGenerators as $generator) {
             if (!$generator->isSupported($name, $route)) {
@@ -162,7 +162,7 @@ class RecordGenerator
     /**
      * @return Route[]
      */
-    private function getApplicationRoutes(): array
+    private function getApplicationRoutes() : array
     {
         return array_filter($this->router->getRouteCollection()->all(), function (string $name) {
             return 0 === strpos($name, 'app.') && 0 === preg_match(static::$ignoreRouteNamesRegex, $name);

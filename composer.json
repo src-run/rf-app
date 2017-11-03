@@ -33,6 +33,7 @@
         "knplabs/knp-menu-bundle": "^2.1",
         "knplabs/knp-paginator-bundle": "^2.5",
         "liip/imagine-bundle": "^2.0",
+        "nabil1337/case-helper": "dev-master",
         "sensio/distribution-bundle": "^5.0.19",
         "sensio/framework-extra-bundle": "^3.0.2",
         "src-run/arthur-doctrine-identity-library": "^0.8",

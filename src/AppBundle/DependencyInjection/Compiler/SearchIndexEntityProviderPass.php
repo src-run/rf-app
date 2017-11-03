@@ -11,11 +11,11 @@
 
 namespace Rf\AppBundle\DependencyInjection\Compiler;
 
-use Rf\AppBundle\Component\Console\Runner\Search\SearchCreateRunner;
+use Rf\AppBundle\Component\Console\Runner\Search\SearchIndexRunner;
 use Rf\AppBundle\Component\Search\Indexing\EntityProviderInterface;
 use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -28,7 +28,7 @@ class SearchIndexEntityProviderPass implements CompilerPassInterface
      * @param string $runnerServiceId
      * @param string $providerTag
      */
-    public function __construct($runnerServiceId = SearchCreateRunner::class, $providerTag = 'search_index.entity_provider')
+    public function __construct($runnerServiceId = SearchIndexRunner::class, $providerTag = 'search_index.entity_provider')
     {
         $this->runnerServiceId = $runnerServiceId;
         $this->providerTag = $providerTag;
@@ -43,7 +43,7 @@ class SearchIndexEntityProviderPass implements CompilerPassInterface
             return;
         }
 
-        $services = array();
+        $services = [];
 
         foreach ($container->findTaggedServiceIds($this->providerTag) as $id => $tags) {
             $class = $container->getParameterBag()->resolveValue($container->getDefinition($id)->getClass());

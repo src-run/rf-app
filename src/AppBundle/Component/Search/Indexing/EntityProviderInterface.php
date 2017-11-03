@@ -11,12 +11,55 @@
 
 namespace Rf\AppBundle\Component\Search\Indexing;
 
-use Rf\AppBundle\Component\Search\Indexing\Model\IndexableEntityModel;
+use Rf\AppBundle\Component\Search\Indexing\Model\IndexableEntity;
+use SR\Doctrine\ORM\Mapping\Entity;
 
-interface EntityProviderInterface
+interface EntityProviderInterface extends \Countable
 {
     /**
-     * @return \Generator|IndexableEntityModel[]
+     * @return string
      */
-    public function getModels(): \Generator;
+    public function getName(): string;
+
+    /**
+     * @param bool $qualified
+     *
+     * @return string
+     */
+    public function getClass(bool $qualified = true): string;
+
+    /**
+     * @return int
+     */
+    public function count(): int;
+
+    /**
+     * @return string[]|int[]
+     */
+    public function getIdentities(): array;
+
+    /**
+     * @return Entity[]
+     */
+    public function getEntities(): array;
+
+    /**
+     * @return IndexableEntity[]
+     */
+    public function getIndexableModels(): array;
+
+    /**
+     * @return \Generator|string[]
+     */
+    public function forEachIdentities(): \Generator;
+
+    /**
+     * @return \Generator|Entity[]
+     */
+    public function forEachEntities(): \Generator;
+
+    /**
+     * @return \Generator|IndexableEntity[]
+     */
+    public function forEachIndexableModels(): \Generator;
 }

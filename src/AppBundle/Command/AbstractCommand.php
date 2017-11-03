@@ -11,11 +11,8 @@
 
 namespace Rf\AppBundle\Command;
 
-use Rf\AppBundle\Component\Console\InputParamResolver;
-use Rf\AppBundle\Component\Console\OutputErrorHandler;
-use Rf\AppBundle\Component\Console\Registry\ConfigurationRegistry;
-use Rf\AppBundle\Component\Console\Runner\EnvFiles\FileInstallRunner;
-use Rf\AppBundle\Component\Console\Runner\EnvFiles\FileCleanupRunner;
+use Rf\AppBundle\Component\Console\ActionStepper\ActionStepper;
+use Rf\AppBundle\Component\Console\Registry\AbstractRegistry;
 use SR\Console\Output\Style\Style;
 use SR\Console\Output\Style\StyleAwareTrait;
 use SR\Console\Output\Style\StyleInterface;
@@ -28,6 +25,21 @@ abstract class AbstractCommand extends Command
     use StyleAwareTrait;
 
     /**
+     * @var ActionStepper
+     */
+    protected $actionStepper;
+
+    /**
+     * @param ActionStepper $actionStepper
+     */
+    public function __construct(ActionStepper $actionStepper)
+    {
+        parent::__construct();
+
+        $this->actionStepper = $actionStepper;
+    }
+
+    /**
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
@@ -35,13 +47,13 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configuration = $this->initializeEnvironment($input, $output);
+        $this->initializeEnvironment($input, $output);
 
         if (!$this->writeContinueConfirmation()) {
             return 255;
         }
 
-        $this->writeCompletionSummary($result = $this->doExecute($configuration));
+        $this->writeCompletionSummary($result = $this->actionStepper->run());
 
         return $result ?? 255;
     }
@@ -49,27 +61,26 @@ abstract class AbstractCommand extends Command
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     *
-     * @return ConfigurationRegistry
      */
-    protected function initializeEnvironment(InputInterface $input, OutputInterface $output): ConfigurationRegistry
+    protected function initializeEnvironment(InputInterface $input, OutputInterface $output): void
     {
         if (!$this->io instanceof StyleInterface) {
             $this->io = new Style($input, $output);
         }
 
-        return $this->initializeConfiguration();
+        $this->actionStepper->setStyle($this->io);
+        $this->initializeActions($this->initializeConfiguration());
     }
 
     /**
-     * @return ConfigurationRegistry
+     * @return AbstractRegistry
      */
-    protected function initializeConfiguration(): ConfigurationRegistry
-    {
-        return new ConfigurationRegistry();
-    }
+    abstract protected function initializeConfiguration(): AbstractRegistry;
 
-    abstract protected function doExecute(ConfigurationRegistry $c): int;
+    /**
+     * @param AbstractRegistry $c
+     */
+    abstract protected function initializeActions(AbstractRegistry $c): void;
 
     /**
      * @param array  $headers
@@ -114,6 +125,8 @@ abstract class AbstractCommand extends Command
     }
 
     /**
+     * @param int $exitCode
+     *
      * @return int
      */
     protected function userRequestedExit(int $exitCode = 255): int
@@ -121,5 +134,25 @@ abstract class AbstractCommand extends Command
         $this->io->info('The user initiated a manual script termination');
 
         return $exitCode;
+    }
+
+    /**
+     * @param bool $state
+     *
+     * @return string
+     */
+    protected function getConfigurationFlagMarkup(bool $state): string
+    {
+        return sprintf('flag=[%s]', $state ? '<fg=green>enabled</>' : '<fg=red>disabled</>');
+    }
+
+    /**
+     * @param array $list
+     *
+     * @return string
+     */
+    protected function getConfigurationListMarkup(array $list): string
+    {
+        return sprintf('list=[%s]%s', implode(',', $list) ?: '<none>', (count($list) === 0 ? '' : sprintf(' (%d)', count($list))));
     }
 }

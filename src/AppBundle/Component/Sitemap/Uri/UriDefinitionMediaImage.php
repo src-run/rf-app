@@ -66,7 +66,7 @@ class UriDefinitionMediaImage implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getGeoLocation(): ?string
+    public function getGeoLocation(): ? string
     {
         return $this->geoLocation;
     }
@@ -76,7 +76,7 @@ class UriDefinitionMediaImage implements UriDefinitionMediaInterface
      *
      * @return self
      */
-    public function setLicense(string $license = null): self
+    public function setLicense(string $license = null) : self
     {
         $this->license = $this->toHtmlSpecialChars($license);
 
@@ -94,7 +94,7 @@ class UriDefinitionMediaImage implements UriDefinitionMediaInterface
     /**
      * @return null|string
      */
-    public function getLicense(): ?string
+    public function getLicense(): ? string
     {
         return $this->license;
     }
@@ -102,7 +102,7 @@ class UriDefinitionMediaImage implements UriDefinitionMediaInterface
     /**
      * @return string
      */
-    static public function getType(): string
+    public static function getType() : string
     {
         return UriDefinitionMediaInterface::MEDIA_TYPE_IMAGE;
     }

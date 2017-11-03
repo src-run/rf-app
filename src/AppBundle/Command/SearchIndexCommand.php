@@ -11,157 +11,124 @@
 
 namespace Rf\AppBundle\Command;
 
-use Rf\AppBundle\Component\Console\Registry\ConfigurationRegistry;
-use Rf\AppBundle\Component\Console\Runner\Search\SearchCreateRunner;
-use Rf\AppBundle\Component\Console\Runner\Search\SearchPurgeRunner;
-use SR\Console\Output\Style\Style;
+use Rf\AppBundle\Component\Console\ActionStepper\ActionStepper;
+use Rf\AppBundle\Component\Console\Registry\AbstractRegistry;
+use Rf\AppBundle\Component\Console\Registry\StaticRegistry;
+use Rf\AppBundle\Component\Console\Runner\Search\SearchIndexRunner;
+use Rf\AppBundle\Component\Console\Runner\Search\SearchPruneRunner;
 use SR\Console\Output\Style\StyleAwareTrait;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchIndexCommand extends AbstractCommand
 {
     use StyleAwareTrait;
 
     /**
-     * @var SearchPurgeRunner
+     * @var SearchPruneRunner
      */
-    private $searchPurgeRunner;
+    private $searchPruneRunner;
 
     /**
-     * @var SearchCreateRunner
+     * @var SearchIndexRunner
      */
-    private $searchCreateRunner;
+    private $searchIndexRunner;
 
     /**
-     * @param SearchPurgeRunner  $searchPurgeRunner
-     * @param SearchCreateRunner $searchCreateRunner
+     * @param ActionStepper     $actionStepper
+     * @param SearchPruneRunner $searchPruneRunner
+     * @param SearchIndexRunner $searchIndexRunner
      */
-    public function __construct(SearchPurgeRunner $searchPurgeRunner, SearchCreateRunner $searchCreateRunner)
+    public function __construct(ActionStepper $actionStepper, SearchPruneRunner $searchPruneRunner, SearchIndexRunner $searchIndexRunner)
     {
-        parent::__construct();
+        parent::__construct($actionStepper);
 
-        $this->searchPurgeRunner = $searchPurgeRunner;
-        $this->searchCreateRunner = $searchCreateRunner;
+        $this->searchPruneRunner = $searchPruneRunner;
+        $this->searchIndexRunner = $searchIndexRunner;
     }
 
-    /**
-     * @return void
-     */
     protected function configure(): void
     {
         $this->setDescription('Create search stems and reverse index for articles');
-        $this->addArgument('uuid', InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
+        $this->addArgument('uuid', InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
             'Optional article UUIDs to use when creating index; otherwise all will be used.');
         $this->addOption('purge', ['p'], InputOption::VALUE_NONE,
             'Purge all existing search stem/index entries.');
         $this->addOption('no-cache', ['C'], InputOption::VALUE_NONE,
             'Disable caching of entity stem/index entries.');
+        $this->addOption('dry-run', ['d'], InputOption::VALUE_NONE,
+            'Enable dry-run mode');
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
+     * @param AbstractRegistry $c
+     */
+    protected function initializeActions(AbstractRegistry $c): void
+    {
+        $this->actionStepper->addActionClosure('search-prune', function () use ($c) {
+            return $this->doSearchPruneRunner($c);
+        })->setConditional(function () use ($c) {
+            return true === $c->get('purge');
+        })->setErrorString('Unable to purge search index logs, search index maps, or search word stems!');
+
+        $this->actionStepper->addActionClosure('search-index', function () use ($c) {
+            return $this->doSearchIndexRunner($c);
+        })->setErrorString('Unable to create search index logs, search index maps, or search word stems!');
+    }
+
+    /**
+     * @param AbstractRegistry $c
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    private function doSearchPruneRunner(AbstractRegistry $c): int
     {
-        $this->io = new Style($input, $output);
+        $this->searchPruneRunner->setStyle($this->io);
+        $this->searchPruneRunner->setDryRun($c->get('dry-run'));
+        $this->searchPruneRunner->setUuids(...$c->get('uuids'));
+        $this->searchPruneRunner->run();
 
-        $this->writeConfiguration(
-            $uuids = $this->io->getInput()->getArgument('uuid'),
-            $purge = $this->io->getInput()->getOption('purge'),
-            $cache = $this->io->getInput()->getOption('no-cache') !== true
-        );
-
-        if ($this->io->isVeryVerbose() && !$this->io->confirm('Continue using this configuration?', true)) {
-            $this->io->critical('Stopping due to user request.');
-            return 255;
-        }
-
-        if (($purge && 0 !== $return = $this->doPruneRunner(...$uuids)) || 0 !== $return = $this->doIndexRunner($cache, ...$uuids)) {
-            return $return;
-        }
-
-        $this->io->success('Completed all operations without error.');
-
-        return 0;
+        return $this->searchPruneRunner->getResult();
     }
 
     /**
-     * @param ConfigurationRegistry $c
+     * @param AbstractRegistry $c
      *
      * @return int
      */
-    protected function doExecute(ConfigurationRegistry $c): int
+    private function doSearchIndexRunner(AbstractRegistry $c): int
     {
-        if ((true === $c->get('purge') && 0 !== $return = $this->doPruneRunner($c)) || 0 !== $return = $this->doIndexRunner($c)) {
-            return $return;
-        }
+        $this->searchIndexRunner->setStyle($this->io);
+        $this->searchIndexRunner->setDryRun($c->get('dry-run'));
+        $this->searchIndexRunner->setCache($c->get('cache'));
+        $this->searchIndexRunner->setUuids(...$c->get('uuids'));
+        $this->searchIndexRunner->run();
 
-        return 0;
+        return $this->searchIndexRunner->getResult();
     }
 
     /**
-     * @param ConfigurationRegistry $c
-     *
-     * @return int
+     * @return AbstractRegistry
      */
-    private function doPruneRunner(ConfigurationRegistry $c): int
+    protected function initializeConfiguration(): AbstractRegistry
     {
-        $this->searchPurgeRunner->setStyle($this->io);
-        $this->searchPurgeRunner->setUuids(...$c->get('uuids'));
-        $this->searchPurgeRunner->run();
+        $c = new StaticRegistry();
 
-        if (0 !== $result = $this->searchPurgeRunner->getResult()) {
-            $this->io->critical('Unable to purge search index logs, search index maps, or search word stems!');
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param ConfigurationRegistry $c
-     *
-     * @return int
-     */
-    private function doIndexRunner(ConfigurationRegistry $c): int
-    {
-        $this->searchCreateRunner->setStyle($this->io);
-        $this->searchCreateRunner->setCache($c->get('cache'));
-        $this->searchCreateRunner->setUuids(...$c->get('uuids'));
-        $this->searchCreateRunner->run();
-
-        if (0 !== $result = $this->searchCreateRunner->getResult()) {
-            $this->io->critical('Unable to create search index logs, search index maps, or search word stems!');
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return ConfigurationRegistry
-     */
-    protected function initializeConfiguration(): ConfigurationRegistry
-    {
-        $c = new ConfigurationRegistry();
         $c->set('uuids', $this->io->getInput()->getArgument('uuid'));
         $c->set('purge', $this->io->getInput()->getOption('purge'));
         $c->set('cache', $this->io->getInput()->getOption('no-cache') !== true);
+        $c->set('dry-run', $this->io->getInput()->getOption('dry-run'));
 
         $this->writeConfiguration([
-            'Article Identities',
+            'Entity Identities',
             'Purge Existing Data',
             'Cache Stem Data',
+            'Dry Run Mode',
         ], [
-            [sprintf('list=[%s]%s', implode(',', $c->get('uuids')) ?: '<none>',
-                (count($c->get('uuids')) === 0 ? '' : sprintf(' (%d)', count($c->get('uuids')))))],
-            [sprintf('enabled=[%s]', $c->get('purge') ? 'yes' : 'no')],
-            [sprintf('enabled=[%s]', $c->get('cache') ? 'yes' : 'no')],
+            [$this->getConfigurationListMarkup($c->get('uuids'))],
+            [$this->getConfigurationFlagMarkup($c->get('purge'))],
+            [$this->getConfigurationFlagMarkup($c->get('cache'))],
+            [$this->getConfigurationFlagMarkup($c->get('dry-run'))],
         ]);
 
         return $c;

@@ -51,7 +51,7 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
     /**
      * @return int|null
      */
-    public function getPosition(): ?int
+    public function getPosition(): ? int
     {
         return $this->position;
     }
@@ -61,7 +61,7 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
      *
      * @return self
      */
-    public function setStem(SearchStem $stem): self
+    public function setStem(SearchStem $stem) : self
     {
         $this->stem = $stem;
 
@@ -71,7 +71,7 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
     /**
      * @return null|SearchStem
      */
-    public function getStem(): ?SearchStem
+    public function getStem(): ? SearchStem
     {
         return $this->stem;
     }
@@ -79,7 +79,7 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
     /**
      * @return null|string
      */
-    public function getObjectClass(): ?string
+    public function getObjectClass() : ? string
     {
         return $this->objectClass;
     }
@@ -89,7 +89,7 @@ class SearchIndex extends IdEntity implements ObjectIdentityInterface
      *
      * @return self
      */
-    public function setObjectClass(string $objectClass): self
+    public function setObjectClass(string $objectClass) : self
     {
         $this->objectClass = $objectClass;
 

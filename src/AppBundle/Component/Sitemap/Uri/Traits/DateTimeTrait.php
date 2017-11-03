@@ -21,7 +21,7 @@ trait DateTimeTrait
      *
      * @return \DateTime|null
      */
-    private function sanitizeDateTime(\DateTime $dateTime = null, bool $allowFutureDates = false): ?\DateTime
+    private function sanitizeDateTime(\DateTime $dateTime = null, bool $allowFutureDates = false): ? \DateTime
     {
         if (null !== $dateTime && !$allowFutureDates && $dateTime->format('U') > time()) {
             throw new InvalidArgumentException('Last modified "%s" cannot be in the future.', $dateTime->format('c'));
@@ -38,7 +38,7 @@ trait DateTimeTrait
      *
      * @return string
      */
-    private function formatDateTimeAsW3C(\DateTime $dateTime = null, bool $precision = true): string
+    private function formatDateTimeAsW3C(\DateTime $dateTime = null, bool $precision = true) : string
     {
         $format = 'Y-m-d';
 

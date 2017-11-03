@@ -17,7 +17,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\VarDumper\VarDumper;
 
 class AppExtension extends Extension
 {
@@ -45,7 +44,7 @@ class AppExtension extends Extension
 
     /**
      * @param ContainerBuilder $container
-     * @param array $config
+     * @param array            $config
      */
     private function setUpRegistries(ContainerBuilder $container, array $config)
     {

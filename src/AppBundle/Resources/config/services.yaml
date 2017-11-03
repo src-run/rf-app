@@ -70,6 +70,14 @@ services:
         arguments:
             - Rf\AppBundle\Doctrine\Entity\Article
 
+    Rf\AppBundle\Doctrine\Repository\ArticleCommentRepository:
+        class: Doctrine\ORM\EntityRepository
+        factory:
+            - '@doctrine.orm.default_entity_manager'
+            - getRepository
+        arguments:
+            - Rf\AppBundle\Doctrine\Entity\ArticleComment
+
     Rf\AppBundle\Doctrine\Repository\SearchStemRepository:
         class: Doctrine\ORM\EntityRepository
         factory:
@@ -99,15 +107,18 @@ services:
     SR\Cocoa\Transformer\TransformerInterface:
         alias: SR\Cocoa\Transformer\Markdown\MarkdownCacheableTransformer
 
-    Rf\AppBundle\Command\EnvFilesCommand:
+    Rf\AppBundle\Command\EnvironmentFilesCommand:
         tags:
-            - { name: console.command, command: rf:env:install }
+            - { name: console.command, command: rf:env:files }
 
     Rf\AppBundle\Command\SearchIndexCommand:
         tags:
-            - { name: console.command, command: rf:search:index }
+            - { name: console.command, command: rf:search:idx }
 
     Rf\AppBundle\Component\Search\Indexing\ArticleProvider:
+        tags: [ search_index.entity_provider ]
+
+    Rf\AppBundle\Component\Search\Indexing\ArticleCommentProvider:
         tags: [ search_index.entity_provider ]
 
     Symfony\Bundle\TwigBundle\TwigEngine:

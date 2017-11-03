@@ -51,7 +51,7 @@ class LoadArticleTagData implements DependentFixtureInterface, ContainerAwareInt
     public function getDependencies(): array
     {
         return [
-            LoadArticleContentData::class
+            LoadArticleContentData::class,
         ];
     }
 
@@ -60,7 +60,7 @@ class LoadArticleTagData implements DependentFixtureInterface, ContainerAwareInt
      */
     public function load(ObjectManager $manager)
     {
-        for ($i = 0; $i < static::$loadCount; $i++) {
+        for ($i = 0; $i < static::$loadCount; ++$i) {
             $tag = $this->createArticleTag();
             $manager->persist($tag);
         }
